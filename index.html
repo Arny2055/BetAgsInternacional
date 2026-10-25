@@ -243,6 +243,22 @@
             </div>
         </section>
 
+        <!-- WIDGET DE RENTABILIDAD DEL MERCADO SELECCIONADO EN LA LIGA -->
+        <section id="marketLeagueProfitabilityWidget" class="glass-card rounded-2xl p-3 border border-indigo-500/40 bg-gradient-to-r from-slate-900 via-indigo-950/20 to-slate-900 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 rounded-xl bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-indigo-400 font-bold">
+                    <i class="fa-solid fa-chart-pie text-xs"></i>
+                </div>
+                <div>
+                    <span class="block text-[9px] font-bold text-slate-400 uppercase">Rentabilidad Histórica del Mercado en Liga Activa</span>
+                    <span id="marketProfitabilityStatusText" class="text-xs font-black text-slate-300">Selecciona o calcula un mercado para ver su rendimiento</span>
+                </div>
+            </div>
+            <div class="text-right">
+                <span id="marketProfitabilityBadge" class="text-[9px] font-black bg-slate-800 text-slate-300 px-2 py-1 rounded-lg border border-slate-700">Sin datos</span>
+            </div>
+        </section>
+
         <!-- Selector de Modo -->
         <div class="bg-cardBg p-1 rounded-xl border border-slate-800/80 flex text-[11px] font-bold">
             <button id="btnModeXg" onclick="switchMode('xg')" class="flex-1 py-1.5 rounded-lg transition-all duration-200 bg-emerald-500 text-slate-950 font-black shadow-md">
@@ -1283,7 +1299,7 @@
                 <div class="grid grid-cols-2 gap-2" id="logSingleFieldsContainer">
                     <div>
                         <label class="block text-[10px] font-bold text-slate-400 mb-1">Mercado</label>
-                        <input type="text" id="logMarket" class="w-full bg-inputBg border border-slate-700 rounded-xl px-2.5 py-1.5 text-xs text-white font-bold">
+                        <input type="text" id="logMarket" oninput="checkMarketLeagueProfitability()" class="w-full bg-inputBg border border-slate-700 rounded-xl px-2.5 py-1.5 text-xs text-white font-bold">
                     </div>
                     <div>
                         <label class="block text-[10px] font-bold text-slate-400 mb-1">Selección Elegida</label>
@@ -1600,6 +1616,71 @@
             }
         }
 
+        // --- FUNCIÓN NUEVA: VERIFICAR RENTABILIDAD DEL MERCADO EN LA LIGA SELECCIONADA ---
+        function checkMarketLeagueProfitability(marketName = null) {
+            const leagueName = document.getElementById('activeLeagueSelect').value || DEFAULT_LEAGUE_NAME;
+            const marketInput = marketName || document.getElementById('logMarket').value.trim().toLowerCase();
+            
+            const statusTextEl = document.getElementById('marketProfitabilityStatusText');
+            const badgeEl = document.getElementById('marketProfitabilityBadge');
+            if (!statusTextEl || !badgeEl) return;
+
+            if (!marketInput) {
+                statusTextEl.innerText = "Introduce o selecciona un mercado para evaluar su rentabilidad en esta liga.";
+                badgeEl.innerText = "Sin mercado";
+                badgeEl.className = "text-[9px] font-black bg-slate-800 text-slate-300 px-2 py-1 rounded-lg border border-slate-700";
+                return;
+            }
+
+            const activeBankBets = betLogData.filter(b => (b.bankrollId || bankrollsData[0].id) === activeBankrollId);
+            const leagueMarketBets = activeBankBets.filter(b => 
+                b.status !== 'PENDING' && 
+                b.league && b.league.toLowerCase() === leagueName.toLowerCase() &&
+                b.market && b.market.toLowerCase().includes(marketInput)
+            );
+
+            if (leagueMarketBets.length === 0) {
+                statusTextEl.innerText = `Sin apuestas liquidadas para "${marketInput}" en ${leagueName}.`;
+                badgeEl.innerText = "Sin datos en liga";
+                badgeEl.className = "text-[9px] font-black bg-slate-800 text-slate-400 px-2 py-1 rounded-lg border border-slate-700";
+                return;
+            }
+
+            let totalProfit = 0;
+            let totalStaked = 0;
+            let wonCount = 0;
+
+            leagueMarketBets.forEach(bet => {
+                const stake = parseFloat(bet.stake) || 0;
+                const odds = parseFloat(bet.bookieOdds) || 1;
+                totalStaked += stake;
+                if (bet.status === 'WON') {
+                    totalProfit += stake * (odds - 1);
+                    wonCount++;
+                } else if (bet.status === 'LOST') {
+                    totalProfit -= stake;
+                } else if (bet.status === 'HALF_WON') {
+                    totalProfit += (stake / 2) * (odds - 1);
+                    wonCount += 0.5;
+                } else if (bet.status === 'HALF_LOST') {
+                    totalProfit -= (stake / 2);
+                }
+            });
+
+            const yieldVal = totalStaked > 0 ? (totalProfit / totalStaked) * 100 : 0;
+            const winRate = (wonCount / leagueMarketBets.length) * 100;
+
+            if (totalProfit > 0 && yieldVal > 0) {
+                statusTextEl.innerHTML = `Rentable en ${leagueName}: <b>+$${totalProfit.toFixed(2)}</b> (${leagueMarketBets.length} apuestas, Yield: +${yieldVal.toFixed(1)}%)`;
+                badgeEl.innerText = `¡Rentable! (+${yieldVal.toFixed(1)}% Yield)`;
+                badgeEl.className = "text-[9px] font-black bg-emerald-500/20 text-emerald-300 px-2 py-1 rounded-lg border border-emerald-500/30";
+            } else {
+                statusTextEl.innerHTML = `No rentable en ${leagueName}: <b>-$${Math.abs(totalProfit).toFixed(2)}</b> (${leagueMarketBets.length} apuestas, Yield: ${yieldVal.toFixed(1)}%)`;
+                badgeEl.innerText = `No Rentable (${yieldVal.toFixed(1)}% Yield)`;
+                badgeEl.className = "text-[9px] font-black bg-rose-500/20 text-rose-300 px-2 py-1 rounded-lg border border-rose-500/30";
+            }
+        }
+
         function addToParlayBuilder(market, selection, prob) {
             const homeName = document.getElementById('homeName').value || 'Local';
             const awayName = document.getElementById('awayName').value || 'Visitante';
@@ -1724,6 +1805,7 @@
             document.getElementById('logBookmaker').value = "Bet365";
             document.getElementById('logStatus').value = "PENDING";
 
+            checkMarketLeagueProfitability("Parlay");
             calculateLogEv();
             toggleLogBetModal(true);
         }
@@ -2109,6 +2191,7 @@
         function onLeagueSelectChange() {
             updateTeamSelectors();
             calculatePoisson();
+            checkMarketLeagueProfitability();
         }
 
         function updateTeamSelectors() {
@@ -2277,6 +2360,7 @@
             document.getElementById('logStatus').value = "PENDING";
 
             checkSelectionHistoricalProfit();
+            checkMarketLeagueProfitability(market || 'Ganador Partido');
             calculateLogEv();
             toggleLogBetModal(true);
         }
@@ -2301,6 +2385,7 @@
             document.getElementById('logStatus').value = item.status;
 
             checkSelectionHistoricalProfit();
+            checkMarketLeagueProfitability(item.market);
             calculateLogEv();
             toggleLogBetModal(true);
         }
@@ -2551,6 +2636,7 @@
 
             updateLeaguePerformanceTable(filteredBets);
             updateBestEvRangeAnalysis(filteredBets);
+            checkMarketLeagueProfitability();
 
             const streakLabel = streakType === 'LOSS' ? `🔥 ${currentStreakCount} Derrotas` : (streakType === 'WIN' ? `⭐ ${currentStreakCount} Victorias` : 'Neutral');
             document.getElementById('statCurrentStreak').innerText = streakLabel;
@@ -2593,7 +2679,6 @@
             saveBetLogToStorage();
         }
 
-        // --- FUNCIÓN NUEVA: ACTUALIZAR TABLA DE RENDIMIENTO POR LIGA ---
         function updateLeaguePerformanceTable(bankBets) {
             const tableBody = document.getElementById('leaguePerformanceTableBody');
             const badgeEl = document.getElementById('leaguePerformanceBadge');
@@ -2642,7 +2727,6 @@
                 return;
             }
 
-            // Ordenar por beneficio neto descendente
             leaguesArray.sort((a, b) => b.profit - a.profit);
 
             let html = '';
@@ -2665,7 +2749,6 @@
             tableBody.innerHTML = html;
         }
 
-        // --- FUNCIONES DEL NUEVO SIMULADOR DE STAKE PLANO ---
         function openFlatStakeModal() {
             runFlatStakeSimulation();
             document.getElementById('flatStakeModal').classList.remove('hidden');
@@ -3636,7 +3719,7 @@
                             <button onclick="openLogBetModal('Marcador Exacto', '${item.score}', ${item.prob})" class="py-0.5 px-1.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 text-[9px] font-bold rounded border border-emerald-500/20" title="Sencilla">
                                 Sencilla
                             </button>
-                            <button onclick="addToParlayBuilder('Marcador Exacto', '${item.score}', ${item.prob})" class="py-0.5 px-1.5 bg-gold-500/10 hover:bg-gold-500/20 text-gold-400 text-[9px] font-bold rounded border border-gold-500/20" title="Parlay">
+                            <button onclick="addToParlayBuilder('Marcador Exacto', '${item.score}', ${item.prob})" class="py-0.5 px-1.5 bg-gold-500/10 hover:bg-gold-500/20 text-gold-400 text-[9px] font-bold rounded border border-emerald-500/20" title="Parlay">
                                 Parlay
                             </button>
                         </div>
