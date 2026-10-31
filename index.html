@@ -961,7 +961,35 @@
                 </div>
 
                 <!-- NUEVO MÓDULO: RENDIMIENTO POR LIGA -->
-                <details class="bg-slate-900/90 rounded-xl border border-emerald-500/40 bg-gradient-to-r from-slate-900 via-emerald-950/20 to-slate-900 overflow-hidden group" open>
+                <details class="bg-                window.onload = function() {
+            loadBankrollsFromStorage();
+            loadBetLogFromStorage();
+            loadParallelBetLogFromStorage();
+            populateLeagueDropdowns();
+            populateBankrollDropdowns();
+            updateTeamSelectors();
+            updateWeightLabels();
+            updateRhoDisplay();
+            calculatePoisson();
+            updateMarketFilterDropdown();
+            updateTrackerMetrics();
+            updateParallelTrackerMetrics();
+            renderParlayBuilder();
+            
+            sliderAttackPrev = parseInt(document.getElementById('weightAttackRange').value);
+            sliderDefensePrev = parseInt(document.getElementById('weightDefenseRange').value);
+
+            // NUEVO: Auto-cálculo en vivo al editar cualquier input manual sin presionar botones
+            const statInputs = ['homeName', 'awayName', 'homeXgFor', 'homeGf', 'homeXgAgainst', 'homeGc', 'awayXgFor', 'awayGf', 'awayXgAgainst', 'awayGc', 'directHomeXg', 'directAwayXg'];
+            statInputs.forEach(id => {
+                const el = document.getElementById(id);
+                if(el) {
+                    el.addEventListener('input', calculatePoisson);
+                }
+            });
+        };
+
+-900/90 rounded-xl border border-emerald-500/40 bg-gradient-to-r from-slate-900 via-emerald-950/20 to-slate-900 overflow-hidden group" open>
                     <summary class="p-3 cursor-pointer flex items-center justify-between select-none">
                         <div class="flex items-center gap-1.5">
                             <i class="fa-solid fa-trophy text-gold-400 text-xs"></i>
