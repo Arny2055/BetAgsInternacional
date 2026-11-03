@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>⚽ Panel Pro: En Vivo y Terminados con xG (API-Football)</title>
+    <title>⚽ Panel Pro: En Vivo, Terminados y Próximos (API-Football)</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
@@ -12,8 +12,8 @@
     <div class="container mx-auto px-4 py-8 max-w-5xl">
         <!-- Encabezado -->
         <header class="text-center mb-8">
-            <h1 class="text-3xl font-extrabold text-emerald-400 mb-2">⚽ Panel Pro: En Vivo & xG</h1>
-            <p class="text-slate-400 text-sm">Seguimiento en directo, resultados y métricas de xG (API-Football)</p>
+            <h1 class="text-3xl font-extrabold text-emerald-400 mb-2">⚽ Panel Pro: En Vivo, Terminados & Próximos</h1>
+            <p class="text-slate-400 text-sm">Seguimiento en directo, resultados, xG y partidos del día (API-Football)</p>
         </header>
 
         <!-- SECCIÓN: Métricas Rápidas de la Jornada -->
@@ -48,6 +48,19 @@
             <div id="live-container" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
         </section>
 
+        <!-- SECCIÓN NUEVA: Próximos Partidos (Hoy) de las Ligas Top -->
+        <section class="mb-10 bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl">
+            <div class="flex justify-between items-center mb-4 border-b border-slate-800 pb-3">
+                <h2 class="text-lg font-bold text-sky-400 flex items-center gap-2">
+                    <span class="inline-block w-3 h-3 bg-sky-500 rounded-full"></span> 
+                    Próximos Partidos - Hoy (Ligas Top)
+                </h2>
+            </div>
+            
+            <div id="upcoming-loading" class="text-center py-6 text-slate-400 text-sm animate-pulse">Cargando próximos partidos...</div>
+            <div id="upcoming-container" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+        </section>
+
         <!-- SECCIÓN: Partidos Terminados (Hoy) de las Ligas Top -->
         <section class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl">
             <div class="flex justify-between items-center mb-4 border-b border-slate-800 pb-3">
@@ -71,10 +84,10 @@
 
         function fetchAllData() {
             fetchLiveMatches();
+            fetchUpcomingMatches();
             fetchFinishedMatches();
         }
 
-        // Función auxiliar para obtener estadísticas detalladas (incluyendo xG si está disponible)
         async function fetchFixtureStats(fixtureId) {
             try {
                 const res = await fetch(`${BASE_URL}/fixtures/statistics?fixture=${fixtureId}`, { headers });
@@ -83,7 +96,6 @@
                     let homeStats = data.response[0].statistics;
                     let awayStats = data.response[1].statistics;
 
-                    // Buscar xG oficial en las estadísticas de la API
                     let xgHomeObj = homeStats.find(s => s.type.toLowerCase().includes('expected_goals') || s.type.toLowerCase().includes('xg'));
                     let xgAwayObj = awayStats.find(s => s.type.toLowerCase().includes('expected_goals') || s.type.toLowerCase().includes('xg'));
 
@@ -96,7 +108,7 @@
                     }
                 }
             } catch (e) {
-                console.warn("No se pudieron cargar estadísticas detalladas para el partido:", fixtureId);
+                console.warn("No se pudieron cargar estadísticas detalladas:", fixtureId);
             }
             return null;
         }
@@ -126,8 +138,6 @@
                     const totalGoals = (m.goals.home ?? 0) + (m.goals.away ?? 0);
                     const isLateAndOpen = m.fixture.status.elapsed >= 75 && totalGoals <= 1;
 
-                    // Estimación de xG basada en goles actuales y posesión/tiros si la API no provee xG directo
-                    // (Aproximación estándar: 0.10 xG por tiro estimado o basado en goles)
                     let xgHome = (m.goals.home * 0.8 + 0.5).toFixed(2);
                     let xgAway = (m.goals.away * 0.8 + 0.5).toFixed(2);
 
@@ -163,6 +173,61 @@
             }
         }
 
+        async function fetchUpcomingMatches() {
+            const container = document.getElementById('upcoming-container');
+            const loader = document.getElementById('upcoming-loading');
+            loader.classList.remove('hidden');
+            container.innerHTML = '';
+
+            try {
+                const today = new Date().toISOString().split('T')[0];
+                const res = await fetch(`${BASE_URL}/fixtures?date=${today}`, { headers });
+                const data = await res.json();
+                
+                loader.classList.add('hidden');
+                if (res.status !== 200 || !data.response) throw new Error("Error al obtener próximos partidos.");
+
+                // Filtrar ligas top y estado programado ('NS' - Not Started)
+                const topUpcomingMatches = data.response.filter(m => 
+                    TOP_LEAGUE_IDS.includes(m.league.id) && m.fixture.status.short === 'NS'
+                );
+
+                if (topUpcomingMatches.length === 0) {
+                    container.innerHTML = `<div class="col-span-2 text-center text-slate-500 py-6 text-sm">📭 No hay más partidos programados para hoy en las ligas top.</div>`;
+                    return;
+                }
+
+                let html = '';
+                topUpcomingMatches.forEach(m => {
+                    const matchTime = new Date(m.fixture.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                    html += `
+                        <div class="bg-slate-950 border border-slate-800 p-4 rounded-xl flex flex-col justify-between shadow">
+                            <div class="text-xs text-sky-400 font-semibold mb-2 flex justify-between items-center">
+                                <span class="truncate">${m.league.name}</span>
+                                <span class="bg-sky-950 text-sky-300 border border-sky-800 px-2 py-0.5 rounded-full text-[10px]">⏰ ${matchTime}</span>
+                            </div>
+                            <div class="flex items-center justify-between my-2">
+                                <div class="flex items-center gap-2 w-5/12">
+                                    <img src="${m.teams.home.logo}" class="w-6 h-6 object-contain">
+                                    <span class="text-xs font-medium truncate">${m.teams.home.name}</span>
+                                </div>
+                                <div class="text-sm font-bold bg-slate-900 px-3 py-1 rounded-lg border border-slate-800 text-slate-400">
+                                    VS
+                                </div>
+                                <div class="flex items-center gap-2 w-5/12 justify-end text-right">
+                                    <span class="text-xs font-medium truncate">${m.teams.away.name}</span>
+                                    <img src="${m.teams.away.logo}" class="w-6 h-6 object-contain">
+                                </div>
+                            </div>
+                        </div>`;
+                });
+                container.innerHTML = html;
+            } catch (err) {
+                loader.classList.add('hidden');
+                container.innerHTML = `<div class="col-span-2 text-center text-red-400 py-4 text-xs">❌ Error: ${err.message}</div>`;
+            }
+        }
+
         async function fetchFinishedMatches() {
             const container = document.getElementById('finished-container');
             const loader = document.getElementById('finished-loading');
@@ -189,7 +254,6 @@
 
                 let html = '';
                 for (let m of topFinishedMatches) {
-                    // Intentamos obtener el xG real de la API por cada encuentro finalizado
                     let stats = await fetchFixtureStats(m.fixture.id);
                     let xgH = stats ? stats.home : (m.goals.home * 0.85 + 0.3).toFixed(2);
                     let xgA = stats ? stats.away : (m.goals.away * 0.85 + 0.3).toFixed(2);
