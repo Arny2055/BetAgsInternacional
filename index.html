@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>⚽ Partidos en Vivo & Predictor Poisson (API-Football)</title>
+    <title>⚽ Partidos en Vivo (API-Football)</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
@@ -12,11 +12,11 @@
     <div class="container mx-auto px-4 py-8 max-w-5xl">
         <!-- Encabezado -->
         <header class="text-center mb-8">
-            <h1 class="text-3xl font-extrabold text-emerald-400 mb-2">⚽ Panel de Fútbol: En Vivo & Poisson</h1>
-            <p class="text-slate-400 text-sm">Partidos en directo de ligas top y simulador estadístico avanzado (API-Football v3.9.3)</p>
+            <h1 class="text-3xl font-extrabold text-emerald-400 mb-2">⚽ Partidos de Fútbol en Vivo</h1>
+            <p class="text-slate-400 text-sm">Partidos en directo de las ligas top (API-Football v3.9.3)</p>
         </header>
 
-        <!-- SECCIÓN SUPERIOR: Partidos en Vivo de las Ligas Top -->
+        <!-- SECCIÓN: Partidos en Vivo de las Ligas Top -->
         <section class="mb-12 bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl">
             <div class="flex justify-between items-center mb-4 border-b border-slate-800 pb-3">
                 <h2 class="text-lg font-bold text-emerald-400 flex items-center gap-2">
@@ -33,103 +33,12 @@
                 <!-- Se inyectan dinámicamente los partidos en vivo -->
             </div>
         </section>
-
-        <!-- SECCIÓN INFERIOR: Herramienta de Comparación de Equipos por Poisson -->
-        <section class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl">
-            <div class="mb-6 border-b border-slate-800 pb-3">
-                <h2 class="text-lg font-bold text-indigo-400">📊 Predictor Poisson & Comparador de Equipos</h2>
-            </div>
-
-            <!-- Panel de Configuración -->
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end mb-8">
-                <div>
-                    <label class="block text-xs uppercase tracking-wider text-slate-400 mb-1">Seleccionar Liga</label>
-                    <select id="input-league" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-emerald-500">
-                        <option value="39">Premier League (Inglaterra)</option>
-                        <option value="140">La Liga (España)</option>
-                        <option value="135">Serie A (Italia)</option>
-                        <option value="78">Bundesliga (Alemania)</option>
-                        <option value="61">Ligue 1 (Francia)</option>
-                        <option value="128">Liga Profesional (Argentina)</option>
-                        <option value="262">Liga MX (México)</option>
-                        <option value="71">Brasileirão (Brasil)</option>
-                        <option value="2">UEFA Champions League</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-xs uppercase tracking-wider text-slate-400 mb-1">Temporada</label>
-                    <select id="input-season" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-emerald-500">
-                        <option value="2025" selected>2025 / 2026</option>
-                        <option value="2024">2024 / 2025</option>
-                        <option value="2023">2023 / 2024</option>
-                        <option value="2022">2022 / 2023</option>
-                        <option value="2021">2021 / 2022</option>
-                        <option value="2020">2020 / 2021</option>
-                        <option value="2019">2019 / 2020</option>
-                    </select>
-                </div>
-                <div class="md:col-span-2 flex gap-2">
-                    <button onclick="loadTeams()" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-200 font-medium px-4 py-2 rounded-lg text-sm transition">1. Cargar Equipos</button>
-                    <button onclick="runPoissonSimulation()" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-medium px-4 py-2 rounded-lg text-sm transition shadow-lg shadow-emerald-900/40">2. Calcular Poisson</button>
-                </div>
-            </div>
-
-            <!-- Selectores de Equipos -->
-            <div id="teams-selector" class="bg-slate-950 p-6 rounded-xl border border-slate-800 mb-8 hidden grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                    <label class="block text-xs uppercase tracking-wider text-emerald-400 font-bold mb-2">Equipo Local</label>
-                    <select id="select-home" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-emerald-500"></select>
-                </div>
-                <div>
-                    <label class="block text-xs uppercase tracking-wider text-emerald-400 font-bold mb-2">Equipo Visitante</label>
-                    <select id="select-away" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-emerald-500"></select>
-                </div>
-            </div>
-
-            <!-- Contenedor de Estado y Errores -->
-            <div id="loading" class="text-center py-12 text-slate-400 hidden animate-pulse">Analizando estadísticas y calculando distribución de Poisson...</div>
-            <div id="error-box" class="bg-red-900/50 border border-red-700 text-red-200 p-4 rounded-xl mb-6 hidden"></div>
-
-            <!-- Resultados del Modelo Poisson -->
-            <div id="results-container" class="space-y-6 hidden">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="bg-slate-950 border border-slate-800 p-6 rounded-xl text-center shadow-lg">
-                        <h3 class="text-xs uppercase text-slate-400 font-bold mb-2">Goles Esperados (xG) Local</h3>
-                        <p id="res-xg-home" class="text-3xl font-extrabold text-emerald-400">-</p>
-                    </div>
-                    <div class="bg-slate-950 border border-slate-800 p-6 rounded-xl text-center shadow-lg">
-                        <h3 class="text-xs uppercase text-slate-400 font-bold mb-2">Probabilidades 1X2</h3>
-                        <div class="flex justify-around mt-2 text-sm font-semibold">
-                            <div>L: <span id="prob-home" class="text-emerald-400">-</span></div>
-                            <div>E: <span id="prob-draw" class="text-amber-400">-</span></div>
-                            <div>V: <span id="prob-away" class="text-indigo-400">-</span></div>
-                        </div>
-                    </div>
-                    <div class="bg-slate-950 border border-slate-800 p-6 rounded-xl text-center shadow-lg">
-                        <h3 class="text-xs uppercase text-slate-400 font-bold mb-2">Goles Esperados (xG) Visitante</h3>
-                        <p id="res-xg-away" class="text-3xl font-extrabold text-indigo-400">-</p>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="bg-slate-950 border border-slate-800 p-6 rounded-xl shadow-lg">
-                        <h3 class="text-sm font-bold text-slate-200 mb-4 border-b border-slate-800 pb-2">📊 Mercados de Goles (Over / Under)</h3>
-                        <div class="space-y-3 text-sm" id="over-under-container"></div>
-                    </div>
-                    <div class="bg-slate-950 border border-slate-800 p-6 rounded-xl shadow-lg">
-                        <h3 class="text-sm font-bold text-slate-200 mb-4 border-b border-slate-800 pb-2">🎯 Top Marcadores Exactos Más Probables</h3>
-                        <div class="space-y-2 text-sm" id="exact-scores-container"></div>
-                    </div>
-                </div>
-            </div>
-        </section>
     </div>
 
     <!-- Script de Lógica -->
     <script>
         const API_KEY = "b87bae2028d2da2ee28c5d36a60f3ab8";
         const BASE_URL = "https://v3.football.api-sports.io";
-        let teamsData = [];
 
         const headers = { 'x-apisports-key': API_KEY };
 
@@ -190,170 +99,6 @@
                 container.innerHTML = `<div class="col-span-2 text-center text-red-400 py-4 text-xs">❌ Error al cargar partidos en vivo: ${err.message}</div>`;
             }
         }
-
-        async function loadTeams() {
-            const league = document.getElementById('input-league').value;
-            const season = document.getElementById('input-season').value;
-            showLoading(true);
-            hideError();
-
-            try {
-                const res = await fetch(`${BASE_URL}/teams?league=${league}&season=${season}`, { headers });
-                const data = await res.json();
-                if (res.status !== 200 || !data.response.length) throw new Error(data.message || "No se encontraron equipos para esta liga/temporada.");
-
-                teamsData = data.response;
-                populateSelects();
-                document.getElementById('teams-selector').classList.remove('hidden');
-            } catch (err) {
-                showError(err.message);
-            } finally {
-                showLoading(false);
-            }
-        }
-
-        function populateSelects() {
-            const selectHome = document.getElementById('select-home');
-            const selectAway = document.getElementById('select-away');
-            selectHome.innerHTML = '';
-            selectAway.innerHTML = '';
-
-            teamsData.forEach((item) => {
-                const opt = `<option value="${item.team.id}">${item.team.name}</option>`;
-                selectHome.innerHTML += opt;
-                selectAway.innerHTML += opt;
-            });
-            if(teamsData.length > 1) selectAway.selectedIndex = 1;
-        }
-
-        async function fetchTeamStats(teamId, league, season) {
-            const res = await fetch(`${BASE_URL}/teams/statistics?team=${teamId}&league=${league}&season=${season}`, { headers });
-            const data = await res.json();
-            return data.response;
-        }
-
-        function factorial(n) {
-            if (n === 0 || n === 1) return 1;
-            let acc = 1;
-            for (let i = 2; i <= n; i++) acc *= i;
-            return acc;
-        }
-
-        function poissonProbability(lambda, k) {
-            return (Math.pow(lambda, k) * Math.exp(-lambda)) / factorial(k);
-        }
-
-        async function runPoissonSimulation() {
-            const league = document.getElementById('input-league').value;
-            const season = document.getElementById('input-season').value;
-            const homeId = document.getElementById('select-home').value;
-            const awayId = document.getElementById('select-away').value;
-
-            if (homeId === awayId) {
-                showError("Selecciona dos equipos diferentes para comparar.");
-                return;
-            }
-
-            showLoading(true);
-            hideError();
-
-            try {
-                const [homeStats, awayStats] = await Promise.all([
-                    fetchTeamStats(homeId, league, season),
-                    fetchTeamStats(awayId, league, season)
-                ]);
-
-                if (!homeStats || !awayStats) throw new Error("Error al obtener las estadísticas detalladas de los equipos.");
-
-                const homeGoalsScoredHome = parseFloat(homeStats.goals.for.average.home) || 1.3;
-                const homeGoalsConcededHome = parseFloat(homeStats.goals.against.average.home) || 1.0;
-                
-                const awayGoalsScoredAway = parseFloat(awayStats.goals.for.average.away) || 1.1;
-                const awayGoalsConcededAway = parseFloat(awayStats.goals.against.average.away) || 1.3;
-
-                const leagueAvgHome = 1.4;
-                const leagueAvgAway = 1.1;
-
-                const homeAttackStrength = homeGoalsScoredHome / leagueAvgHome;
-                const homeDefenseVulnerability = homeGoalsConcededHome / leagueAvgAway;
-
-                const awayAttackStrength = awayGoalsScoredAway / leagueAvgAway;
-                const awayDefenseVulnerability = awayGoalsConcededAway / leagueAvgHome;
-
-                const lambdaHome = homeAttackStrength * awayDefenseVulnerability * leagueAvgHome;
-                const lambdaAway = awayAttackStrength * homeDefenseVulnerability * leagueAvgAway;
-
-                document.getElementById('res-xg-home').textContent = lambdaHome.toFixed(2);
-                document.getElementById('res-xg-away').textContent = lambdaAway.toFixed(2);
-
-                let matrix = [];
-                let probHomeWin = 0, probDraw = 0, probAwayWin = 0;
-                let over15 = 0, over25 = 0, over35 = 0, btts = 0;
-                let exactScores = [];
-
-                for (let h = 0; h <= 6; h++) {
-                    matrix[h] = [];
-                    for (let a = 0; a <= 6; a++) {
-                        const p = poissonProbability(lambdaHome, h) * poissonProbability(lambdaAway, a);
-                        matrix[h][a] = p;
-
-                        if (h > a) probHomeWin += p;
-                        else if (h === a) probDraw += p;
-                        else probAwayWin += p;
-
-                        if (h + a > 1.5) over15 += p;
-                        if (h + a > 2.5) over25 += p;
-                        if (h + a > 3.5) over35 += p;
-                        if (h > 0 && a > 0) btts += p;
-
-                        exactScores.push({ h, a, p });
-                    }
-                }
-
-                const totalProb = probHomeWin + probDraw + probAwayWin;
-                document.getElementById('prob-home').textContent = ((probHomeWin / totalProb) * 100).toFixed(1) + '%';
-                document.getElementById('prob-draw').textContent = ((probDraw / totalProb) * 100).toFixed(1) + '%';
-                document.getElementById('prob-away').textContent = ((probAwayWin / totalProb) * 100).toFixed(1) + '%';
-
-                document.getElementById('over-under-container').innerHTML = `
-                    <div class="flex justify-between"><span>Más de 1.5 goles:</span> <span class="font-bold text-emerald-400">${(over15 * 100).toFixed(1)}%</span></div>
-                    <div class="flex justify-between"><span>Más de 2.5 goles:</span> <span class="font-bold text-emerald-400">${(over25 * 100).toFixed(1)}%</span></div>
-                    <div class="flex justify-between"><span>Más de 3.5 goles:</span> <span class="font-bold text-indigo-400">${(over35 * 100).toFixed(1)}%</span></div>
-                    <div class="flex justify-between border-t border-slate-800 pt-2"><span>Ambos anotan (BTTS):</span> <span class="font-bold text-amber-400">${(btts * 100).toFixed(1)}%</span></div>
-                `;
-
-                exactScores.sort((a, b) => b.p - a.p);
-                let scoresHtml = '';
-                for (let i = 0; i < 5; i++) {
-                    scoresHtml += `
-                        <div class="flex justify-between items-center bg-slate-900 px-3 py-1.5 rounded-lg border border-slate-800">
-                            <span class="font-semibold">${exactScores[i].h} - ${exactScores[i].a}</span>
-                            <span class="text-xs text-emerald-400 font-bold">${(exactScores[i].p * 100).toFixed(1)}%</span>
-                        </div>`;
-                }
-                document.getElementById('exact-scores-container').innerHTML = scoresHtml;
-
-                document.getElementById('results-container').classList.remove('hidden');
-
-            } catch (err) {
-                showError(err.message);
-            } finally {
-                showLoading(false);
-            }
-        }
-
-        function showLoading(show) {
-            document.getElementById('loading').classList.toggle('hidden', !show);
-            if(show) document.getElementById('results-container').classList.add('hidden');
-        }
-
-        function showError(msg) {
-            const box = document.getElementById('error-box');
-            box.textContent = `❌ Error: ${msg}`;
-            box.classList.remove('hidden');
-        }
-
-        function hideError() { document.getElementById('error-box').classList.add('hidden'); }
 
         // Cargar los partidos en vivo automáticamente al abrir la página
         fetchLiveMatches();
