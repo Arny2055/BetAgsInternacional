@@ -34,7 +34,15 @@
             </div>
             <div>
                 <label class="block text-xs uppercase tracking-wider text-slate-400 mb-1">Temporada</label>
-                <input type="number" id="input-season" value="2024" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-emerald-500">
+                <select id="input-season" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-emerald-500">
+                    <option value="2025" selected>2025 / 2026</option>
+                    <option value="2024">2024 / 2025</option>
+                    <option value="2023">2023 / 2024</option>
+                    <option value="2022">2022 / 2023</option>
+                    <option value="2021">2021 / 2022</option>
+                    <option value="2020">2020 / 2021</option>
+                    <option value="2019">2019 / 2020</option>
+                </select>
             </div>
             <div class="md:col-span-2 flex gap-2">
                 <button onclick="loadTeams()" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-200 font-medium px-4 py-2 rounded-lg text-sm transition">1. Cargar Equipos</button>
@@ -180,32 +188,27 @@
 
                 if (!homeStats || !awayStats) throw new Error("Error al obtener las estadísticas detalladas de los equipos.");
 
-                // Extracción de medias de goles (Ataque y Defensa)
                 const homeGoalsScoredHome = parseFloat(homeStats.goals.for.average.home) || 1.3;
                 const homeGoalsConcededHome = parseFloat(homeStats.goals.against.average.home) || 1.0;
                 
                 const awayGoalsScoredAway = parseFloat(awayStats.goals.for.average.away) || 1.1;
                 const awayGoalsConcededAway = parseFloat(awayStats.goals.against.average.away) || 1.3;
 
-                // Promedios generales de la liga aproximados o estimados
                 const leagueAvgHome = 1.4;
                 const leagueAvgAway = 1.1;
 
-                // Cálculo de Fuerza de Ataque y Defensa
                 const homeAttackStrength = homeGoalsScoredHome / leagueAvgHome;
                 const homeDefenseVulnerability = homeGoalsConcededHome / leagueAvgAway;
 
                 const awayAttackStrength = awayGoalsScoredAway / leagueAvgAway;
                 const awayDefenseVulnerability = awayGoalsConcededAway / leagueAvgHome;
 
-                // Lambda esperado de Poisson
                 const lambdaHome = homeAttackStrength * awayDefenseVulnerability * leagueAvgHome;
                 const lambdaAway = awayAttackStrength * homeDefenseVulnerability * leagueAvgAway;
 
                 document.getElementById('res-xg-home').textContent = lambdaHome.toFixed(2);
                 document.getElementById('res-xg-away').textContent = lambdaAway.toFixed(2);
 
-                // Matriz de probabilidades de goles (0 a 6)
                 let matrix = [];
                 let probHomeWin = 0, probDraw = 0, probAwayWin = 0;
                 let over15 = 0, over25 = 0, over35 = 0, btts = 0;
@@ -230,13 +233,11 @@
                     }
                 }
 
-                // Renderizar 1X2
                 const totalProb = probHomeWin + probDraw + probAwayWin;
                 document.getElementById('prob-home').textContent = ((probHomeWin / totalProb) * 100).toFixed(1) + '%';
                 document.getElementById('prob-draw').textContent = ((probDraw / totalProb) * 100).toFixed(1) + '%';
                 document.getElementById('prob-away').textContent = ((probAwayWin / totalProb) * 100).toFixed(1) + '%';
 
-                // Renderizar Over/Under
                 document.getElementById('over-under-container').innerHTML = `
                     <div class="flex justify-between"><span>Más de 1.5 goles:</span> <span class="font-bold text-emerald-400">${(over15 * 100).toFixed(1)}%</span></div>
                     <div class="flex justify-between"><span>Más de 2.5 goles:</span> <span class="font-bold text-emerald-400">${(over25 * 100).toFixed(1)}%</span></div>
@@ -244,7 +245,6 @@
                     <div class="flex justify-between border-t border-slate-800 pt-2"><span>Ambos anotan (BTTS):</span> <span class="font-bold text-amber-400">${(btts * 100).toFixed(1)}%</span></div>
                 `;
 
-                // Ordenar marcadores exactos
                 exactScores.sort((a, b) => b.p - a.p);
                 let scoresHtml = '';
                 for (let i = 0; i < 5; i++) {
