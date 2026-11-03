@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>⚽ Partidos en Vivo y Terminados (API-Football)</title>
+    <title>⚽ Panel Pro: En Vivo y Terminados (API-Football)</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
@@ -12,9 +12,25 @@
     <div class="container mx-auto px-4 py-8 max-w-5xl">
         <!-- Encabezado -->
         <header class="text-center mb-8">
-            <h1 class="text-3xl font-extrabold text-emerald-400 mb-2">⚽ Partidos de Fútbol: En Vivo y Terminados</h1>
-            <p class="text-slate-400 text-sm">Seguimiento en directo y resultados de las ligas top (API-Football v3.9.3)</p>
+            <h1 class="text-3xl font-extrabold text-emerald-400 mb-2">⚽ Panel Pro: En Vivo & Resultados</h1>
+            <p class="text-slate-400 text-sm">Seguimiento avanzado, métricas de jornada y analítica de ligas top</p>
         </header>
+
+        <!-- SECCIÓN NUEVA: Métricas Rápidas de la Jornada -->
+        <section class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+            <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl text-center shadow-lg">
+                <h3 class="text-xs uppercase text-slate-400 font-bold mb-1">Promedio Goles / Partido (Hoy)</h3>
+                <p id="stat-avg-goals" class="text-2xl font-black text-emerald-400">-</p>
+            </div>
+            <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl text-center shadow-lg">
+                <h3 class="text-xs uppercase text-slate-400 font-bold mb-1">% Ambos Anotan (BTTS)</h3>
+                <p id="stat-btts-rate" class="text-2xl font-black text-amber-400">-</p>
+            </div>
+            <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl text-center shadow-lg">
+                <h3 class="text-xs uppercase text-slate-400 font-bold mb-1">Partidos Analizados</h3>
+                <p id="stat-total-matches" class="text-2xl font-black text-indigo-400">-</p>
+            </div>
+        </section>
 
         <!-- SECCIÓN: Partidos en Vivo de las Ligas Top -->
         <section class="mb-10 bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl">
@@ -29,9 +45,7 @@
             </div>
             
             <div id="live-loading" class="text-center py-6 text-slate-400 text-sm animate-pulse">Buscando partidos en juego...</div>
-            <div id="live-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <!-- Se inyectan dinámicamente los partidos en vivo -->
-            </div>
+            <div id="live-container" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
         </section>
 
         <!-- SECCIÓN: Partidos Terminados (Hoy) de las Ligas Top -->
@@ -44,9 +58,7 @@
             </div>
             
             <div id="finished-loading" class="text-center py-6 text-slate-400 text-sm animate-pulse">Cargando partidos terminados...</div>
-            <div id="finished-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <!-- Se inyectan dinámicamente los partidos terminados -->
-            </div>
+            <div id="finished-container" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
         </section>
     </div>
 
@@ -54,11 +66,10 @@
     <script>
         const API_KEY = "b87bae2028d2da2ee28c5d36a60f3ab8";
         const BASE_URL = "https://v3.football.api-sports.io";
-
         const headers = { 'x-apisports-key': API_KEY };
-
-        // IDs de las ligas top permitidas
         const TOP_LEAGUE_IDS = [39, 140, 135, 78, 61, 2];
+
+        let globalMatchesCache = [];
 
         function fetchAllData() {
             fetchLiveMatches();
@@ -74,27 +85,28 @@
             try {
                 const res = await fetch(`${BASE_URL}/fixtures?live=all`, { headers });
                 const data = await res.json();
-                
                 loader.classList.add('hidden');
 
-                if (res.status !== 200 || !data.response) {
-                    throw new Error(data.message || "No se pudieron obtener los partidos en vivo.");
-                }
+                if (res.status !== 200 || !data.response) throw new Error("Error al obtener partidos en vivo.");
 
                 const topLiveMatches = data.response.filter(m => TOP_LEAGUE_IDS.includes(m.league.id));
-
+                
                 if (topLiveMatches.length === 0) {
-                    container.innerHTML = `<div class="col-span-2 text-center text-slate-500 py-6 text-sm">📭 No hay partidos en vivo en este momento para las ligas top seleccionadas.</div>`;
+                    container.innerHTML = `<div class="col-span-2 text-center text-slate-500 py-6 text-sm">📭 No hay partidos en vivo en este momento.</div>`;
                     return;
                 }
 
                 let html = '';
                 topLiveMatches.forEach(m => {
+                    const totalGoals = (m.goals.home ?? 0) + (m.goals.away ?? 0);
+                    const isLateAndOpen = m.fixture.status.elapsed >= 75 && totalGoals <= 1;
+
                     html += `
-                        <div class="bg-slate-950 border border-slate-800 p-4 rounded-xl flex flex-col justify-between shadow">
-                            <div class="text-xs text-emerald-400 font-semibold mb-2 flex justify-between items-center">
+                        <div class="bg-slate-950 border border-slate-800 p-4 rounded-xl flex flex-col justify-between shadow relative">
+                            ${isLateAndOpen ? '<span class="absolute top-2 right-2 bg-amber-500/20 text-amber-300 text-[10px] px-2 py-0.5 rounded-full font-bold">🔥 Oportunidad Over Tardío</span>' : ''}
+                            <div class="text-xs text-emerald-400 font-semibold mb-2 flex justify-between items-center pr-20">
                                 <span class="truncate">${m.league.name}</span>
-                                <span class="bg-red-500/20 text-red-400 px-2 py-0.5 rounded-full animate-pulse">${m.fixture.status.elapsed || '1er T'}° VIVO</span>
+                                <span class="bg-red-500/20 text-red-400 px-2 py-0.5 rounded-full animate-pulse">${m.fixture.status.elapsed || '1er T'}' VIVO</span>
                             </div>
                             <div class="flex items-center justify-between my-2">
                                 <div class="flex items-center gap-2 w-5/12">
@@ -112,36 +124,30 @@
                         </div>`;
                 });
                 container.innerHTML = html;
-
             } catch (err) {
                 loader.classList.add('hidden');
-                container.innerHTML = `<div class="col-span-2 text-center text-red-400 py-4 text-xs">❌ Error al cargar partidos en vivo: ${err.message}</div>`;
+                container.innerHTML = `<div class="col-span-2 text-center text-red-400 py-4 text-xs">❌ Error: ${err.message}</div>`;
             }
         }
 
         async function fetchFinishedMatches() {
             const container = document.getElementById('finished-container');
             const loader = document.getElementById('finished-loading');
-            loader.classList.remove('hidden');
-            container.innerHTML = '';
+            loader.classList.add('hidden'); // Ajustado para evitar parpadeo innecesario si cargan rápido
 
             try {
-                // Obtener la fecha actual en formato YYYY-MM-DD
                 const today = new Date().toISOString().split('T')[0];
-
                 const res = await fetch(`${BASE_URL}/fixtures?date=${today}`, { headers });
                 const data = await res.json();
                 
                 loader.classList.add('hidden');
+                if (res.status !== 200 || !data.response) throw new Error("Error al obtener partidos.");
 
-                if (res.status !== 200 || !data.response) {
-                    throw new Error(data.message || "No se pudieron obtener los partidos.");
-                }
-
-                // Filtrar por ligas top y estatus de partido terminado ('FT')
                 const topFinishedMatches = data.response.filter(m => 
                     TOP_LEAGUE_IDS.includes(m.league.id) && m.fixture.status.short === 'FT'
                 );
+
+                calculateDayMetrics(topFinishedMatches);
 
                 if (topFinishedMatches.length === 0) {
                     container.innerHTML = `<div class="col-span-2 text-center text-slate-500 py-6 text-sm">📭 No hay partidos terminados hoy para las ligas top.</div>`;
@@ -172,14 +178,29 @@
                         </div>`;
                 });
                 container.innerHTML = html;
-
             } catch (err) {
                 loader.classList.add('hidden');
-                container.innerHTML = `<div class="col-span-2 text-center text-red-400 py-4 text-xs">❌ Error al cargar partidos terminados: ${err.message}</div>`;
+                container.innerHTML = `<div class="col-span-2 text-center text-red-400 py-4 text-xs">❌ Error: ${err.message}</div>`;
             }
         }
 
-        // Cargar los datos automáticamente al abrir la página
+        function calculateDayMetrics(matches) {
+            if (!matches.length) return;
+            let totalGoals = 0;
+            let bttsCount = 0;
+
+            matches.forEach(m => {
+                const hGoals = m.goals.home ?? 0;
+                const aGoals = m.goals.away ?? 0;
+                totalGoals += (hGoals + aGoals);
+                if (hGoals > 0 && aGoals > 0) bttsCount++;
+            });
+
+            document.getElementById('stat-avg-goals').textContent = (totalGoals / matches.length).toFixed(2);
+            document.getElementById('stat-btts-rate').textContent = ((bttsCount / matches.length) * 100).toFixed(1) + '%';
+            document.getElementById('stat-total-matches').textContent = matches.length;
+        }
+
         fetchAllData();
     </script>
 </body>
