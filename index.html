@@ -19,8 +19,18 @@
         <!-- Panel de Configuración y Selección -->
         <div class="bg-slate-900 p-6 rounded-2xl shadow-xl border border-slate-800 mb-8 grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
             <div>
-                <label class="block text-xs uppercase tracking-wider text-slate-400 mb-1">ID Liga (ej. 39)</label>
-                <input type="number" id="input-league" value="39" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-emerald-500">
+                <label class="block text-xs uppercase tracking-wider text-slate-400 mb-1">Seleccionar Liga</label>
+                <select id="input-league" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-emerald-500">
+                    <option value="39">Premier League (Inglaterra)</option>
+                    <option value="140">La Liga (España)</option>
+                    <option value="135">Serie A (Italia)</option>
+                    <option value="78">Bundesliga (Alemania)</option>
+                    <option value="61">Ligue 1 (Francia)</option>
+                    <option value="128">Liga Profesional (Argentina)</option>
+                    <option value="262">Liga MX (México)</option>
+                    <option value="71">Brasileirão (Brasil)</option>
+                    <option value="2">UEFA Champions League</option>
+                </select>
             </div>
             <div>
                 <label class="block text-xs uppercase tracking-wider text-slate-400 mb-1">Temporada</label>
@@ -223,7 +233,7 @@
                 // Renderizar 1X2
                 const totalProb = probHomeWin + probDraw + probAwayWin;
                 document.getElementById('prob-home').textContent = ((probHomeWin / totalProb) * 100).toFixed(1) + '%';
-                document.getElementById('prob-draw').textContent = ((probDraw / totalProb) * 100).getText = ((probDraw / totalProb) * 100).toFixed(1) + '%';
+                document.getElementById('prob-draw').textContent = ((probDraw / totalProb) * 100).toFixed(1) + '%';
                 document.getElementById('prob-away').textContent = ((probAwayWin / totalProb) * 100).toFixed(1) + '%';
 
                 // Renderizar Over/Under
