@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>⚽ Partidos en Vivo (API-Football)</title>
+    <title>⚽ Partidos en Vivo y Terminados (API-Football)</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
@@ -12,25 +12,40 @@
     <div class="container mx-auto px-4 py-8 max-w-5xl">
         <!-- Encabezado -->
         <header class="text-center mb-8">
-            <h1 class="text-3xl font-extrabold text-emerald-400 mb-2">⚽ Partidos de Fútbol en Vivo</h1>
-            <p class="text-slate-400 text-sm">Partidos en directo de las ligas top (API-Football v3.9.3)</p>
+            <h1 class="text-3xl font-extrabold text-emerald-400 mb-2">⚽ Partidos de Fútbol: En Vivo y Terminados</h1>
+            <p class="text-slate-400 text-sm">Seguimiento en directo y resultados de las ligas top (API-Football v3.9.3)</p>
         </header>
 
         <!-- SECCIÓN: Partidos en Vivo de las Ligas Top -->
-        <section class="mb-12 bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl">
+        <section class="mb-10 bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl">
             <div class="flex justify-between items-center mb-4 border-b border-slate-800 pb-3">
                 <h2 class="text-lg font-bold text-emerald-400 flex items-center gap-2">
                     <span class="inline-block w-3 h-3 bg-red-500 rounded-full animate-ping"></span> 
                     Partidos en Vivo (Ligas Top)
                 </h2>
-                <button onclick="fetchLiveMatches()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs px-3 py-1.5 rounded-lg transition font-medium">
-                    🔄 Actualizar En Vivo
+                <button onclick="fetchAllData()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs px-3 py-1.5 rounded-lg transition font-medium">
+                    🔄 Actualizar Todo
                 </button>
             </div>
             
             <div id="live-loading" class="text-center py-6 text-slate-400 text-sm animate-pulse">Buscando partidos en juego...</div>
             <div id="live-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <!-- Se inyectan dinámicamente los partidos en vivo -->
+            </div>
+        </section>
+
+        <!-- SECCIÓN: Partidos Terminados (Hoy) de las Ligas Top -->
+        <section class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl">
+            <div class="flex justify-between items-center mb-4 border-b border-slate-800 pb-3">
+                <h2 class="text-lg font-bold text-indigo-400 flex items-center gap-2">
+                    <span class="inline-block w-3 h-3 bg-slate-500 rounded-full"></span> 
+                    Partidos Terminados - Hoy (Ligas Top)
+                </h2>
+            </div>
+            
+            <div id="finished-loading" class="text-center py-6 text-slate-400 text-sm animate-pulse">Cargando partidos terminados...</div>
+            <div id="finished-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Se inyectan dinámicamente los partidos terminados -->
             </div>
         </section>
     </div>
@@ -42,8 +57,13 @@
 
         const headers = { 'x-apisports-key': API_KEY };
 
-        // IDs de las ligas top permitidas para filtrar los partidos en vivo
+        // IDs de las ligas top permitidas
         const TOP_LEAGUE_IDS = [39, 140, 135, 78, 61, 2];
+
+        function fetchAllData() {
+            fetchLiveMatches();
+            fetchFinishedMatches();
+        }
 
         async function fetchLiveMatches() {
             const container = document.getElementById('live-container');
@@ -61,7 +81,6 @@
                     throw new Error(data.message || "No se pudieron obtener los partidos en vivo.");
                 }
 
-                // Filtrar solo los partidos de las ligas top configuradas
                 const topLiveMatches = data.response.filter(m => TOP_LEAGUE_IDS.includes(m.league.id));
 
                 if (topLiveMatches.length === 0) {
@@ -75,7 +94,7 @@
                         <div class="bg-slate-950 border border-slate-800 p-4 rounded-xl flex flex-col justify-between shadow">
                             <div class="text-xs text-emerald-400 font-semibold mb-2 flex justify-between items-center">
                                 <span class="truncate">${m.league.name}</span>
-                                <span class="bg-red-500/20 text-red-400 px-2 py-0.5 rounded-full animate-pulse">${m.fixture.status.elapsed}' VIVO</span>
+                                <span class="bg-red-500/20 text-red-400 px-2 py-0.5 rounded-full animate-pulse">${m.fixture.status.elapsed || '1er T'}° VIVO</span>
                             </div>
                             <div class="flex items-center justify-between my-2">
                                 <div class="flex items-center gap-2 w-5/12">
@@ -100,8 +119,68 @@
             }
         }
 
-        // Cargar los partidos en vivo automáticamente al abrir la página
-        fetchLiveMatches();
+        async function fetchFinishedMatches() {
+            const container = document.getElementById('finished-container');
+            const loader = document.getElementById('finished-loading');
+            loader.classList.remove('hidden');
+            container.innerHTML = '';
+
+            try {
+                // Obtener la fecha actual en formato YYYY-MM-DD
+                const today = new Date().toISOString().split('T')[0];
+
+                const res = await fetch(`${BASE_URL}/fixtures?date=${today}`, { headers });
+                const data = await res.json();
+                
+                loader.classList.add('hidden');
+
+                if (res.status !== 200 || !data.response) {
+                    throw new Error(data.message || "No se pudieron obtener los partidos.");
+                }
+
+                // Filtrar por ligas top y estatus de partido terminado ('FT')
+                const topFinishedMatches = data.response.filter(m => 
+                    TOP_LEAGUE_IDS.includes(m.league.id) && m.fixture.status.short === 'FT'
+                );
+
+                if (topFinishedMatches.length === 0) {
+                    container.innerHTML = `<div class="col-span-2 text-center text-slate-500 py-6 text-sm">📭 No hay partidos terminados hoy para las ligas top.</div>`;
+                    return;
+                }
+
+                let html = '';
+                topFinishedMatches.forEach(m => {
+                    html += `
+                        <div class="bg-slate-950 border border-slate-800 p-4 rounded-xl flex flex-col justify-between shadow">
+                            <div class="text-xs text-indigo-400 font-semibold mb-2 flex justify-between items-center">
+                                <span class="truncate">${m.league.name}</span>
+                                <span class="bg-slate-800 text-slate-300 px-2 py-0.5 rounded-full text-[10px]">FINALIZADO (FT)</span>
+                            </div>
+                            <div class="flex items-center justify-between my-2">
+                                <div class="flex items-center gap-2 w-5/12">
+                                    <img src="${m.teams.home.logo}" class="w-6 h-6 object-contain">
+                                    <span class="text-xs font-medium truncate">${m.teams.home.name}</span>
+                                </div>
+                                <div class="text-lg font-bold bg-slate-900 px-3 py-1 rounded-lg border border-slate-800 text-indigo-300">
+                                    ${m.goals.home} - ${m.goals.away}
+                                </div>
+                                <div class="flex items-center gap-2 w-5/12 justify-end text-right">
+                                    <span class="text-xs font-medium truncate">${m.teams.away.name}</span>
+                                    <img src="${m.teams.away.logo}" class="w-6 h-6 object-contain">
+                                </div>
+                            </div>
+                        </div>`;
+                });
+                container.innerHTML = html;
+
+            } catch (err) {
+                loader.classList.add('hidden');
+                container.innerHTML = `<div class="col-span-2 text-center text-red-400 py-4 text-xs">❌ Error al cargar partidos terminados: ${err.message}</div>`;
+            }
+        }
+
+        // Cargar los datos automáticamente al abrir la página
+        fetchAllData();
     </script>
 </body>
 </html>
