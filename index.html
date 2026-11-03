@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>⚽ Football Live & Standings Tool</title>
-    <!-- Tailwind CSS para un diseño moderno y responsivo -->
+    <title>⚽ Panel Pro: API-Football Tool</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-slate-900 text-slate-100 min-h-screen font-sans">
@@ -12,33 +12,38 @@
     <div class="container mx-auto px-4 py-8 max-w-5xl">
         <!-- Encabezado -->
         <header class="text-center mb-8">
-            <h1 class="text-3xl font-extrabold text-emerald-400 mb-2">⚽ Panel de Fútbol API-Football</h1>
-            <p class="text-slate-400 text-sm">Consulta partidos en vivo y tablas de posiciones en tiempo real.</p>
+            <h1 class="text-3xl font-extrabold text-emerald-400 mb-2">⚽ Panel Pro - API-Football</h1>
+            <p class="text-slate-400 text-sm">Explora partidos en vivo, calendarios por fecha, tablas de posiciones y goleadores.</p>
         </header>
 
         <!-- Barra de Control -->
         <div class="bg-slate-800 p-6 rounded-xl shadow-lg border border-slate-700 mb-8 flex flex-wrap gap-4 items-end justify-between">
             <div>
-                <label class="block text-xs uppercase tracking-wider text-slate-400 mb-2">Seleccionar Acción</label>
-                <div class="flex gap-2">
-                    <button onclick="switchTab('live')" id="btn-live" class="px-5 py-2.5 rounded-lg font-semibold transition bg-emerald-600 text-white shadow">Partidos en Vivo</button>
-                    <button onclick="switchTab('standings')" id="btn-standings" class="px-5 py-2.5 rounded-lg font-semibold transition bg-slate-700 text-slate-300 hover:bg-slate-600">Tabla de Posiciones</button>
+                <label class="block text-xs uppercase tracking-wider text-slate-400 mb-2">Secciones</label>
+                <div class="flex flex-wrap gap-2">
+                    <button onclick="switchTab('live')" id="btn-live" class="px-4 py-2 rounded-lg font-semibold transition bg-emerald-600 text-white shadow">En Vivo</button>
+                    <button onclick="switchTab('fixtures')" id="btn-fixtures" class="px-4 py-2 rounded-lg font-semibold transition bg-slate-700 text-slate-300 hover:bg-slate-600">Por Fecha</button>
+                    <button onclick="switchTab('standings')" id="btn-standings" class="px-4 py-2 rounded-lg font-semibold transition bg-slate-700 text-slate-300 hover:bg-slate-600">Posiciones</button>
+                    <button onclick="switchTab('topscorers')" id="btn-topscorers" class="px-4 py-2 rounded-lg font-semibold transition bg-slate-700 text-slate-300 hover:bg-slate-600">Goleadores</button>
                 </div>
             </div>
 
-            <!-- Filtros para Standings (Ocultos por defecto) -->
-            <div id="standings-filters" class="hidden flex gap-3 items-end">
-                <div>
+            <!-- Filtros Dinámicos según la Pestaña -->
+            <div id="dynamic-filters" class="hidden flex gap-3 items-end">
+                <!-- Filtro de Liga -->
+                <div id="filter-league-container" class="hidden">
                     <label class="block text-xs uppercase tracking-wider text-slate-400 mb-1">Liga</label>
                     <select id="league-select" class="bg-slate-900 border border-slate-700 text-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-emerald-500">
-                        <option value="39">Premier League (Inglaterra)</option>
-                        <option value="140">La Liga (España)</option>
-                        <option value="135">Serie A (Italia)</option>
-                        <option value="78">Bundesliga (Alemania)</option>
-                        <option value="61">Ligue 1 (Francia)</option>
+                        <option value="39">Premier League</option>
+                        <option value="140">La Liga</option>
+                        <option value="135">Serie A</option>
+                        <option value="78">Bundesliga</option>
+                        <option value="61">Ligue 1</option>
                     </select>
                 </div>
-                <div>
+
+                <!-- Filtro de Temporada -->
+                <div id="filter-season-container" class="hidden">
                     <label class="block text-xs uppercase tracking-wider text-slate-400 mb-1">Temporada</label>
                     <select id="season-select" class="bg-slate-900 border border-slate-700 text-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-emerald-500">
                         <option value="2025" selected>2025/2026</option>
@@ -46,7 +51,14 @@
                         <option value="2023">2023/2024</option>
                     </select>
                 </div>
-                <button onclick="fetchStandings()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-medium px-4 py-2 rounded-lg text-sm transition">Cargar</button>
+
+                <!-- Filtro de Fecha -->
+                <div id="filter-date-container" class="hidden">
+                    <label class="block text-xs uppercase tracking-wider text-slate-400 mb-1">Fecha</label>
+                    <input type="date" id="date-select" class="bg-slate-900 border border-slate-700 text-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-emerald-500">
+                </div>
+
+                <button onclick="loadData()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-medium px-4 py-2 rounded-lg text-sm transition">Cargar</button>
             </div>
 
             <button onclick="loadData()" class="bg-slate-700 hover:bg-slate-600 text-slate-200 px-4 py-2.5 rounded-lg text-sm font-medium transition flex items-center gap-2">
@@ -55,12 +67,10 @@
         </div>
 
         <!-- Contenedor de Resultados -->
-        <div id="loading" class="text-center py-12 text-slate-400 hidden">Cargando datos desde la API...</div>
+        <div id="loading" class="text-center py-12 text-slate-400 hidden">Cargando datos avanzados desde la API...</div>
         <div id="error-box" class="bg-red-900/50 border border-red-700 text-red-200 p-4 rounded-xl mb-6 hidden"></div>
         
-        <div id="content-container">
-            <!-- Los resultados se inyectan aquí dinámicamente -->
-        </div>
+        <div id="content-container"></div>
     </div>
 
     <!-- Script de lógica -->
@@ -69,52 +79,84 @@
         const BASE_URL = "https://v3.football.api-sports.io";
         let currentView = 'live';
 
-        const headers = {
-            'x-apisports-key': API_KEY
-        };
+        const headers = { 'x-apisports-key': API_KEY };
+
+        // Establecer fecha actual por defecto en el input date
+        document.getElementById('date-select').valueAsDate = new Date();
 
         function switchTab(view) {
             currentView = view;
-            const btnLive = document.getElementById('btn-live');
-            const btnStandings = document.getElementById('btn-standings');
-            const filters = document.getElementById('standings-filters');
+            
+            // Estilos de botones
+            ['live', 'fixtures', 'standings', 'topscorers'].forEach(tab => {
+                const btn = document.getElementById(`btn-${tab}`);
+                if (tab === view) {
+                    btn.className = "px-4 py-2 rounded-lg font-semibold transition bg-emerald-600 text-white shadow";
+                } else {
+                    btn.className = "px-4 py-2 rounded-lg font-semibold transition bg-slate-700 text-slate-300 hover:bg-slate-600";
+                }
+            });
+
+            // Gestionar visibilidad de filtros
+            const filtersBox = document.getElementById('dynamic-filters');
+            const leagueCont = document.getElementById('filter-league-container');
+            const seasonCont = document.getElementById('filter-season-container');
+            const dateCont = document.getElementById('filter-date-container');
+
+            leagueCont.classList.add('hidden');
+            seasonCont.classList.add('hidden');
+            dateCont.classList.add('hidden');
+            filtersBox.classList.remove('hidden');
 
             if (view === 'live') {
-                btnLive.className = "px-5 py-2.5 rounded-lg font-semibold transition bg-emerald-600 text-white shadow";
-                btnStandings.className = "px-5 py-2.5 rounded-lg font-semibold transition bg-slate-700 text-slate-300 hover:bg-slate-600";
-                filters.classList.add('hidden');
+                filtersBox.classList.add('hidden');
                 fetchLiveMatches();
-            } else {
-                btnStandings.className = "px-5 py-2.5 rounded-lg font-semibold transition bg-emerald-600 text-white shadow";
-                btnLive.className = "px-5 py-2.5 rounded-lg font-semibold transition bg-slate-700 text-slate-300 hover:bg-slate-600";
-                filters.classList.remove('hidden');
+            } else if (view === 'fixtures') {
+                dateCont.classList.remove('hidden');
+                leagueCont.classList.remove('hidden');
+                fetchFixturesByDate();
+            } else if (view === 'standings') {
+                leagueCont.classList.remove('hidden');
+                seasonCont.classList.remove('hidden');
                 fetchStandings();
+            } else if (view === 'topscorers') {
+                leagueCont.classList.remove('hidden');
+                seasonCont.classList.remove('hidden');
+                fetchTopScorers();
             }
         }
 
         function loadData() {
-            if (currentView === 'live') {
-                fetchLiveMatches();
-            } else {
-                fetchStandings();
-            }
+            if (currentView === 'live') fetchLiveMatches();
+            else if (currentView === 'fixtures') fetchFixturesByDate();
+            else if (currentView === 'standings') fetchStandings();
+            else if (currentView === 'topscorers') fetchTopScorers();
         }
 
         async function fetchLiveMatches() {
             showLoading(true);
             hideError();
             try {
-                const response = await fetch(`${BASE_URL}/fixtures?live=all`, { headers });
-                const data = await response.json();
-                
-                if (response.status !== 200) throw new Error(data.message || "Error al conectar con la API");
-
+                const res = await fetch(`${BASE_URL}/fixtures?live=all`, { headers });
+                const data = await res.json();
+                if (res.status !== 200) throw new Error(data.message || "Error al conectar");
                 renderLiveMatches(data.response);
-            } catch (err) {
-                showError(err.message);
-            } finally {
-                showLoading(false);
-            }
+            } catch (err) { showError(err.message); } 
+            finally { showLoading(false); }
+        }
+
+        async function fetchFixturesByDate() {
+            showLoading(true);
+            hideError();
+            const date = document.getElementById('date-select').value;
+            const league = document.getElementById('league-select').value;
+            try {
+                const res = await fetch(`${BASE_URL}/fixtures?date=${date}&league=${league}&season=2025`, { headers });
+                const data = await res.json();
+                if (res.status !== 200) throw new Error(data.message || "Error al conectar");
+                renderFixtures(data.response);
+            } catch (err) { showError(err.message); } 
+            finally { showLoading(false); }
         }
 
         async function fetchStandings() {
@@ -122,19 +164,27 @@
             hideError();
             const league = document.getElementById('league-select').value;
             const season = document.getElementById('season-select').value;
-
             try {
-                const response = await fetch(`${BASE_URL}/standings?league=${league}&season=${season}`, { headers });
-                const data = await response.json();
-
-                if (response.status !== 200) throw new Error(data.message || "Error al conectar con la API");
-
+                const res = await fetch(`${BASE_URL}/standings?league=${league}&season=${season}`, { headers });
+                const data = await res.json();
+                if (res.status !== 200) throw new Error(data.message || "Error al conectar");
                 renderStandings(data.response);
-            } catch (err) {
-                showError(err.message);
-            } finally {
-                showLoading(false);
-            }
+            } catch (err) { showError(err.message); } 
+            finally { showLoading(false); }
+        }
+
+        async function fetchTopScorers() {
+            showLoading(true);
+            hideError();
+            const league = document.getElementById('league-select').value;
+            const season = document.getElementById('season-select').value;
+            try {
+                const res = await fetch(`${BASE_URL}/players/topscorers?league=${league}&season=${season}`, { headers });
+                const data = await res.json();
+                if (res.status !== 200) throw new Error(data.message || "Error al conectar");
+                renderTopScorers(data.response);
+            } catch (err) { showError(err.message); } 
+            finally { showLoading(false); }
         }
 
         function renderLiveMatches(matches) {
@@ -143,87 +193,106 @@
                 container.innerHTML = `<div class="bg-slate-800 p-8 rounded-xl text-center text-slate-400 border border-slate-700">📭 No hay partidos en vivo en este momento.</div>`;
                 return;
             }
-
             let html = `<div class="grid grid-cols-1 md:grid-cols-2 gap-4">`;
-            matches.forEach(match => {
+            matches.forEach(m => {
                 html += `
-                    <div class="bg-slate-800 border border-slate-700 p-5 rounded-xl shadow-md flex flex-col justify-between">
-                        <div class="text-xs text-emerald-400 font-semibold mb-3 flex justify-between items-center">
-                            <span>${match.league.name}</span>
-                            <span class="bg-red-500/20 text-red-400 px-2 py-0.5 rounded-full animate-pulse">${match.fixture.status.elapsed}' EN VIVO</span>
+                    <div class="bg-slate-800 border border-slate-700 p-5 rounded-xl shadow-md">
+                        <div class="text-xs text-emerald-400 font-semibold mb-3 flex justify-between">
+                            <span>${m.league.name}</span>
+                            <span class="bg-red-500/20 text-red-400 px-2 py-0.5 rounded-full animate-pulse">${m.fixture.status.elapsed}' VIVO</span>
                         </div>
                         <div class="flex items-center justify-between my-2">
-                            <div class="flex items-center gap-3 w-5/12">
-                                <img src="${match.teams.home.logo}" class="w-8 h-8 object-contain">
-                                <span class="font-medium text-sm truncate">${match.teams.home.name}</span>
-                            </div>
-                            <div class="text-xl font-bold tracking-widest bg-slate-900 px-4 py-1.5 rounded-lg border border-slate-700">
-                                ${match.goals.home} - ${match.goals.away}
-                            </div>
-                            <div class="flex items-center gap-3 w-5/12 justify-end text-right">
-                                <span class="font-medium text-sm truncate">${match.teams.away.name}</span>
-                                <img src="${match.teams.away.logo}" class="w-8 h-8 object-contain">
-                            </div>
+                            <div class="flex items-center gap-3 w-5/12"><img src="${m.teams.home.logo}" class="w-8 h-8 object-contain"><span class="text-sm truncate">${m.teams.home.name}</span></div>
+                            <div class="text-xl font-bold bg-slate-900 px-4 py-1.5 rounded-lg border border-slate-700">${m.goals.home} - ${m.goals.away}</div>
+                            <div class="flex items-center gap-3 w-5/12 justify-end text-right"><span class="text-sm truncate">${m.teams.away.name}</span><img src="${m.teams.away.logo}" class="w-8 h-8 object-contain"></div>
                         </div>
-                    </div>
-                `;
+                    </div>`;
             });
-            html += `</div>`;
-            container.innerHTML = html;
+            container.innerHTML = html + `</div>`;
+        }
+
+        function renderFixtures(matches) {
+            const container = document.getElementById('content-container');
+            if (!matches || matches.length === 0) {
+                container.innerHTML = `<div class="bg-slate-800 p-8 rounded-xl text-center text-slate-400 border border-slate-700">📭 No hay partidos programados para esta fecha en la liga seleccionada.</div>`;
+                return;
+            }
+            let html = `<div class="space-y-3">`;
+            matches.forEach(m => {
+                html += `
+                    <div class="bg-slate-800 border border-slate-700 p-4 rounded-xl flex items-center justify-between">
+                        <div class="flex items-center gap-3 w-4/12">
+                            <img src="${m.teams.home.logo}" class="w-6 h-6 object-contain">
+                            <span class="text-sm font-medium truncate">${m.teams.home.name}</span>
+                        </div>
+                        <div class="text-center w-4/12">
+                            <span class="text-xs text-slate-400 block">${new Date(m.fixture.date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+                            <span class="font-bold text-emerald-400 text-sm">${m.goals.home !== null ? m.goals.home + ' - ' + m.goals.away : m.fixture.status.short}</span>
+                        </div>
+                        <div class="flex items-center gap-3 w-4/12 justify-end text-right">
+                            <span class="text-sm font-medium truncate">${m.teams.away.name}</span>
+                            <img src="${m.teams.away.logo}" class="w-6 h-6 object-contain">
+                        </div>
+                    </div>`;
+            });
+            container.innerHTML = html + `</div>`;
         }
 
         function renderStandings(response) {
             const container = document.getElementById('content-container');
             if (!response || response.length === 0) {
-                container.innerHTML = `<div class="bg-slate-800 p-8 rounded-xl text-center text-slate-400 border border-slate-700">📭 No hay datos de tabla para esta liga y temporada.</div>`;
+                container.innerHTML = `<div class="bg-slate-800 p-8 rounded-xl text-center text-slate-400 border border-slate-700">📭 Sin datos de posiciones.</div>`;
                 return;
             }
-
             const leagueData = response[0].league;
-            const standings = leagueData.standings[0];
-
             let html = `
                 <div class="bg-slate-800 border border-slate-700 rounded-xl shadow-lg overflow-hidden">
-                    <div class="p-5 border-b border-slate-700 bg-slate-800/50">
-                        <h2 class="text-lg font-bold text-slate-200">🏆 ${leagueData.name} (${leagueData.season})</h2>
-                    </div>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse text-sm">
-                            <thead>
-                                <tr class="bg-slate-900/60 text-slate-400 uppercase text-xs tracking-wider border-b border-slate-700">
-                                    <th class="p-3 text-center">Pos</th>
-                                    <th class="p-3">Equipo</th>
-                                    <th class="p-3 text-center">PJ</th>
-                                    <th class="p-3 text-center">G</th>
-                                    <th class="p-3 text-center">E</th>
-                                    <th class="p-3 text-center">P</th>
-                                    <th class="p-3 text-center">DG</th>
-                                    <th class="p-3 text-center font-bold text-emerald-400">Pts</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-slate-700/50">
-            `;
-
-            standings.forEach(team => {
+                    <div class="p-5 border-b border-slate-700 bg-slate-800/50"><h2 class="text-lg font-bold">🏆 ${leagueData.name}</h2></div>
+                    <div class="overflow-x-auto"><table class="w-full text-left text-sm">
+                        <thead class="bg-slate-900/60 text-slate-400 text-xs uppercase border-b border-slate-700">
+                            <tr><th class="p-3 text-center">Pos</th><th class="p-3">Equipo</th><th class="p-3 text-center">PJ</th><th class="p-3 text-center">G</th><th class="p-3 text-center">E</th><th class="p-3 text-center">P</th><th class="p-3 text-center font-bold text-emerald-400">Pts</th></tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-700/50">`;
+            leagueData.standings[0].forEach(t => {
                 html += `
-                    <tr class="hover:bg-slate-700/30 transition">
-                        <td class="p-3 text-center font-semibold text-slate-400">${team.rank}</td>
-                        <td class="p-3 flex items-center gap-3">
-                            <img src="${team.team.logo}" class="w-6 h-6 object-contain">
-                            <span class="font-medium text-slate-200">${team.team.name}</span>
-                        </td>
-                        <td class="p-3 text-center text-slate-300">${team.all.played}</td>
-                        <td class="p-3 text-center text-slate-300">${team.all.win}</td>
-                        <td class="p-3 text-center text-slate-300">${team.all.draw}</td>
-                        <td class="p-3 text-center text-slate-300">${team.all.lose}</td>
-                        <td class="p-3 text-center text-slate-300">${team.goalsDiff > 0 ? '+' + team.goalsDiff : team.goalsDiff}</td>
-                        <td class="p-3 text-center font-bold text-emerald-400">${team.points}</td>
-                    </tr>
-                `;
+                    <tr class="hover:bg-slate-700/30">
+                        <td class="p-3 text-center font-semibold text-slate-400">${t.rank}</td>
+                        <td class="p-3 flex items-center gap-3"><img src="${t.team.logo}" class="w-6 h-6 object-contain"><span class="font-medium">${t.team.name}</span></td>
+                        <td class="p-3 text-center">${t.all.played}</td><td class="p-3 text-center">${t.all.win}</td><td class="p-3 text-center">${t.all.draw}</td><td class="p-3 text-center">${t.all.lose}</td>
+                        <td class="p-3 text-center font-bold text-emerald-400">${t.points}</td>
+                    </tr>`;
             });
+            container.innerHTML = html + `</tbody></table></div></div>`;
+        }
 
-            html += `</tbody></table></div></div>`;
-            container.innerHTML = html;
+        function renderTopScorers(response) {
+            const container = document.getElementById('content-container');
+            if (!response || response.length === 0) {
+                container.innerHTML = `<div class="bg-slate-800 p-8 rounded-xl text-center text-slate-400 border border-slate-700">📭 No hay datos de goleadores disponibles.</div>`;
+                return;
+            }
+            let html = `
+                <div class="bg-slate-800 border border-slate-700 rounded-xl shadow-lg overflow-hidden">
+                    <div class="p-5 border-b border-slate-700 bg-slate-800/50"><h2 class="text-lg font-bold">⚽ Tabla de Goleadores</h2></div>
+                    <div class="overflow-x-auto"><table class="w-full text-left text-sm">
+                        <thead class="bg-slate-900/60 text-slate-400 text-xs uppercase border-b border-slate-700">
+                            <tr><th class="p-3 text-center">#</th><th class="p-3">Jugador</th><th class="p-3">Equipo</th><th class="p-3 text-center">Partidos</th><th class="p-3 text-center font-bold text-emerald-400">Goles</th></tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-700/50">`;
+            
+            response.forEach((item, index) => {
+                const player = item.player;
+                const stats = item.statistics[0];
+                html += `
+                    <tr class="hover:bg-slate-700/30">
+                        <td class="p-3 text-center font-semibold text-slate-400">${index + 1}</td>
+                        <td class="p-3 flex items-center gap-3"><img src="${player.photo}" class="w-8 h-8 rounded-full object-cover bg-slate-900"><span class="font-medium">${player.name}</span></td>
+                        <td class="p-3 flex items-center gap-2"><img src="${stats.team.logo}" class="w-5 h-5 object-contain"><span class="text-slate-300 text-xs">${stats.team.name}</span></td>
+                        <td class="p-3 text-center text-slate-300">${stats.games.appearences}</td>
+                        <td class="p-3 text-center font-bold text-emerald-400">${stats.goals.total}</td>
+                    </tr>`;
+            });
+            container.innerHTML = html + `</tbody></table></div></div>`;
         }
 
         function showLoading(show) {
@@ -237,11 +306,9 @@
             box.classList.remove('hidden');
         }
 
-        function hideError() {
-            document.getElementById('error-box').classList.add('hidden');
-        }
+        function hideError() { document.getElementById('error-box').classList.add('hidden'); }
 
-        // Cargar partidos en vivo por defecto al iniciar
+        // Inicializar
         fetchLiveMatches();
     </script>
 </body>
