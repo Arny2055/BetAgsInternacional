@@ -3,315 +3,261 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>⚽ API-Football Ultimate Free Tool</title>
+    <title>⚽ Comparador de Equipos por Modelo Poisson (API-Football)</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen font-sans">
 
-    <div class="container mx-auto px-4 py-8 max-w-6xl">
+    <div class="container mx-auto px-4 py-8 max-w-5xl">
         <!-- Encabezado -->
-        <header class="text-center mb-6">
-            <h1 class="text-3xl font-extrabold text-emerald-400 mb-1">⚽ API-Football Free Suite</h1>
-            <p class="text-slate-400 text-sm">Explora todas las capacidades y endpoints disponibles en el plan gratuito oficial.</p>
+        <header class="text-center mb-8">
+            <h1 class="text-3xl font-extrabold text-emerald-400 mb-2">⚽ Predictor Poisson & Comparador de Equipos</h1>
+            <p class="text-slate-400 text-sm">Basado en estadísticas oficiales de API-Football (v3.9.3)</p>
         </header>
 
-        <!-- Pestañas de Navegación del Plan Free -->
-        <div class="bg-slate-900 p-4 rounded-xl shadow-lg border border-slate-800 mb-6 flex flex-wrap gap-2 justify-center">
-            <button onclick="switchTab('status')" id="btn-status" class="px-3 py-2 rounded-lg text-xs font-semibold transition bg-emerald-600 text-white shadow">Estado Plan</button>
-            <button onclick="switchTab('timezone')" id="btn-timezone" class="px-3 py-2 rounded-lg text-xs font-semibold transition bg-slate-800 text-slate-300 hover:bg-slate-700">Zonas Horarias</button>
-            <button onclick="switchTab('countries')" id="btn-countries" class="px-3 py-2 rounded-lg text-xs font-semibold transition bg-slate-800 text-slate-300 hover:bg-slate-700">Países</button>
-            <button onclick="switchTab('leagues')" id="btn-leagues" class="px-3 py-2 rounded-lg text-xs font-semibold transition bg-slate-800 text-slate-300 hover:bg-slate-700">Ligas</button>
-            <button onclick="switchTab('teams')" id="btn-teams" class="px-3 py-2 rounded-lg text-xs font-semibold transition bg-slate-800 text-slate-300 hover:bg-slate-700">Equipos</button>
-            <button onclick="switchTab('standings')" id="btn-standings" class="px-3 py-2 rounded-lg text-xs font-semibold transition bg-slate-800 text-slate-300 hover:bg-slate-700">Posiciones</button>
-            <button onclick="switchTab('fixtures')" id="btn-fixtures" class="px-3 py-2 rounded-lg text-xs font-semibold transition bg-slate-800 text-slate-300 hover:bg-slate-700">Partidos / En Vivo</button>
-            <button onclick="switchTab('topscorers')" id="btn-topscorers" class="px-3 py-2 rounded-lg text-xs font-semibold transition bg-slate-800 text-slate-300 hover:bg-slate-700">Goleadores</button>
-            <button onclick="switchTab('injuries')" id="btn-injuries" class="px-3 py-2 rounded-lg text-xs font-semibold transition bg-slate-800 text-slate-300 hover:bg-slate-700">Lesiones</button>
-        </div>
-
-        <!-- Barra de Filtros Contextuales -->
-        <div id="filter-panel" class="bg-slate-900 p-4 rounded-xl shadow border border-slate-800 mb-6 hidden flex flex-wrap gap-3 items-end">
-            <div id="f-league" class="hidden">
+        <!-- Panel de Configuración y Selección -->
+        <div class="bg-slate-900 p-6 rounded-2xl shadow-xl border border-slate-800 mb-8 grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+            <div>
                 <label class="block text-xs uppercase tracking-wider text-slate-400 mb-1">ID Liga (ej. 39)</label>
-                <input type="number" id="input-league" value="39" class="bg-slate-950 border border-slate-700 text-slate-200 rounded-lg px-3 py-1.5 text-sm w-32 focus:outline-none focus:border-emerald-500">
+                <input type="number" id="input-league" value="39" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-emerald-500">
             </div>
-            <div id="f-season" class="hidden">
+            <div>
                 <label class="block text-xs uppercase tracking-wider text-slate-400 mb-1">Temporada</label>
-                <input type="number" id="input-season" value="2024" class="bg-slate-950 border border-slate-700 text-slate-200 rounded-lg px-3 py-1.5 text-sm w-28 focus:outline-none focus:border-emerald-500">
+                <input type="number" id="input-season" value="2024" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-emerald-500">
             </div>
-            <div id="f-country" class="hidden">
-                <label class="block text-xs uppercase tracking-wider text-slate-400 mb-1">País</label>
-                <input type="text" id="input-country" value="England" class="bg-slate-950 border border-slate-700 text-slate-200 rounded-lg px-3 py-1.5 text-sm w-36 focus:outline-none focus:border-emerald-500">
+            <div class="md:col-span-2 flex gap-2">
+                <button onclick="loadTeams()" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-200 font-medium px-4 py-2 rounded-lg text-sm transition">1. Cargar Equipos</button>
+                <button onclick="runPoissonSimulation()" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-medium px-4 py-2 rounded-lg text-sm transition shadow-lg shadow-emerald-900/40">2. Calcular Poisson</button>
             </div>
-            <button onclick="executeAction()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-medium px-4 py-2 rounded-lg text-sm transition">Consultar API</button>
         </div>
 
-        <!-- Contenedores de Estado y Resultados -->
-        <div id="loading" class="text-center py-12 text-slate-400 hidden">Cargando datos de la API-Football...</div>
+        <!-- Selectores de Equipos -->
+        <div id="teams-selector" class="bg-slate-900 p-6 rounded-2xl shadow-xl border border-slate-800 mb-8 hidden grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+                <label class="block text-xs uppercase tracking-wider text-emerald-400 font-bold mb-2">Equipo Local</label>
+                <select id="select-home" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-emerald-500"></select>
+            </div>
+            <div>
+                <label class="block text-xs uppercase tracking-wider text-emerald-400 font-bold mb-2">Equipo Visitante</label>
+                <select id="select-away" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-emerald-500"></select>
+            </div>
+        </div>
+
+        <!-- Contenedor de Estado y Errores -->
+        <div id="loading" class="text-center py-12 text-slate-400 hidden animate-pulse">Analizando estadísticas y calculando distribución de Poisson...</div>
         <div id="error-box" class="bg-red-900/50 border border-red-700 text-red-200 p-4 rounded-xl mb-6 hidden"></div>
-        
-        <div id="content-container"></div>
+
+        <!-- Resultados del Modelo Poisson -->
+        <div id="results-container" class="space-y-6 hidden">
+            <!-- Probabilidades 1X2 y Goles Esperados -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl text-center shadow-lg">
+                    <h3 class="text-xs uppercase text-slate-400 font-bold mb-2">Goles Esperados (xG) Local</h3>
+                    <p id="res-xg-home" class="text-3xl font-extrabold text-emerald-400">-</p>
+                </div>
+                <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl text-center shadow-lg">
+                    <h3 class="text-xs uppercase text-slate-400 font-bold mb-2">Probabilidades 1X2</h3>
+                    <div class="flex justify-around mt-2 text-sm font-semibold">
+                        <div>L: <span id="prob-home" class="text-emerald-400">-</span></div>
+                        <div>E: <span id="prob-draw" class="text-amber-400">-</span></div>
+                        <div>V: <span id="prob-away" class="text-indigo-400">-</span></div>
+                    </div>
+                </div>
+                <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl text-center shadow-lg">
+                    <h3 class="text-xs uppercase text-slate-400 font-bold mb-2">Goles Esperados (xG) Visitante</h3>
+                    <p id="res-xg-away" class="text-3xl font-extrabold text-indigo-400">-</p>
+                </div>
+            </div>
+
+            <!-- Mercados Over/Under y Resultados Más Probables -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-lg">
+                    <h3 class="text-sm font-bold text-slate-200 mb-4 border-b border-slate-800 pb-2">📊 Mercados de Goles (Over / Under)</h3>
+                    <div class="space-y-3 text-sm" id="over-under-container">
+                        <!-- Inyectado dinámicamente -->
+                    </div>
+                </div>
+                <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-lg">
+                    <h3 class="text-sm font-bold text-slate-200 mb-4 border-b border-slate-800 pb-2">🎯 Top Marcadores Exactos Más Probables</h3>
+                    <div class="space-y-2 text-sm" id="exact-scores-container">
+                        <!-- Inyectado dinámicamente -->
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Script de Lógica -->
     <script>
         const API_KEY = "b87bae2028d2da2ee28c5d36a60f3ab8";
         const BASE_URL = "https://v3.football.api-sports.io";
-        let currentTab = 'status';
+        let teamsData = [];
 
         const headers = { 'x-apisports-key': API_KEY };
 
-        function switchTab(tab) {
-            currentTab = tab;
-            ['status', 'timezone', 'countries', 'leagues', 'teams', 'standings', 'fixtures', 'topscorers', 'injuries'].forEach(t => {
-                const btn = document.getElementById(`btn-${t}`);
-                if (t === tab) {
-                    btn.className = "px-3 py-2 rounded-lg text-xs font-semibold transition bg-emerald-600 text-white shadow";
-                } else {
-                    btn.className = "px-3 py-2 rounded-lg text-xs font-semibold transition bg-slate-800 text-slate-300 hover:bg-slate-700";
-                }
-            });
-
-            // Configurar visibilidad de filtros
-            const filterPanel = document.getElementById('filter-panel');
-            const fLeague = document.getElementById('f-league');
-            const fSeason = document.getElementById('f-season');
-            const fCountry = document.getElementById('f-country');
-
-            fLeague.classList.add('hidden');
-            fSeason.classList.add('hidden');
-            fCountry.classList.add('hidden');
-            filterPanel.classList.add('hidden');
-
-            if (tab === 'leagues' || tab === 'teams') {
-                filterPanel.classList.remove('hidden');
-                fCountry.classList.remove('hidden');
-            } else if (tab === 'standings' || tab === 'topscorers' || tab === 'injuries') {
-                filterPanel.classList.remove('hidden');
-                fLeague.classList.remove('hidden');
-                fSeason.classList.remove('hidden');
-            } else if (tab === 'fixtures') {
-                filterPanel.classList.remove('hidden');
-                fLeague.classList.remove('hidden');
-                fSeason.classList.remove('hidden');
-            }
-
-            executeAction();
-        }
-
-        function executeAction() {
-            if (currentTab === 'status') fetchStatus();
-            else if (currentTab === 'timezone') fetchTimezone();
-            else if (currentTab === 'countries') fetchCountries();
-            else if (currentTab === 'leagues') fetchLeagues();
-            else if (currentTab === 'teams') fetchTeams();
-            else if (currentTab === 'standings') fetchStandings();
-            else if (currentTab === 'fixtures') fetchFixtures();
-            else if (currentTab === 'topscorers') fetchTopScorers();
-            else if (currentTab === 'injuries') fetchInjuries();
-        }
-
-        async function callApi(endpoint) {
+        async function loadTeams() {
+            const league = document.getElementById('input-league').value;
+            const season = document.getElementById('input-season').value;
             showLoading(true);
             hideError();
+
             try {
-                const res = await fetch(`${BASE_URL}/${endpoint}`, { headers });
+                const res = await fetch(`${BASE_URL}/teams?league=${league}&season=${season}`, { headers });
                 const data = await res.json();
-                if (res.status !== 200) throw new Error(data.message || "Error al conectar con la API");
-                return data;
+                if (res.status !== 200 || !data.response.length) throw new Error(data.message || "No se encontraron equipos para esta liga/temporada.");
+
+                teamsData = data.response;
+                populateSelects();
+                document.getElementById('teams-selector').classList.remove('hidden');
             } catch (err) {
                 showError(err.message);
-                return null;
             } finally {
                 showLoading(false);
             }
         }
 
-        async function fetchStatus() {
-            const data = await callApi('status');
-            if (!data) return;
-            const acc = data.response.account;
-            const sub = data.response.subscription;
-            const reqs = data.response.requests;
+        function populateSelects() {
+            const selectHome = document.getElementById('select-home');
+            const selectAway = document.getElementById('select-away');
+            selectHome.innerHTML = '';
+            selectAway.innerHTML = '';
 
-            document.getElementById('content-container').innerHTML = `
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl">
-                        <h3 class="text-xs uppercase text-slate-400 font-bold mb-2">Cuenta</h3>
-                        <p class="text-lg font-semibold">${acc.firstname} ${acc.lastname}</p>
-                        <p class="text-sm text-slate-400">${acc.email}</p>
-                    </div>
-                    <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl">
-                        <h3 class="text-xs uppercase text-slate-400 font-bold mb-2">Suscripción</h3>
-                        <p class="text-lg font-semibold text-emerald-400">${sub.plan}</p>
-                        <p class="text-sm text-slate-400">Activa hasta: ${new Date(sub.end).toLocaleDateString()}</p>
-                    </div>
-                    <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl">
-                        <h3 class="text-xs uppercase text-slate-400 font-bold mb-2">Límite Diario</h3>
-                        <p class="text-lg font-semibold">${reqs.current} / ${reqs.limit_day} peticiones</p>
-                        <div class="w-full bg-slate-800 rounded-full h-2.5 mt-2">
-                            <div class="bg-emerald-500 h-2.5 rounded-full" style="width: ${(reqs.current / reqs.limit_day) * 100}%"></div>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        async function fetchTimezone() {
-            const data = await callApi('timezone');
-            if (!data) return;
-            let html = `<div class="bg-slate-900 border border-slate-800 p-5 rounded-xl max-h-96 overflow-y-auto grid grid-cols-2 md:grid-cols-4 gap-2">`;
-            data.response.forEach(tz => {
-                html += `<div class="bg-slate-950 p-2 rounded text-xs text-slate-300">${tz}</div>`;
+            teamsData.forEach((item, index) => {
+                const opt = `<option value="${item.team.id}">${item.team.name}</option>`;
+                selectHome.innerHTML += opt;
+                selectAway.innerHTML += opt;
             });
-            document.getElementById('content-container').innerHTML = html + `</div>`;
+            if(teamsData.length > 1) selectAway.selectedIndex = 1;
         }
 
-        async function fetchCountries() {
-            const data = await callApi('countries');
-            if (!data) return;
-            let html = `<div class="grid grid-cols-2 md:grid-cols-4 gap-3 max-h-[500px] overflow-y-auto">`;
-            data.response.forEach(c => {
-                html += `
-                    <div class="bg-slate-900 border border-slate-800 p-3 rounded-lg flex items-center gap-3">
-                        ${c.flag ? `<img src="${c.flag}" class="w-6 h-4 object-cover rounded shadow">` : ''}
-                        <span class="text-sm font-medium truncate">${c.name}</span>
-                    </div>`;
-            });
-            document.getElementById('content-container').innerHTML = html + `</div>`;
+        async function fetchTeamStats(teamId, league, season) {
+            const res = await fetch(`${BASE_URL}/teams/statistics?team=${teamId}&league=${league}&season=${season}`, { headers });
+            const data = await res.json();
+            return data.response;
         }
 
-        async function fetchLeagues() {
-            const country = document.getElementById('input-country').value;
-            const data = await callApi(`leagues?country=${country}`);
-            if (!data) return;
-            let html = `<div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[500px] overflow-y-auto">`;
-            data.response.forEach(item => {
-                html += `
-                    <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl flex items-center gap-4">
-                        <img src="${item.league.logo}" class="w-10 h-10 object-contain bg-slate-950 p-1 rounded-lg">
-                        <div>
-                            <h4 class="font-bold text-sm">${item.league.name}</h4>
-                            <p class="text-xs text-emerald-400">${item.country.name} (${item.league.type})</p>
-                        </div>
-                    </div>`;
-            });
-            document.getElementById('content-container').innerHTML = html + `</div>`;
+        function factorial(n) {
+            if (n === 0 || n === 1) return 1;
+            let acc = 1;
+            for (let i = 2; i <= n; i++) acc *= i;
+            return acc;
         }
 
-        async function fetchTeams() {
-            const country = document.getElementById('input-country').value;
-            const data = await callApi(`teams?country=${country}`);
-            if (!data) return;
-            let html = `<div class="grid grid-cols-1 md:grid-cols-3 gap-4 max-h-[500px] overflow-y-auto">`;
-            data.response.forEach(item => {
-                html += `
-                    <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl flex items-center gap-3">
-                        <img src="${item.team.logo}" class="w-8 h-8 object-contain">
-                        <div>
-                            <h4 class="font-bold text-sm truncate">${item.team.name}</h4>
-                            <p class="text-xs text-slate-400">Fundado: ${item.team.founded || 'N/D'}</p>
-                        </div>
-                    </div>`;
-            });
-            document.getElementById('content-container').innerHTML = html + `</div>`;
+        function poissonProbability(lambda, k) {
+            return (Math.pow(lambda, k) * Math.exp(-lambda)) / factorial(k);
         }
 
-        async function fetchStandings() {
+        async function runPoissonSimulation() {
             const league = document.getElementById('input-league').value;
             const season = document.getElementById('input-season').value;
-            const data = await callApi(`standings?league=${league}&season=${season}`);
-            if (!data || data.response.length === 0) return;
-            const leagueData = data.response[0].league;
-            let html = `
-                <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow">
-                    <div class="p-4 bg-slate-800 font-bold text-sm">🏆 ${leagueData.name} (${leagueData.season})</div>
-                    <div class="overflow-x-auto"><table class="w-full text-left text-xs">
-                        <thead class="bg-slate-950 text-slate-400 uppercase">
-                            <tr><th class="p-2.5 text-center">Pos</th><th class="p-2.5">Equipo</th><th class="p-2.5 text-center">PJ</th><th class="p-2.5 text-center">DG</th><th class="p-2.5 text-center font-bold text-emerald-400">Pts</th></tr>
-                        </thead>
-                        <tbody class="divide-y divide-slate-800">`;
-            leagueData.standings[0].forEach(t => {
-                html += `
-                    <tr class="hover:bg-slate-800/40">
-                        <td class="p-2.5 text-center font-semibold text-slate-400">${t.rank}</td>
-                        <td class="p-2.5 flex items-center gap-2"><img src="${t.team.logo}" class="w-5 h-5 object-contain"><span class="font-medium">${t.team.name}</span></td>
-                        <td class="p-2.5 text-center">${t.all.played}</td>
-                        <td class="p-2.5 text-center">${t.goalsDiff}</td>
-                        <td class="p-2.5 text-center font-bold text-emerald-400">${t.points}</td>
-                    </tr>`;
-            });
-            document.getElementById('content-container').innerHTML = html + `</tbody></table></div></div>`;
-        }
+            const homeId = document.getElementById('select-home').value;
+            const awayId = document.getElementById('select-away').value;
 
-        async function fetchFixtures() {
-            const league = document.getElementById('input-league').value;
-            const season = document.getElementById('input-season').value;
-            const data = await callApi(`fixtures?league=${league}&season=${season}&last=10`);
-            if (!data) return;
-            let html = `<div class="space-y-2 max-h-[500px] overflow-y-auto">`;
-            data.response.forEach(m => {
-                html += `
-                    <div class="bg-slate-900 border border-slate-800 p-3 rounded-xl flex items-center justify-between text-xs">
-                        <div class="flex items-center gap-2 w-4/12"><img src="${m.teams.home.logo}" class="w-5 h-5 object-contain"><span class="truncate">${m.teams.home.name}</span></div>
-                        <div class="text-center w-4/12 font-bold bg-slate-950 px-3 py-1 rounded border border-slate-800">${m.goals.home} - ${m.goals.away}</div>
-                        <div class="flex items-center gap-2 w-4/12 justify-end text-right"><span class="truncate">${m.teams.away.name}</span><img src="${m.teams.away.logo}" class="w-5 h-5 object-contain"></div>
-                    </div>`;
-            });
-            document.getElementById('content-container').innerHTML = html + `</div>`;
-        }
-
-        async function fetchTopScorers() {
-            const league = document.getElementById('input-league').value;
-            const season = document.getElementById('input-season').value;
-            const data = await callApi(`players/topscorers?league=${league}&season=${season}`);
-            if (!data) return;
-            let html = `
-                <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow">
-                    <div class="p-4 bg-slate-800 font-bold text-sm">⚽ Máximos Goleadores</div>
-                    <div class="overflow-x-auto"><table class="w-full text-left text-xs">
-                        <thead class="bg-slate-950 text-slate-400 uppercase">
-                            <tr><th class="p-2.5 text-center">#</th><th class="p-2.5">Jugador</th><th class="p-2.5">Equipo</th><th class="p-2.5 text-center font-bold text-emerald-400">Goles</th></tr>
-                        </thead>
-                        <tbody class="divide-y divide-slate-800">`;
-            data.response.forEach((item, index) => {
-                html += `
-                    <tr class="hover:bg-slate-800/40">
-                        <td class="p-2.5 text-center font-semibold text-slate-400">${index + 1}</td>
-                        <td class="p-2.5 flex items-center gap-2"><img src="${item.player.photo}" class="w-6 h-6 rounded-full object-cover bg-slate-950"><span class="font-medium">${item.player.name}</span></td>
-                        <td class="p-2.5 text-slate-300">${item.statistics[0].team.name}</td>
-                        <td class="p-2.5 text-center font-bold text-emerald-400">${item.statistics[0].goals.total}</td>
-                    </tr>`;
-            });
-            document.getElementById('content-container').innerHTML = html + `</tbody></table></div></div>`;
-        }
-
-        async function fetchInjuries() {
-            const league = document.getElementById('input-league').value;
-            const season = document.getElementById('input-season').value;
-            const data = await callApi(`injuries?league=${league}&season=${season}`);
-            if (!data || data.response.length === 0) {
-                document.getElementById('content-container').innerHTML = `<div class="bg-slate-900 p-6 rounded-xl text-center text-slate-400 border border-slate-800">📭 No hay registros de lesiones recientes para esta liga.</div>`;
+            if (homeId === awayId) {
+                showError("Selecciona dos equipos diferentes para comparar.");
                 return;
             }
-            let html = `<div class="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[500px] overflow-y-auto">`;
-            data.response.forEach(item => {
-                html += `
-                    <div class="bg-slate-900 border border-slate-800 p-3 rounded-xl flex items-center gap-3 text-xs">
-                        <img src="${item.player.photo}" class="w-10 h-10 rounded-full object-cover bg-slate-950">
-                        <div>
-                            <h4 class="font-bold text-slate-200">${item.player.name}</h4>
-                            <p class="text-red-400 font-medium">Lesión: ${item.player.reason}</p>
-                            <p class="text-slate-400">Tipo: ${item.player.type}</p>
-                        </div>
-                    </div>`;
-            });
-            document.getElementById('content-container').innerHTML = html + `</div>`;
+
+            showLoading(true);
+            hideError();
+
+            try {
+                const [homeStats, awayStats] = await Promise.all([
+                    fetchTeamStats(homeId, league, season),
+                    fetchTeamStats(awayId, league, season)
+                ]);
+
+                if (!homeStats || !awayStats) throw new Error("Error al obtener las estadísticas detalladas de los equipos.");
+
+                // Extracción de medias de goles (Ataque y Defensa)
+                const homeGoalsScoredHome = parseFloat(homeStats.goals.for.average.home) || 1.3;
+                const homeGoalsConcededHome = parseFloat(homeStats.goals.against.average.home) || 1.0;
+                
+                const awayGoalsScoredAway = parseFloat(awayStats.goals.for.average.away) || 1.1;
+                const awayGoalsConcededAway = parseFloat(awayStats.goals.against.average.away) || 1.3;
+
+                // Promedios generales de la liga aproximados o estimados
+                const leagueAvgHome = 1.4;
+                const leagueAvgAway = 1.1;
+
+                // Cálculo de Fuerza de Ataque y Defensa
+                const homeAttackStrength = homeGoalsScoredHome / leagueAvgHome;
+                const homeDefenseVulnerability = homeGoalsConcededHome / leagueAvgAway;
+
+                const awayAttackStrength = awayGoalsScoredAway / leagueAvgAway;
+                const awayDefenseVulnerability = awayGoalsConcededAway / leagueAvgHome;
+
+                // Lambda esperado de Poisson
+                const lambdaHome = homeAttackStrength * awayDefenseVulnerability * leagueAvgHome;
+                const lambdaAway = awayAttackStrength * homeDefenseVulnerability * leagueAvgAway;
+
+                document.getElementById('res-xg-home').textContent = lambdaHome.toFixed(2);
+                document.getElementById('res-xg-away').textContent = lambdaAway.toFixed(2);
+
+                // Matriz de probabilidades de goles (0 a 6)
+                let matrix = [];
+                let probHomeWin = 0, probDraw = 0, probAwayWin = 0;
+                let over15 = 0, over25 = 0, over35 = 0, btts = 0;
+                let exactScores = [];
+
+                for (let h = 0; h <= 6; h++) {
+                    matrix[h] = [];
+                    for (let a = 0; a <= 6; a++) {
+                        const p = poissonProbability(lambdaHome, h) * poissonProbability(lambdaAway, a);
+                        matrix[h][a] = p;
+
+                        if (h > a) probHomeWin += p;
+                        else if (h === a) probDraw += p;
+                        else probAwayWin += p;
+
+                        if (h + a > 1.5) over15 += p;
+                        if (h + a > 2.5) over25 += p;
+                        if (h + a > 3.5) over35 += p;
+                        if (h > 0 && a > 0) btts += p;
+
+                        exactScores.push({ h, a, p });
+                    }
+                }
+
+                // Renderizar 1X2
+                const totalProb = probHomeWin + probDraw + probAwayWin;
+                document.getElementById('prob-home').textContent = ((probHomeWin / totalProb) * 100).toFixed(1) + '%';
+                document.getElementById('prob-draw').textContent = ((probDraw / totalProb) * 100).getText = ((probDraw / totalProb) * 100).toFixed(1) + '%';
+                document.getElementById('prob-away').textContent = ((probAwayWin / totalProb) * 100).toFixed(1) + '%';
+
+                // Renderizar Over/Under
+                document.getElementById('over-under-container').innerHTML = `
+                    <div class="flex justify-between"><span>Más de 1.5 goles:</span> <span class="font-bold text-emerald-400">${(over15 * 100).toFixed(1)}%</span></div>
+                    <div class="flex justify-between"><span>Más de 2.5 goles:</span> <span class="font-bold text-emerald-400">${(over25 * 100).toFixed(1)}%</span></div>
+                    <div class="flex justify-between"><span>Más de 3.5 goles:</span> <span class="font-bold text-indigo-400">${(over35 * 100).toFixed(1)}%</span></div>
+                    <div class="flex justify-between border-t border-slate-800 pt-2"><span>Ambos anotan (BTTS):</span> <span class="font-bold text-amber-400">${(btts * 100).toFixed(1)}%</span></div>
+                `;
+
+                // Ordenar marcadores exactos
+                exactScores.sort((a, b) => b.p - a.p);
+                let scoresHtml = '';
+                for (let i = 0; i < 5; i++) {
+                    scoresHtml += `
+                        <div class="flex justify-between items-center bg-slate-950 px-3 py-1.5 rounded-lg border border-slate-800">
+                            <span class="font-semibold">${exactScores[i].h} - ${exactScores[i].a}</span>
+                            <span class="text-xs text-emerald-400 font-bold">${(exactScores[i].p * 100).toFixed(1)}%</span>
+                        </div>`;
+                }
+                document.getElementById('exact-scores-container').innerHTML = scoresHtml;
+
+                document.getElementById('results-container').classList.remove('hidden');
+
+            } catch (err) {
+                showError(err.message);
+            } finally {
+                showLoading(false);
+            }
         }
 
         function showLoading(show) {
             document.getElementById('loading').classList.toggle('hidden', !show);
-            if (show) document.getElementById('content-container').innerHTML = '';
+            if(show) document.getElementById('results-container').classList.add('hidden');
         }
 
         function showError(msg) {
@@ -321,9 +267,6 @@
         }
 
         function hideError() { document.getElementById('error-box').classList.add('hidden'); }
-
-        // Inicializar al cargar
-        fetchStatus();
     </script>
 </body>
 </html>
