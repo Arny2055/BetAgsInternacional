@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>⚽ Panel Pro: En Vivo, Terminados y Próximos con Estadísticas (API-Football)</title>
+    <title>⚽ Panel Pro: En Vivo, Terminados y Próximos con Historial Local (API-Football)</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
@@ -13,8 +13,15 @@
         <!-- Encabezado -->
         <header class="text-center mb-8">
             <h1 class="text-3xl font-extrabold text-emerald-400 mb-2">⚽ Panel Pro: En Vivo, Terminados & Próximos</h1>
-            <p class="text-slate-400 text-sm">Seguimiento en directo, estadísticas Over 2.5 / BTTS, xG y cuotas (API-Football)</p>
+            <p class="text-slate-400 text-sm">Seguimiento en directo, estadísticas Over 2.5 / BTTS, xG y registro en localStorage</p>
         </header>
+
+        <!-- SECCIÓN: Botón de Acceso al Historial -->
+        <div class="flex justify-end mb-4">
+            <button onclick="toggleHistoryModal()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs px-4 py-2 rounded-xl transition font-medium shadow-lg shadow-indigo-900/40 flex items-center gap-2">
+                📂 Ver Historial Local (LocalStorage)
+            </button>
+        </div>
 
         <!-- SECCIÓN: Métricas Rápidas y Estadísticas de la Jornada -->
         <section class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-8">
@@ -35,6 +42,20 @@
                 <p id="stat-total-matches" class="text-2xl font-black text-indigo-400">-</p>
             </div>
         </section>
+
+        <!-- MODAL / CONTENEDOR DE HISTORIAL (Oculto por defecto) -->
+        <div id="history-modal" class="mb-10 bg-slate-900 border border-indigo-900/50 p-6 rounded-2xl shadow-xl hidden">
+            <div class="flex justify-between items-center mb-4 border-b border-slate-800 pb-3">
+                <h2 class="text-lg font-bold text-indigo-400">📊 Historial de Jornadas Guardadas (LocalStorage)</h2>
+                <div class="flex gap-2">
+                    <button onclick="clearLocalStorageHistory()" class="bg-red-900/40 hover:bg-red-900 text-red-300 text-xs px-3 py-1.5 rounded-lg transition">🗑️ Limpiar Historial</button>
+                    <button onclick="toggleHistoryModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs px-3 py-1.5 rounded-lg transition">❌ Cerrar</button>
+                </div>
+            </div>
+            <div id="history-container" class="space-y-3 max-h-60 overflow-y-auto pr-2">
+                <!-- Se inyecta el historial dinámicamente -->
+            </div>
+        </div>
 
         <!-- SECCIÓN: Partidos en Vivo de las Ligas Top -->
         <section class="mb-10 bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl">
@@ -266,7 +287,7 @@
                     TOP_LEAGUE_IDS.includes(m.league.id) && m.fixture.status.short === 'FT'
                 );
 
-                calculateDayMetrics(topFinishedMatches);
+                calculateDayMetrics(topFinishedMatches, today);
 
                 if (topFinishedMatches.length === 0) {
                     container.innerHTML = `<div class="col-span-2 text-center text-slate-500 py-6 text-sm">📭 No hay partidos terminados hoy para las ligas top.</div>`;
@@ -310,7 +331,7 @@
             }
         }
 
-        function calculateDayMetrics(matches) {
+        function calculateDayMetrics(matches, dateStr) {
             if (!matches.length) {
                 document.getElementById('stat-avg-goals').textContent = "0.00";
                 document.getElementById('stat-over25-rate').textContent = "0%";
@@ -334,10 +355,84 @@
             });
 
             const total = matches.length;
-            document.getElementById('stat-avg-goals').textContent = (totalGoals / total).toFixed(2);
-            document.getElementById('stat-over25-rate').textContent = `${over25Count}/${total} (${((over25Count / total) * 100).toFixed(0)}%)`;
-            document.getElementById('stat-btts-rate').textContent = `${bttsCount}/${total} (${((bttsCount / total) * 100).toFixed(0)}%)`;
+            const avgGoals = (totalGoals / total).toFixed(2);
+            const over25Percentage = ((over25Count / total) * 100).toFixed(0);
+            const bttsPercentage = ((bttsCount / total) * 100).toFixed(0);
+
+            document.getElementById('stat-avg-goals').textContent = avgGoals;
+            document.getElementById('stat-over25-rate').textContent = `${over25Count}/${total} (${over25Percentage}%)`;
+            document.getElementById('stat-btts-rate').textContent = `${bttsCount}/${total} (${bttsPercentage}%)`;
             document.getElementById('stat-total-matches').textContent = total;
+
+            // Guardar automáticamente en localStorage
+            saveToLocalStorageHistory({
+                date: dateStr,
+                totalMatches: total,
+                avgGoals: avgGoals,
+                over25: `${over25Count}/${total} (${over25Percentage}%)`,
+                btts: `${bttsCount}/${total} (${bttsPercentage}%)`
+            });
+        }
+
+        // FUNCIONES DE LOCALSTORAGE
+        function saveToLocalStorageHistory(dayData) {
+            let history = JSON.parse(localStorage.getItem('football_stats_history')) || [];
+            
+            // Reemplazar si ya existe la fecha actual, de lo contrario agregar al inicio
+            const existingIndex = history.findIndex(item => item.date === dayData.date);
+            if (existingIndex >= 0) {
+                history[existingIndex] = dayData;
+            } else {
+                history.unshift(dayData);
+            }
+
+            // Mantener un límite máximo de 30 días guardados
+            if (history.length > 30) history.pop();
+
+            localStorage.setItem('football_stats_history', JSON.stringify(history));
+            renderLocalStorageHistory();
+        }
+
+        function renderLocalStorageHistory() {
+            const container = document.getElementById('history-container');
+            let history = JSON.parse(localStorage.getItem('football_stats_history')) || [];
+
+            if (history.length === 0) {
+                container.innerHTML = `<div class="text-center text-slate-500 py-4 text-xs">📭 No hay registros guardados en el almacenamiento local.</div>`;
+                return;
+            }
+
+            let html = '';
+            history.forEach(item => {
+                html += `
+                    <div class="bg-slate-950 border border-slate-800 p-3 rounded-xl flex flex-col sm:flex-row justify-between items-start sm:items-center text-xs gap-2">
+                        <div>
+                            <span class="text-indigo-400 font-bold">📅 ${item.date}</span>
+                            <span class="text-slate-400 ml-2">(${item.totalMatches} partidos analizados)</span>
+                        </div>
+                        <div class="flex gap-4 font-mono text-[11px]">
+                            <div>Prom: <span class="text-emerald-400 font-bold">${item.avgGoals}</span></div>
+                            <div>Over 2.5: <span class="text-sky-400 font-bold">${item.over25}</span></div>
+                            <div>BTTS: <span class="text-amber-400 font-bold">${item.btts}</span></div>
+                        </div>
+                    </div>`;
+            });
+            container.innerHTML = html;
+        }
+
+        function toggleHistoryModal() {
+            const modal = document.getElementById('history-modal');
+            modal.classList.toggle('hidden');
+            if (!modal.classList.contains('hidden')) {
+                renderLocalStorageHistory();
+            }
+        }
+
+        function clearLocalStorageHistory() {
+            if (confirm("¿Estás seguro de que deseas limpiar todo el historial guardado?")) {
+                localStorage.removeItem('football_stats_history');
+                renderLocalStorageHistory();
+            }
         }
 
         fetchAllData();
