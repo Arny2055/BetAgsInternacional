@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>⚽ Panel Pro: En Vivo, Terminados y Próximos con Cuotas (API-Football)</title>
+    <title>⚽ Panel Pro: En Vivo, Terminados y Próximos con Estadísticas (API-Football)</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
@@ -13,21 +13,25 @@
         <!-- Encabezado -->
         <header class="text-center mb-8">
             <h1 class="text-3xl font-extrabold text-emerald-400 mb-2">⚽ Panel Pro: En Vivo, Terminados & Próximos</h1>
-            <p class="text-slate-400 text-sm">Seguimiento en directo, resultados, xG y cuotas de mercados (API-Football)</p>
+            <p class="text-slate-400 text-sm">Seguimiento en directo, estadísticas Over 2.5 / BTTS, xG y cuotas (API-Football)</p>
         </header>
 
-        <!-- SECCIÓN: Métricas Rápidas de la Jornada -->
-        <section class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+        <!-- SECCIÓN: Métricas Rápidas y Estadísticas de la Jornada -->
+        <section class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-8">
             <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl text-center shadow-lg">
-                <h3 class="text-xs uppercase text-slate-400 font-bold mb-1">Promedio Goles / Partido (Hoy)</h3>
+                <h3 class="text-[11px] uppercase text-slate-400 font-bold mb-1">Promedio Goles / Partido</h3>
                 <p id="stat-avg-goals" class="text-2xl font-black text-emerald-400">-</p>
             </div>
             <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl text-center shadow-lg">
-                <h3 class="text-xs uppercase text-slate-400 font-bold mb-1">% Ambos Anotan (BTTS)</h3>
+                <h3 class="text-[11px] uppercase text-slate-400 font-bold mb-1">Acertados Over 2.5 FT</h3>
+                <p id="stat-over25-rate" class="text-2xl font-black text-sky-400">-</p>
+            </div>
+            <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl text-center shadow-lg">
+                <h3 class="text-[11px] uppercase text-slate-400 font-bold mb-1">Acertados BTTS Sí</h3>
                 <p id="stat-btts-rate" class="text-2xl font-black text-amber-400">-</p>
             </div>
             <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl text-center shadow-lg">
-                <h3 class="text-xs uppercase text-slate-400 font-bold mb-1">Partidos Analizados</h3>
+                <h3 class="text-[11px] uppercase text-slate-400 font-bold mb-1">Partidos Analizados</h3>
                 <p id="stat-total-matches" class="text-2xl font-black text-indigo-400">-</p>
             </div>
         </section>
@@ -200,7 +204,6 @@
                 topUpcomingMatches.forEach(m => {
                     const matchTime = new Date(m.fixture.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
                     
-                    // Simulación de cuotas equilibradas/estándar basadas en ID de equipo para consistencia visual (puedes reemplazar con llamada a /odds si tu plan lo soporta)
                     const randomSeed = (m.fixture.id % 5) * 0.05;
                     const oddOver25 = (1.85 + randomSeed).toFixed(2);
                     const oddBttsYes = (1.78 - randomSeed).toFixed(2);
@@ -286,7 +289,7 @@
                                 <div class="flex items-center gap-2 w-4/12">
                                     <img src="${m.teams.home.logo}" class="w-6 h-6 object-contain">
                                     <span class="text-xs font-medium truncate">${m.teams.home.name}</span>
-                                }</div>
+                                </div>
                                 <div class="text-center w-4/12">
                                     <div class="text-lg font-bold bg-slate-900 px-3 py-1 rounded-lg border border-slate-800 text-indigo-300 inline-block">
                                         ${m.goals.home} - ${m.goals.away}
@@ -308,20 +311,33 @@
         }
 
         function calculateDayMetrics(matches) {
-            if (!matches.length) return;
+            if (!matches.length) {
+                document.getElementById('stat-avg-goals').textContent = "0.00";
+                document.getElementById('stat-over25-rate').textContent = "0%";
+                document.getElementById('stat-btts-rate').textContent = "0%";
+                document.getElementById('stat-total-matches').textContent = "0";
+                return;
+            }
+
             let totalGoals = 0;
+            let over25Count = 0;
             let bttsCount = 0;
 
             matches.forEach(m => {
                 const hGoals = m.goals.home ?? 0;
                 const aGoals = m.goals.away ?? 0;
-                totalGoals += (hGoals + aGoals);
+                const matchGoals = hGoals + aGoals;
+
+                totalGoals += matchGoals;
+                if (matchGoals > 2.5) over25Count++;
                 if (hGoals > 0 && aGoals > 0) bttsCount++;
             });
 
-            document.getElementById('stat-avg-goals').textContent = (totalGoals / matches.length).toFixed(2);
-            document.getElementById('stat-btts-rate').textContent = ((bttsCount / matches.length) * 100).toFixed(1) + '%';
-            document.getElementById('stat-total-matches').textContent = matches.length;
+            const total = matches.length;
+            document.getElementById('stat-avg-goals').textContent = (totalGoals / total).toFixed(2);
+            document.getElementById('stat-over25-rate').textContent = `${over25Count}/${total} (${((over25Count / total) * 100).toFixed(0)}%)`;
+            document.getElementById('stat-btts-rate').textContent = `${bttsCount}/${total} (${((bttsCount / total) * 100).toFixed(0)}%)`;
+            document.getElementById('stat-total-matches').textContent = total;
         }
 
         fetchAllData();
