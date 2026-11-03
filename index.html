@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>⚽ Comparador de Equipos por Modelo Poisson (API-Football)</title>
+    <title>⚽ Partidos en Vivo & Predictor Poisson (API-Football)</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
@@ -12,98 +12,117 @@
     <div class="container mx-auto px-4 py-8 max-w-5xl">
         <!-- Encabezado -->
         <header class="text-center mb-8">
-            <h1 class="text-3xl font-extrabold text-emerald-400 mb-2">⚽ Predictor Poisson & Comparador de Equipos</h1>
-            <p class="text-slate-400 text-sm">Basado en estadísticas oficiales de API-Football (v3.9.3)</p>
+            <h1 class="text-3xl font-extrabold text-emerald-400 mb-2">⚽ Panel de Fútbol: En Vivo & Poisson</h1>
+            <p class="text-slate-400 text-sm">Partidos en directo de ligas top y simulador estadístico avanzado (API-Football v3.9.3)</p>
         </header>
 
-        <!-- Panel de Configuración y Selección -->
-        <div class="bg-slate-900 p-6 rounded-2xl shadow-xl border border-slate-800 mb-8 grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
-            <div>
-                <label class="block text-xs uppercase tracking-wider text-slate-400 mb-1">Seleccionar Liga</label>
-                <select id="input-league" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-emerald-500">
-                    <option value="39">Premier League (Inglaterra)</option>
-                    <option value="140">La Liga (España)</option>
-                    <option value="135">Serie A (Italia)</option>
-                    <option value="78">Bundesliga (Alemania)</option>
-                    <option value="61">Ligue 1 (Francia)</option>
-                    <option value="128">Liga Profesional (Argentina)</option>
-                    <option value="262">Liga MX (México)</option>
-                    <option value="71">Brasileirão (Brasil)</option>
-                    <option value="2">UEFA Champions League</option>
-                </select>
+        <!-- SECCIÓN SUPERIOR: Partidos en Vivo de las Ligas Top -->
+        <section class="mb-12 bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl">
+            <div class="flex justify-between items-center mb-4 border-b border-slate-800 pb-3">
+                <h2 class="text-lg font-bold text-emerald-400 flex items-center gap-2">
+                    <span class="inline-block w-3 h-3 bg-red-500 rounded-full animate-ping"></span> 
+                    Partidos en Vivo (Ligas Top)
+                </h2>
+                <button onclick="fetchLiveMatches()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs px-3 py-1.5 rounded-lg transition font-medium">
+                    🔄 Actualizar En Vivo
+                </button>
             </div>
-            <div>
-                <label class="block text-xs uppercase tracking-wider text-slate-400 mb-1">Temporada</label>
-                <select id="input-season" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-emerald-500">
-                    <option value="2025" selected>2025 / 2026</option>
-                    <option value="2024">2024 / 2025</option>
-                    <option value="2023">2023 / 2024</option>
-                    <option value="2022">2022 / 2023</option>
-                    <option value="2021">2021 / 2022</option>
-                    <option value="2020">2020 / 2021</option>
-                    <option value="2019">2019 / 2020</option>
-                </select>
+            
+            <div id="live-loading" class="text-center py-6 text-slate-400 text-sm animate-pulse">Buscando partidos en juego...</div>
+            <div id="live-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Se inyectan dinámicamente los partidos en vivo -->
             </div>
-            <div class="md:col-span-2 flex gap-2">
-                <button onclick="loadTeams()" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-200 font-medium px-4 py-2 rounded-lg text-sm transition">1. Cargar Equipos</button>
-                <button onclick="runPoissonSimulation()" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-medium px-4 py-2 rounded-lg text-sm transition shadow-lg shadow-emerald-900/40">2. Calcular Poisson</button>
-            </div>
-        </div>
+        </section>
 
-        <!-- Selectores de Equipos -->
-        <div id="teams-selector" class="bg-slate-900 p-6 rounded-2xl shadow-xl border border-slate-800 mb-8 hidden grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-                <label class="block text-xs uppercase tracking-wider text-emerald-400 font-bold mb-2">Equipo Local</label>
-                <select id="select-home" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-emerald-500"></select>
+        <!-- SECCIÓN INFERIOR: Herramienta de Comparación de Equipos por Poisson -->
+        <section class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl">
+            <div class="mb-6 border-b border-slate-800 pb-3">
+                <h2 class="text-lg font-bold text-indigo-400">📊 Predictor Poisson & Comparador de Equipos</h2>
             </div>
-            <div>
-                <label class="block text-xs uppercase tracking-wider text-emerald-400 font-bold mb-2">Equipo Visitante</label>
-                <select id="select-away" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-emerald-500"></select>
-            </div>
-        </div>
 
-        <!-- Contenedor de Estado y Errores -->
-        <div id="loading" class="text-center py-12 text-slate-400 hidden animate-pulse">Analizando estadísticas y calculando distribución de Poisson...</div>
-        <div id="error-box" class="bg-red-900/50 border border-red-700 text-red-200 p-4 rounded-xl mb-6 hidden"></div>
-
-        <!-- Resultados del Modelo Poisson -->
-        <div id="results-container" class="space-y-6 hidden">
-            <!-- Probabilidades 1X2 y Goles Esperados -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl text-center shadow-lg">
-                    <h3 class="text-xs uppercase text-slate-400 font-bold mb-2">Goles Esperados (xG) Local</h3>
-                    <p id="res-xg-home" class="text-3xl font-extrabold text-emerald-400">-</p>
+            <!-- Panel de Configuración -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end mb-8">
+                <div>
+                    <label class="block text-xs uppercase tracking-wider text-slate-400 mb-1">Seleccionar Liga</label>
+                    <select id="input-league" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-emerald-500">
+                        <option value="39">Premier League (Inglaterra)</option>
+                        <option value="140">La Liga (España)</option>
+                        <option value="135">Serie A (Italia)</option>
+                        <option value="78">Bundesliga (Alemania)</option>
+                        <option value="61">Ligue 1 (Francia)</option>
+                        <option value="128">Liga Profesional (Argentina)</option>
+                        <option value="262">Liga MX (México)</option>
+                        <option value="71">Brasileirão (Brasil)</option>
+                        <option value="2">UEFA Champions League</option>
+                    </select>
                 </div>
-                <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl text-center shadow-lg">
-                    <h3 class="text-xs uppercase text-slate-400 font-bold mb-2">Probabilidades 1X2</h3>
-                    <div class="flex justify-around mt-2 text-sm font-semibold">
-                        <div>L: <span id="prob-home" class="text-emerald-400">-</span></div>
-                        <div>E: <span id="prob-draw" class="text-amber-400">-</span></div>
-                        <div>V: <span id="prob-away" class="text-indigo-400">-</span></div>
+                <div>
+                    <label class="block text-xs uppercase tracking-wider text-slate-400 mb-1">Temporada</label>
+                    <select id="input-season" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-emerald-500">
+                        <option value="2025" selected>2025 / 2026</option>
+                        <option value="2024">2024 / 2025</option>
+                        <option value="2023">2023 / 2024</option>
+                        <option value="2022">2022 / 2023</option>
+                        <option value="2021">2021 / 2022</option>
+                        <option value="2020">2020 / 2021</option>
+                        <option value="2019">2019 / 2020</option>
+                    </select>
+                </div>
+                <div class="md:col-span-2 flex gap-2">
+                    <button onclick="loadTeams()" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-200 font-medium px-4 py-2 rounded-lg text-sm transition">1. Cargar Equipos</button>
+                    <button onclick="runPoissonSimulation()" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-medium px-4 py-2 rounded-lg text-sm transition shadow-lg shadow-emerald-900/40">2. Calcular Poisson</button>
+                </div>
+            </div>
+
+            <!-- Selectores de Equipos -->
+            <div id="teams-selector" class="bg-slate-950 p-6 rounded-xl border border-slate-800 mb-8 hidden grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-xs uppercase tracking-wider text-emerald-400 font-bold mb-2">Equipo Local</label>
+                    <select id="select-home" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-emerald-500"></select>
+                </div>
+                <div>
+                    <label class="block text-xs uppercase tracking-wider text-emerald-400 font-bold mb-2">Equipo Visitante</label>
+                    <select id="select-away" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-emerald-500"></select>
+                </div>
+            </div>
+
+            <!-- Contenedor de Estado y Errores -->
+            <div id="loading" class="text-center py-12 text-slate-400 hidden animate-pulse">Analizando estadísticas y calculando distribución de Poisson...</div>
+            <div id="error-box" class="bg-red-900/50 border border-red-700 text-red-200 p-4 rounded-xl mb-6 hidden"></div>
+
+            <!-- Resultados del Modelo Poisson -->
+            <div id="results-container" class="space-y-6 hidden">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-slate-950 border border-slate-800 p-6 rounded-xl text-center shadow-lg">
+                        <h3 class="text-xs uppercase text-slate-400 font-bold mb-2">Goles Esperados (xG) Local</h3>
+                        <p id="res-xg-home" class="text-3xl font-extrabold text-emerald-400">-</p>
+                    </div>
+                    <div class="bg-slate-950 border border-slate-800 p-6 rounded-xl text-center shadow-lg">
+                        <h3 class="text-xs uppercase text-slate-400 font-bold mb-2">Probabilidades 1X2</h3>
+                        <div class="flex justify-around mt-2 text-sm font-semibold">
+                            <div>L: <span id="prob-home" class="text-emerald-400">-</span></div>
+                            <div>E: <span id="prob-draw" class="text-amber-400">-</span></div>
+                            <div>V: <span id="prob-away" class="text-indigo-400">-</span></div>
+                        </div>
+                    </div>
+                    <div class="bg-slate-950 border border-slate-800 p-6 rounded-xl text-center shadow-lg">
+                        <h3 class="text-xs uppercase text-slate-400 font-bold mb-2">Goles Esperados (xG) Visitante</h3>
+                        <p id="res-xg-away" class="text-3xl font-extrabold text-indigo-400">-</p>
                     </div>
                 </div>
-                <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl text-center shadow-lg">
-                    <h3 class="text-xs uppercase text-slate-400 font-bold mb-2">Goles Esperados (xG) Visitante</h3>
-                    <p id="res-xg-away" class="text-3xl font-extrabold text-indigo-400">-</p>
-                </div>
-            </div>
 
-            <!-- Mercados Over/Under y Resultados Más Probables -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-lg">
-                    <h3 class="text-sm font-bold text-slate-200 mb-4 border-b border-slate-800 pb-2">📊 Mercados de Goles (Over / Under)</h3>
-                    <div class="space-y-3 text-sm" id="over-under-container">
-                        <!-- Inyectado dinámicamente -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-slate-950 border border-slate-800 p-6 rounded-xl shadow-lg">
+                        <h3 class="text-sm font-bold text-slate-200 mb-4 border-b border-slate-800 pb-2">📊 Mercados de Goles (Over / Under)</h3>
+                        <div class="space-y-3 text-sm" id="over-under-container"></div>
                     </div>
-                </div>
-                <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-lg">
-                    <h3 class="text-sm font-bold text-slate-200 mb-4 border-b border-slate-800 pb-2">🎯 Top Marcadores Exactos Más Probables</h3>
-                    <div class="space-y-2 text-sm" id="exact-scores-container">
-                        <!-- Inyectado dinámicamente -->
+                    <div class="bg-slate-950 border border-slate-800 p-6 rounded-xl shadow-lg">
+                        <h3 class="text-sm font-bold text-slate-200 mb-4 border-b border-slate-800 pb-2">🎯 Top Marcadores Exactos Más Probables</h3>
+                        <div class="space-y-2 text-sm" id="exact-scores-container"></div>
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
     </div>
 
     <!-- Script de Lógica -->
@@ -113,6 +132,64 @@
         let teamsData = [];
 
         const headers = { 'x-apisports-key': API_KEY };
+
+        // IDs de las ligas top permitidas para filtrar los partidos en vivo
+        const TOP_LEAGUE_IDS = [39, 140, 135, 78, 61, 2];
+
+        async function fetchLiveMatches() {
+            const container = document.getElementById('live-container');
+            const loader = document.getElementById('live-loading');
+            loader.classList.remove('hidden');
+            container.innerHTML = '';
+
+            try {
+                const res = await fetch(`${BASE_URL}/fixtures?live=all`, { headers });
+                const data = await res.json();
+                
+                loader.classList.add('hidden');
+
+                if (res.status !== 200 || !data.response) {
+                    throw new Error(data.message || "No se pudieron obtener los partidos en vivo.");
+                }
+
+                // Filtrar solo los partidos de las ligas top configuradas
+                const topLiveMatches = data.response.filter(m => TOP_LEAGUE_IDS.includes(m.league.id));
+
+                if (topLiveMatches.length === 0) {
+                    container.innerHTML = `<div class="col-span-2 text-center text-slate-500 py-6 text-sm">📭 No hay partidos en vivo en este momento para las ligas top seleccionadas.</div>`;
+                    return;
+                }
+
+                let html = '';
+                topLiveMatches.forEach(m => {
+                    html += `
+                        <div class="bg-slate-950 border border-slate-800 p-4 rounded-xl flex flex-col justify-between shadow">
+                            <div class="text-xs text-emerald-400 font-semibold mb-2 flex justify-between items-center">
+                                <span class="truncate">${m.league.name}</span>
+                                <span class="bg-red-500/20 text-red-400 px-2 py-0.5 rounded-full animate-pulse">${m.fixture.status.elapsed}' VIVO</span>
+                            </div>
+                            <div class="flex items-center justify-between my-2">
+                                <div class="flex items-center gap-2 w-5/12">
+                                    <img src="${m.teams.home.logo}" class="w-6 h-6 object-contain">
+                                    <span class="text-xs font-medium truncate">${m.teams.home.name}</span>
+                                </div>
+                                <div class="text-lg font-bold bg-slate-900 px-3 py-1 rounded-lg border border-slate-800 text-emerald-300">
+                                    ${m.goals.home} - ${m.goals.away}
+                                </div>
+                                <div class="flex items-center gap-2 w-5/12 justify-end text-right">
+                                    <span class="text-xs font-medium truncate">${m.teams.away.name}</span>
+                                    <img src="${m.teams.away.logo}" class="w-6 h-6 object-contain">
+                                </div>
+                            </div>
+                        </div>`;
+                });
+                container.innerHTML = html;
+
+            } catch (err) {
+                loader.classList.add('hidden');
+                container.innerHTML = `<div class="col-span-2 text-center text-red-400 py-4 text-xs">❌ Error al cargar partidos en vivo: ${err.message}</div>`;
+            }
+        }
 
         async function loadTeams() {
             const league = document.getElementById('input-league').value;
@@ -141,7 +218,7 @@
             selectHome.innerHTML = '';
             selectAway.innerHTML = '';
 
-            teamsData.forEach((item, index) => {
+            teamsData.forEach((item) => {
                 const opt = `<option value="${item.team.id}">${item.team.name}</option>`;
                 selectHome.innerHTML += opt;
                 selectAway.innerHTML += opt;
@@ -249,7 +326,7 @@
                 let scoresHtml = '';
                 for (let i = 0; i < 5; i++) {
                     scoresHtml += `
-                        <div class="flex justify-between items-center bg-slate-950 px-3 py-1.5 rounded-lg border border-slate-800">
+                        <div class="flex justify-between items-center bg-slate-900 px-3 py-1.5 rounded-lg border border-slate-800">
                             <span class="font-semibold">${exactScores[i].h} - ${exactScores[i].a}</span>
                             <span class="text-xs text-emerald-400 font-bold">${(exactScores[i].p * 100).toFixed(1)}%</span>
                         </div>`;
@@ -277,6 +354,9 @@
         }
 
         function hideError() { document.getElementById('error-box').classList.add('hidden'); }
+
+        // Cargar los partidos en vivo automáticamente al abrir la página
+        fetchLiveMatches();
     </script>
 </body>
 </html>
