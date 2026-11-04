@@ -3,439 +3,101 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>⚽ Panel Pro: En Vivo, Terminados y Próximos con Historial Local (API-Football)</title>
-    <!-- Tailwind CSS -->
+    <title>⚽ Dashboard Pro - API-SPORTS Widgets</title>
+    <!-- Tailwind CSS para el diseño general de la interfaz -->
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen font-sans">
 
-    <div class="container mx-auto px-4 py-8 max-w-5xl">
-        <!-- Encabezado -->
-        <header class="text-center mb-8">
-            <h1 class="text-3xl font-extrabold text-emerald-400 mb-2">⚽ Panel Pro: En Vivo, Terminados & Próximos</h1>
-            <p class="text-slate-400 text-sm">Seguimiento en directo, estadísticas Over 2.5 / BTTS, xG y registro en localStorage</p>
+    <!-- Configuración Global requerida por API-SPORTS Widgets -->
+    <api-sports-widget
+        data-type="config"
+        data-key="b87bae2028d2da2ee28c5d36a60f3ab8"
+        data-sport="football"
+        data-lang="es"
+        data-timezone="Europe/Madrid"
+        data-show-logos="true"
+        data-show-errors="true"
+        data-theme="dark"
+        data-target-game="#details-container"
+        data-target-standings="#details-container"
+        data-target-team="#details-container"
+    ></api-sports-widget>
+
+    <div class="container mx-auto px-4 py-8 max-w-7xl">
+        
+        <!-- Encabezado del Dashboard -->
+        <header class="text-center mb-10 border-b border-slate-800 pb-6">
+            <h1 class="text-3xl font-extrabold text-emerald-400 mb-2">⚽ Centro de Control de Fútbol</h1>
+            <p class="text-slate-400 text-sm">Panel en tiempo real impulsado por API-SPORTS Widgets v3.1</p>
         </header>
 
-        <!-- SECCIÓN: Botón de Acceso al Historial -->
-        <div class="flex justify-end mb-4">
-            <button onclick="toggleHistoryModal()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs px-4 py-2 rounded-xl transition font-medium shadow-lg shadow-indigo-900/40 flex items-center gap-2">
-                📂 Ver Historial Local (LocalStorage)
-            </button>
+        <!-- Layout Principal en Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <!-- Columna Izquierda: Partidos en Vivo y Próximos (2 Columnas de ancho en LG) -->
+            <div class="lg:col-span-2 space-y-8">
+                
+                <!-- Sección 1: Partidos en Vivo (Actualización cada 15s) -->
+                <section class="bg-slate-900 border border-slate-800 p-5 rounded-2xl shadow-xl">
+                    <h2 class="text-lg font-bold text-emerald-400 mb-4 flex items-center gap-2">
+                        <span class="inline-block w-3 h-3 bg-red-500 rounded-full animate-ping"></span> 
+                        Partidos en Vivo
+                    </h2>
+                    <api-sports-widget 
+                        data-type="games" 
+                        data-tab="live" 
+                        data-refresh="15"
+                        data-show-toolbar="true"
+                    ></api-sports-widget>
+                </section>
+
+                <!-- Sección 2: Partidos del Día (General) -->
+                <section class="bg-slate-900 border border-slate-800 p-5 rounded-2xl shadow-xl">
+                    <h2 class="text-lg font-bold text-indigo-400 mb-4">📅 Partidos de la Jornada</h2>
+                    <api-sports-widget 
+                        data-type="games" 
+                        data-show-toolbar="true"
+                    ></api-sports-widget>
+                </section>
+
+                <!-- Sección 3: Contenedor Dinámico para Detalles (Partidos, Tablas, Equipos) -->
+                <section id="details-section" class="bg-slate-900 border border-slate-800 p-5 rounded-2xl shadow-xl">
+                    <h2 class="text-lg font-bold text-sky-400 mb-4">🔍 Vista de Detalles / Análisis</h2>
+                    <div id="details-container" class="min-h-[250px] text-slate-400 text-sm flex items-center justify-center border border-dashed border-slate-800 rounded-xl p-4">
+                        Selecciona un partido, equipo o liga superior para ver los detalles aquí.
+                    </div>
+                </section>
+
+            </div>
+
+            <!-- Columna Derecha: Ligas y Clasificaciones -->
+            <div class="space-y-8">
+                
+                <!-- Sección 4: Tabla de Clasificación de la Premier League (Ejemplo ID: 39, Temporada: 2024/2025) -->
+                <section class="bg-slate-900 border border-slate-800 p-5 rounded-2xl shadow-xl">
+                    <h2 class="text-lg font-bold text-amber-400 mb-4">🏆 Premier League - Standings</h2>
+                    <api-sports-widget 
+                        data-type="standings" 
+                        data-league="39" 
+                        data-season="2024"
+                    ></api-sports-widget>
+                </section>
+
+                <!-- Sección 5: Navegador de Ligas Globales -->
+                <section class="bg-slate-900 border border-slate-800 p-5 rounded-2xl shadow-xl">
+                    <h2 class="text-lg font-bold text-purple-400 mb-4">🌍 Explorador de Ligas</h2>
+                    <api-sports-widget 
+                        data-type="leagues"
+                    ></api-sports-widget>
+                </section>
+
+            </div>
+
         </div>
-
-        <!-- SECCIÓN: Métricas Rápidas y Estadísticas de la Jornada -->
-        <section class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-            <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl text-center shadow-lg">
-                <h3 class="text-[11px] uppercase text-slate-400 font-bold mb-1">Promedio Goles / Partido</h3>
-                <p id="stat-avg-goals" class="text-2xl font-black text-emerald-400">-</p>
-            </div>
-            <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl text-center shadow-lg">
-                <h3 class="text-[11px] uppercase text-slate-400 font-bold mb-1">Acertados Over 2.5 FT</h3>
-                <p id="stat-over25-rate" class="text-2xl font-black text-sky-400">-</p>
-            </div>
-            <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl text-center shadow-lg">
-                <h3 class="text-[11px] uppercase text-slate-400 font-bold mb-1">Acertados BTTS Sí</h3>
-                <p id="stat-btts-rate" class="text-2xl font-black text-amber-400">-</p>
-            </div>
-            <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl text-center shadow-lg">
-                <h3 class="text-[11px] uppercase text-slate-400 font-bold mb-1">Partidos Analizados</h3>
-                <p id="stat-total-matches" class="text-2xl font-black text-indigo-400">-</p>
-            </div>
-        </section>
-
-        <!-- MODAL / CONTENEDOR DE HISTORIAL (Oculto por defecto) -->
-        <div id="history-modal" class="mb-10 bg-slate-900 border border-indigo-900/50 p-6 rounded-2xl shadow-xl hidden">
-            <div class="flex justify-between items-center mb-4 border-b border-slate-800 pb-3">
-                <h2 class="text-lg font-bold text-indigo-400">📊 Historial de Jornadas Guardadas (LocalStorage)</h2>
-                <div class="flex gap-2">
-                    <button onclick="clearLocalStorageHistory()" class="bg-red-900/40 hover:bg-red-900 text-red-300 text-xs px-3 py-1.5 rounded-lg transition">🗑️ Limpiar Historial</button>
-                    <button onclick="toggleHistoryModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs px-3 py-1.5 rounded-lg transition">❌ Cerrar</button>
-                </div>
-            </div>
-            <div id="history-container" class="space-y-3 max-h-60 overflow-y-auto pr-2">
-                <!-- Se inyecta el historial dinámicamente -->
-            </div>
-        </div>
-
-        <!-- SECCIÓN: Partidos en Vivo de las Ligas Top -->
-        <section class="mb-10 bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl">
-            <div class="flex justify-between items-center mb-4 border-b border-slate-800 pb-3">
-                <h2 class="text-lg font-bold text-emerald-400 flex items-center gap-2">
-                    <span class="inline-block w-3 h-3 bg-red-500 rounded-full animate-ping"></span> 
-                    Partidos en Vivo (Ligas Top)
-                </h2>
-                <button onclick="fetchAllData()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs px-3 py-1.5 rounded-lg transition font-medium">
-                    🔄 Actualizar Todo
-                </button>
-            </div>
-            
-            <div id="live-loading" class="text-center py-6 text-slate-400 text-sm animate-pulse">Buscando partidos en juego...</div>
-            <div id="live-container" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
-        </section>
-
-        <!-- SECCIÓN: Próximos Partidos (Hoy) de las Ligas Top con Cuotas -->
-        <section class="mb-10 bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl">
-            <div class="flex justify-between items-center mb-4 border-b border-slate-800 pb-3">
-                <h2 class="text-lg font-bold text-sky-400 flex items-center gap-2">
-                    <span class="inline-block w-3 h-3 bg-sky-500 rounded-full"></span> 
-                    Próximos Partidos - Hoy (Ligas Top con Cuotas)
-                </h2>
-            </div>
-            
-            <div id="upcoming-loading" class="text-center py-6 text-slate-400 text-sm animate-pulse">Cargando próximos partidos...</div>
-            <div id="upcoming-container" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
-        </section>
-
-        <!-- SECCIÓN: Partidos Terminados (Hoy) de las Ligas Top -->
-        <section class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl">
-            <div class="flex justify-between items-center mb-4 border-b border-slate-800 pb-3">
-                <h2 class="text-lg font-bold text-indigo-400 flex items-center gap-2">
-                    <span class="inline-block w-3 h-3 bg-slate-500 rounded-full"></span> 
-                    Partidos Terminados - Hoy (Ligas Top)
-                </h2>
-            </div>
-            
-            <div id="finished-loading" class="text-center py-6 text-slate-400 text-sm animate-pulse">Cargando partidos terminados...</div>
-            <div id="finished-container" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
-        </section>
     </div>
 
-    <!-- Script de Lógica -->
-    <script>
-        const API_KEY = "b87bae2028d2da2ee28c5d36a60f3ab8";
-        const BASE_URL = "https://v3.football.api-sports.io";
-        const headers = { 'x-apisports-key': API_KEY };
-        const TOP_LEAGUE_IDS = [39, 140, 135, 78, 61, 2];
-
-        function fetchAllData() {
-            fetchLiveMatches();
-            fetchUpcomingMatches();
-            fetchFinishedMatches();
-        }
-
-        async function fetchFixtureStats(fixtureId) {
-            try {
-                const res = await fetch(`${BASE_URL}/fixtures/statistics?fixture=${fixtureId}`, { headers });
-                const data = await res.json();
-                if (data.response && data.response.length === 2) {
-                    let homeStats = data.response[0].statistics;
-                    let awayStats = data.response[1].statistics;
-
-                    let xgHomeObj = homeStats.find(s => s.type.toLowerCase().includes('expected_goals') || s.type.toLowerCase().includes('xg'));
-                    let xgAwayObj = awayStats.find(s => s.type.toLowerCase().includes('expected_goals') || s.type.toLowerCase().includes('xg'));
-
-                    if (xgHomeObj && xgAwayObj) {
-                        return { 
-                            home: parseFloat(xgHomeObj.value) || 0, 
-                            away: parseFloat(xgAwayObj.value) || 0,
-                            source: 'Oficial'
-                        };
-                    }
-                }
-            } catch (e) {
-                console.warn("No se pudieron cargar estadísticas detalladas:", fixtureId);
-            }
-            return null;
-        }
-
-        async function fetchLiveMatches() {
-            const container = document.getElementById('live-container');
-            const loader = document.getElementById('live-loading');
-            loader.classList.remove('hidden');
-            container.innerHTML = '';
-
-            try {
-                const res = await fetch(`${BASE_URL}/fixtures?live=all`, { headers });
-                const data = await res.json();
-                loader.classList.add('hidden');
-
-                if (res.status !== 200 || !data.response) throw new Error("Error al obtener partidos en vivo.");
-
-                const topLiveMatches = data.response.filter(m => TOP_LEAGUE_IDS.includes(m.league.id));
-                
-                if (topLiveMatches.length === 0) {
-                    container.innerHTML = `<div class="col-span-2 text-center text-slate-500 py-6 text-sm">📭 No hay partidos en vivo en este momento.</div>`;
-                    return;
-                }
-
-                let html = '';
-                for (let m of topLiveMatches) {
-                    const totalGoals = (m.goals.home ?? 0) + (m.goals.away ?? 0);
-                    const isLateAndOpen = m.fixture.status.elapsed >= 75 && totalGoals <= 1;
-
-                    let xgHome = (m.goals.home * 0.8 + 0.5).toFixed(2);
-                    let xgAway = (m.goals.away * 0.8 + 0.5).toFixed(2);
-
-                    html += `
-                        <div class="bg-slate-950 border border-slate-800 p-4 rounded-xl flex flex-col justify-between shadow relative">
-                            ${isLateAndOpen ? '<span class="absolute top-2 right-2 bg-amber-500/20 text-amber-300 text-[10px] px-2 py-0.5 rounded-full font-bold">🔥 Over Tardío</span>' : ''}
-                            <div class="text-xs text-emerald-400 font-semibold mb-2 flex justify-between items-center pr-20">
-                                <span class="truncate">${m.league.name}</span>
-                                <span class="bg-red-500/20 text-red-400 px-2 py-0.5 rounded-full animate-pulse">${m.fixture.status.elapsed || '1er T'}' VIVO</span>
-                            </div>
-                            <div class="flex items-center justify-between my-2">
-                                <div class="flex items-center gap-2 w-4/12">
-                                    <img src="${m.teams.home.logo}" class="w-6 h-6 object-contain">
-                                    <span class="text-xs font-medium truncate">${m.teams.home.name}</span>
-                                </div>
-                                <div class="text-center w-4/12">
-                                    <div class="text-lg font-bold bg-slate-900 px-3 py-1 rounded-lg border border-slate-800 text-emerald-300 inline-block">
-                                        ${m.goals.home} - ${m.goals.away}
-                                    </div>
-                                    <div class="text-[10px] text-slate-400 mt-1 font-mono">xG: ${xgHome} - ${xgAway}</div>
-                                </div>
-                                <div class="flex items-center gap-2 w-4/12 justify-end text-right">
-                                    <span class="text-xs font-medium truncate">${m.teams.away.name}</span>
-                                    <img src="${m.teams.away.logo}" class="w-6 h-6 object-contain">
-                                </div>
-                            </div>
-                        </div>`;
-                }
-                container.innerHTML = html;
-            } catch (err) {
-                loader.classList.add('hidden');
-                container.innerHTML = `<div class="col-span-2 text-center text-red-400 py-4 text-xs">❌ Error: ${err.message}</div>`;
-            }
-        }
-
-        async function fetchUpcomingMatches() {
-            const container = document.getElementById('upcoming-container');
-            const loader = document.getElementById('upcoming-loading');
-            loader.classList.remove('hidden');
-            container.innerHTML = '';
-
-            try {
-                const today = new Date().toISOString().split('T')[0];
-                const res = await fetch(`${BASE_URL}/fixtures?date=${today}`, { headers });
-                const data = await res.json();
-                
-                loader.classList.add('hidden');
-                if (res.status !== 200 || !data.response) throw new Error("Error al obtener próximos partidos.");
-
-                const topUpcomingMatches = data.response.filter(m => 
-                    TOP_LEAGUE_IDS.includes(m.league.id) && m.fixture.status.short === 'NS'
-                );
-
-                if (topUpcomingMatches.length === 0) {
-                    container.innerHTML = `<div class="col-span-2 text-center text-slate-500 py-6 text-sm">📭 No hay más partidos programados para hoy en las ligas top.</div>`;
-                    return;
-                }
-
-                let html = '';
-                topUpcomingMatches.forEach(m => {
-                    const matchTime = new Date(m.fixture.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                    
-                    const randomSeed = (m.fixture.id % 5) * 0.05;
-                    const oddOver25 = (1.85 + randomSeed).toFixed(2);
-                    const oddBttsYes = (1.78 - randomSeed).toFixed(2);
-
-                    html += `
-                        <div class="bg-slate-950 border border-slate-800 p-4 rounded-xl flex flex-col justify-between shadow">
-                            <div class="text-xs text-sky-400 font-semibold mb-2 flex justify-between items-center">
-                                <span class="truncate">${m.league.name}</span>
-                                <span class="bg-sky-950 text-sky-300 border border-sky-800 px-2 py-0.5 rounded-full text-[10px]">⏰ ${matchTime}</span>
-                            </div>
-                            <div class="flex items-center justify-between my-2">
-                                <div class="flex items-center gap-2 w-4/12">
-                                    <img src="${m.teams.home.logo}" class="w-6 h-6 object-contain">
-                                    <span class="text-xs font-medium truncate">${m.teams.home.name}</span>
-                                </div>
-                                <div class="text-center w-4/12">
-                                    <div class="text-sm font-bold bg-slate-900 px-3 py-1 rounded-lg border border-slate-800 text-slate-400 inline-block">
-                                        VS
-                                    </div>
-                                </div>
-                                <div class="flex items-center gap-2 w-4/12 justify-end text-right">
-                                    <span class="text-xs font-medium truncate">${m.teams.away.name}</span>
-                                    <img src="${m.teams.away.logo}" class="w-6 h-6 object-contain">
-                                </div>
-                            </div>
-                            <!-- Panel de Cuotas Estimadas -->
-                            <div class="mt-3 pt-2 border-t border-slate-900 flex justify-around text-xs">
-                                <div class="bg-slate-900/80 px-2.5 py-1 rounded border border-slate-800 text-center flex-1 mr-1">
-                                    <span class="text-slate-400 block text-[10px]">Más de 2.5</span>
-                                    <span class="font-bold text-emerald-400">${oddOver25}</span>
-                                </div>
-                                <div class="bg-slate-900/80 px-2.5 py-1 rounded border border-slate-800 text-center flex-1 ml-1">
-                                    <span class="text-slate-400 block text-[10px]">Ambos Anotan (Sí)</span>
-                                    <span class="font-bold text-amber-400">${oddBttsYes}</span>
-                                </div>
-                            </div>
-                        </div>`;
-                });
-                container.innerHTML = html;
-            } catch (err) {
-                loader.classList.add('hidden');
-                container.innerHTML = `<div class="col-span-2 text-center text-red-400 py-4 text-xs">❌ Error: ${err.message}</div>`;
-            }
-        }
-
-        async function fetchFinishedMatches() {
-            const container = document.getElementById('finished-container');
-            const loader = document.getElementById('finished-loading');
-            loader.classList.remove('hidden');
-
-            try {
-                const today = new Date().toISOString().split('T')[0];
-                const res = await fetch(`${BASE_URL}/fixtures?date=${today}`, { headers });
-                const data = await res.json();
-                
-                loader.classList.add('hidden');
-                if (res.status !== 200 || !data.response) throw new Error("Error al obtener partidos.");
-
-                const topFinishedMatches = data.response.filter(m => 
-                    TOP_LEAGUE_IDS.includes(m.league.id) && m.fixture.status.short === 'FT'
-                );
-
-                calculateDayMetrics(topFinishedMatches, today);
-
-                if (topFinishedMatches.length === 0) {
-                    container.innerHTML = `<div class="col-span-2 text-center text-slate-500 py-6 text-sm">📭 No hay partidos terminados hoy para las ligas top.</div>`;
-                    return;
-                }
-
-                let html = '';
-                for (let m of topFinishedMatches) {
-                    let stats = await fetchFixtureStats(m.fixture.id);
-                    let xgH = stats ? stats.home : (m.goals.home * 0.85 + 0.3).toFixed(2);
-                    let xgA = stats ? stats.away : (m.goals.away * 0.85 + 0.3).toFixed(2);
-
-                    html += `
-                        <div class="bg-slate-950 border border-slate-800 p-4 rounded-xl flex flex-col justify-between shadow">
-                            <div class="text-xs text-indigo-400 font-semibold mb-2 flex justify-between items-center">
-                                <span class="truncate">${m.league.name}</span>
-                                <span class="bg-slate-800 text-slate-300 px-2 py-0.5 rounded-full text-[10px]">FINALIZADO (FT)</span>
-                            </div>
-                            <div class="flex items-center justify-between my-2">
-                                <div class="flex items-center gap-2 w-4/12">
-                                    <img src="${m.teams.home.logo}" class="w-6 h-6 object-contain">
-                                    <span class="text-xs font-medium truncate">${m.teams.home.name}</span>
-                                </div>
-                                <div class="text-center w-4/12">
-                                    <div class="text-lg font-bold bg-slate-900 px-3 py-1 rounded-lg border border-slate-800 text-indigo-300 inline-block">
-                                        ${m.goals.home} - ${m.goals.away}
-                                    </div>
-                                    <div class="text-[10px] text-slate-400 mt-1 font-mono">xG: ${xgH} - ${xgA}</div>
-                                </div>
-                                <div class="flex items-center gap-2 w-4/12 justify-end text-right">
-                                    <span class="text-xs font-medium truncate">${m.teams.away.name}</span>
-                                    <img src="${m.teams.away.logo}" class="w-6 h-6 object-contain">
-                                </div>
-                            </div>
-                        </div>`;
-                }
-                container.innerHTML = html;
-            } catch (err) {
-                loader.classList.add('hidden');
-                container.innerHTML = `<div class="col-span-2 text-center text-red-400 py-4 text-xs">❌ Error: ${err.message}</div>`;
-            }
-        }
-
-        function calculateDayMetrics(matches, dateStr) {
-            if (!matches.length) {
-                document.getElementById('stat-avg-goals').textContent = "0.00";
-                document.getElementById('stat-over25-rate').textContent = "0%";
-                document.getElementById('stat-btts-rate').textContent = "0%";
-                document.getElementById('stat-total-matches').textContent = "0";
-                return;
-            }
-
-            let totalGoals = 0;
-            let over25Count = 0;
-            let bttsCount = 0;
-
-            matches.forEach(m => {
-                const hGoals = m.goals.home ?? 0;
-                const aGoals = m.goals.away ?? 0;
-                const matchGoals = hGoals + aGoals;
-
-                totalGoals += matchGoals;
-                if (matchGoals > 2.5) over25Count++;
-                if (hGoals > 0 && aGoals > 0) bttsCount++;
-            });
-
-            const total = matches.length;
-            const avgGoals = (totalGoals / total).toFixed(2);
-            const over25Percentage = ((over25Count / total) * 100).toFixed(0);
-            const bttsPercentage = ((bttsCount / total) * 100).toFixed(0);
-
-            document.getElementById('stat-avg-goals').textContent = avgGoals;
-            document.getElementById('stat-over25-rate').textContent = `${over25Count}/${total} (${over25Percentage}%)`;
-            document.getElementById('stat-btts-rate').textContent = `${bttsCount}/${total} (${bttsPercentage}%)`;
-            document.getElementById('stat-total-matches').textContent = total;
-
-            // Guardar automáticamente en localStorage
-            saveToLocalStorageHistory({
-                date: dateStr,
-                totalMatches: total,
-                avgGoals: avgGoals,
-                over25: `${over25Count}/${total} (${over25Percentage}%)`,
-                btts: `${bttsCount}/${total} (${bttsPercentage}%)`
-            });
-        }
-
-        // FUNCIONES DE LOCALSTORAGE
-        function saveToLocalStorageHistory(dayData) {
-            let history = JSON.parse(localStorage.getItem('football_stats_history')) || [];
-            
-            // Reemplazar si ya existe la fecha actual, de lo contrario agregar al inicio
-            const existingIndex = history.findIndex(item => item.date === dayData.date);
-            if (existingIndex >= 0) {
-                history[existingIndex] = dayData;
-            } else {
-                history.unshift(dayData);
-            }
-
-            // Mantener un límite máximo de 30 días guardados
-            if (history.length > 30) history.pop();
-
-            localStorage.setItem('football_stats_history', JSON.stringify(history));
-            renderLocalStorageHistory();
-        }
-
-        function renderLocalStorageHistory() {
-            const container = document.getElementById('history-container');
-            let history = JSON.parse(localStorage.getItem('football_stats_history')) || [];
-
-            if (history.length === 0) {
-                container.innerHTML = `<div class="text-center text-slate-500 py-4 text-xs">📭 No hay registros guardados en el almacenamiento local.</div>`;
-                return;
-            }
-
-            let html = '';
-            history.forEach(item => {
-                html += `
-                    <div class="bg-slate-950 border border-slate-800 p-3 rounded-xl flex flex-col sm:flex-row justify-between items-start sm:items-center text-xs gap-2">
-                        <div>
-                            <span class="text-indigo-400 font-bold">📅 ${item.date}</span>
-                            <span class="text-slate-400 ml-2">(${item.totalMatches} partidos analizados)</span>
-                        </div>
-                        <div class="flex gap-4 font-mono text-[11px]">
-                            <div>Prom: <span class="text-emerald-400 font-bold">${item.avgGoals}</span></div>
-                            <div>Over 2.5: <span class="text-sky-400 font-bold">${item.over25}</span></div>
-                            <div>BTTS: <span class="text-amber-400 font-bold">${item.btts}</span></div>
-                        </div>
-                    </div>`;
-            });
-            container.innerHTML = html;
-        }
-
-        function toggleHistoryModal() {
-            const modal = document.getElementById('history-modal');
-            modal.classList.toggle('hidden');
-            if (!modal.classList.contains('hidden')) {
-                renderLocalStorageHistory();
-            }
-        }
-
-        function clearLocalStorageHistory() {
-            if (confirm("¿Estás seguro de que deseas limpiar todo el historial guardado?")) {
-                localStorage.removeItem('football_stats_history');
-                renderLocalStorageHistory();
-            }
-        }
-
-        fetchAllData();
-    </script>
+    <!-- Script Oficial de Carga de Web Components de API-SPORTS -->
+    <script type="module" src="https://widgets.api-sports.io/3.1.0/widgets.js"></script>
 </body>
 </html>
