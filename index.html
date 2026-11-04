@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>⚽ Dashboard Pro - API-SPORTS Widgets</title>
+    <title>⚽ Dashboard Pro - Ligas Top</title>
     <!-- Tailwind CSS para el diseño general de la interfaz -->
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
@@ -28,8 +28,8 @@
         
         <!-- Encabezado del Dashboard -->
         <header class="text-center mb-10 border-b border-slate-800 pb-6">
-            <h1 class="text-3xl font-extrabold text-emerald-400 mb-2">⚽ Centro de Control de Fútbol</h1>
-            <p class="text-slate-400 text-sm">Panel en tiempo real impulsado por API-SPORTS Widgets v3.1</p>
+            <h1 class="text-3xl font-extrabold text-emerald-400 mb-2">⚽ Centro de Control - Ligas Top del Mundo</h1>
+            <p class="text-slate-400 text-sm">Seguimiento exclusivo de competiciones élite (API-SPORTS Widgets v3.1)</p>
         </header>
 
         <!-- Botón de Historial Local -->
@@ -39,7 +39,7 @@
             </button>
         </div>
 
-        <!-- SECCIÓN: Métricas Rápidas y Estadísticas de la Jornada -->
+        <!-- SECCIÓN: Métricas Rápidas y Estadísticas de la Jornada (Ligas Top) -->
         <section class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-8">
             <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl text-center shadow-lg">
                 <h3 class="text-[11px] uppercase text-slate-400 font-bold mb-1">Promedio Goles / Partido</h3>
@@ -74,43 +74,46 @@
         <!-- Layout Principal en Grid -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             
-            <!-- Columna Izquierda: Partidos en Vivo, Próximos y del Día -->
+            <!-- Columna Izquierda: Partidos en Vivo y Próximos (Exclusivo Ligas Top) -->
             <div class="lg:col-span-2 space-y-8">
                 
-                <!-- Sección 1: Partidos en Vivo -->
+                <!-- Sección 1: Partidos en Vivo (Filtrado Ligas Top mediante parámetro data-league) -->
                 <section class="bg-slate-900 border border-slate-800 p-5 rounded-2xl shadow-xl">
                     <div class="flex justify-between items-center mb-4 border-b border-slate-800 pb-3">
                         <h2 class="text-lg font-bold text-emerald-400 flex items-center gap-2">
                             <span class="inline-block w-3 h-3 bg-red-500 rounded-full animate-ping"></span> 
-                            Partidos en Vivo
+                            Partidos en Vivo (Ligas Top)
                         </h2>
                         <button onclick="fetchAllData()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs px-3 py-1.5 rounded-lg transition font-medium">
                             🔄 Actualizar Todo
                         </button>
                     </div>
+                    <!-- Widget oficial filtrado con las ligas top (Premier, La Liga, Serie A, Bundesliga, Ligue 1, Champions) -->
                     <api-sports-widget 
                         data-type="games" 
                         data-tab="live" 
+                        data-league="39-140-135-78-61-2"
                         data-refresh="15"
                         data-show-toolbar="true"
                     ></api-sports-widget>
                 </section>
 
-                <!-- Sección 2: Próximos Partidos (Con verificación estricta de cuotas reales) -->
+                <!-- Sección 2: Próximos Partidos (Hoy - Ligas Top con Cuotas Reales Opcionales) -->
                 <section class="bg-slate-900 border border-slate-800 p-5 rounded-2xl shadow-xl">
                     <h2 class="text-lg font-bold text-sky-400 mb-4 flex items-center gap-2">
                         <span class="inline-block w-3 h-3 bg-sky-500 rounded-full"></span>
-                        Próximos Partidos - Hoy (Cuotas Reales Opcionales)
+                        Próximos Partidos - Hoy (Ligas Top)
                     </h2>
                     <div id="upcoming-loading" class="text-center py-6 text-slate-400 text-sm animate-pulse">Cargando próximos partidos...</div>
                     <div id="upcoming-container" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
                 </section>
 
-                <!-- Sección 3: Partidos del Día (General) -->
+                <!-- Sección 3: Partidos de la Jornada (Filtrado Exclusivo Ligas Top) -->
                 <section class="bg-slate-900 border border-slate-800 p-5 rounded-2xl shadow-xl">
-                    <h2 class="text-lg font-bold text-indigo-400 mb-4">📅 Partidos de la Jornada</h2>
+                    <h2 class="text-lg font-bold text-indigo-400 mb-4">📅 Partidos de la Jornada (Ligas Top)</h2>
                     <api-sports-widget 
                         data-type="games" 
+                        data-league="39-140-135-78-61-2"
                         data-show-toolbar="true"
                     ></api-sports-widget>
                 </section>
@@ -125,7 +128,7 @@
 
             </div>
 
-            <!-- Columna Derecha: Ligas y Clasificaciones -->
+            <!-- Columna Derecha: Ligas Top y Clasificaciones -->
             <div class="space-y-8">
                 
                 <!-- Sección 5: Tabla de Clasificación de la Premier League -->
@@ -138,11 +141,13 @@
                     ></api-sports-widget>
                 </section>
 
-                <!-- Sección 6: Explorador de Ligas -->
+                <!-- Sección 6: Tabla de Clasificación de La Liga -->
                 <section class="bg-slate-900 border border-slate-800 p-5 rounded-2xl shadow-xl">
-                    <h2 class="text-lg font-bold text-purple-400 mb-4">🌍 Explorador de Ligas</h2>
+                    <h2 class="text-lg font-bold text-purple-400 mb-4">🏆 La Liga - Standings</h2>
                     <api-sports-widget 
-                        data-type="leagues"
+                        data-type="standings" 
+                        data-league="140" 
+                        data-season="2024"
                     ></api-sports-widget>
                 </section>
 
@@ -154,7 +159,7 @@
     <!-- Script Oficial de Carga de Web Components de API-SPORTS -->
     <script type="module" src="https://widgets.api-sports.io/3.1.0/widgets.js"></script>
 
-    <!-- Script de Lógica para Próximos Partidos y Cuotas Condicionales -->
+    <!-- Script de Lógica para Próximos Partidos y Cuotas Condicionales (Restringido a Ligas Top) -->
     <script>
         const API_KEY = "b87bae2028d2da2ee28c5d36a60f3ab8";
         const BASE_URL = "https://v3.football.api-sports.io";
@@ -166,7 +171,6 @@
             fetchFinishedStatsForToday();
         }
 
-        // Consultar cuotas reales solo si existen en la API
         async function fetchRealOdds(fixtureId) {
             try {
                 const res = await fetch(`${BASE_URL}/odds?fixture=${fixtureId}`, { headers });
@@ -180,8 +184,8 @@
                         let bttsMarket = null;
 
                         for (let bet of bets) {
-                            if (bet.id === 5) goalsOverUnder = bet.values; // Over/Under
-                            if (bet.id === 8) bttsMarket = bet.values;     // Ambos Anotan (BTTS)
+                            if (bet.id === 5) goalsOverUnder = bet.values;
+                            if (bet.id === 8) bttsMarket = bet.values;
                         }
 
                         let over25Odd = null;
@@ -202,10 +206,8 @@
                         }
                     }
                 }
-            } catch (e) {
-                // Silenciar error si no hay cuotas para evitar ruido en consola
-            }
-            return null; // Si no existen, retorna nulo y no se muestran
+            } catch (e) {}
+            return null;
         }
 
         async function fetchUpcomingMatches() {
@@ -235,8 +237,6 @@
                 let html = '';
                 for (let m of topUpcomingMatches) {
                     const matchTime = new Date(m.fixture.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                    
-                    // Buscar cuotas reales (si no existen, devuelve null)
                     const realOdds = await fetchRealOdds(m.fixture.id);
 
                     let oddsHtml = '';
