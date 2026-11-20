@@ -51,6 +51,118 @@
             50% { opacity: 0.55; transform: scale(1.12); }
         }
         .steam-against-icon { animation: steamPulse 1.4s ease-in-out infinite; }
+    
+
+        /* ============================================================
+           DISEÑO RESPONSIVO REAL: CELULAR / TABLET / PC
+           Se conserva el diseño móvil original y se reorganiza en pantallas grandes.
+        ============================================================ */
+        @media (min-width: 768px) {
+            html { scroll-padding-top: 6rem; }
+            body { padding-left: 1rem; padding-right: 1rem; }
+            .iphone-frame {
+                width: 100%;
+                max-width: 1100px;
+                min-height: 100vh;
+                margin: 0 auto;
+                padding: 1.25rem;
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                align-content: start;
+                align-items: start;
+                gap: 1rem;
+            }
+            .iphone-frame > header,
+            .iphone-frame > #quickNav { grid-column: 1 / -1; width: 100%; }
+            .iphone-frame > section { min-width: 0; width: 100%; }
+            .iphone-frame > #sec-setup,
+            .iphone-frame > #sec-league,
+            .iphone-frame > #sec-match,
+            .iphone-frame > #sec-results,
+            .iphone-frame > #sec-advanced,
+            .iphone-frame > #sec-parlay { align-self: start; }
+            #quickNav { top: .5rem; }
+            header { gap: 1rem; }
+            header > div:last-child { gap: .5rem; }
+            header button { white-space: nowrap; }
+            .glass-card { min-width: 0; }
+            canvas { max-width: 100%; }
+            .excel-table { min-width: 100%; }
+        }
+
+        @media (min-width: 1024px) {
+            .iphone-frame {
+                max-width: 1600px;
+                grid-template-columns: repeat(12, minmax(0, 1fr));
+                gap: 1.25rem;
+                padding: 1.5rem 2rem 2rem;
+            }
+            .iphone-frame > header,
+            .iphone-frame > #quickNav { grid-column: 1 / -1; }
+            #sec-setup { grid-column: span 5; }
+            #sec-league { grid-column: span 7; }
+            #sec-match { grid-column: span 5; }
+            #sec-results { grid-column: span 7; }
+            #sec-advanced { grid-column: span 6; }
+            #sec-parlay { grid-column: span 6; }
+            #sec-setup, #sec-league, #sec-match, #sec-results,
+            #sec-advanced, #sec-parlay { scroll-margin-top: 6rem; }
+            header { padding: 1rem !important; }
+            header h1 { font-size: 1rem; }
+            header p { font-size: .65rem; }
+            header button { font-size: .75rem !important; padding: .55rem .8rem !important; }
+            #quickNav > div:first-child { justify-content: center; gap: .65rem; }
+            #quickNav > div:first-child button { font-size: .75rem; padding: .55rem .8rem; }
+            #quickNav > div:last-child { font-size: .7rem; padding: .55rem .5rem 0; }
+            /* Más espacio para paneles y controles internos en escritorio. */
+            #sec-match .grid.grid-cols-2 { gap: .9rem; }
+            #sec-results .grid.grid-cols-2 { gap: .9rem; }
+            #sec-results .grid.grid-cols-3 { gap: .8rem; }
+            #sec-setup .glass-card,
+            #sec-league .glass-card,
+            #sec-match .glass-card,
+            #sec-results .glass-card { padding: 1rem; }
+        }
+
+        @media (min-width: 1440px) {
+            .iphone-frame { max-width: 1800px; gap: 1.5rem; padding-left: 2.5rem; padding-right: 2.5rem; }
+            #sec-setup { grid-column: span 4; }
+            #sec-league { grid-column: span 8; }
+            #sec-match { grid-column: span 5; }
+            #sec-results { grid-column: span 7; }
+        }
+
+        @media (max-width: 767px) {
+            .iphone-frame {
+                width: 100%;
+                max-width: 520px;
+                margin: 0 auto;
+                display: flex;
+                flex-direction: column;
+            }
+            .iphone-frame > header,
+            .iphone-frame > #quickNav,
+            .iphone-frame > section { width: 100%; }
+            header > div:last-child { max-width: 72%; }
+            header button { white-space: nowrap; }
+        }
+
+
+
+        /* Menú compacto de acciones: conserva las proporciones originales de la tabla. */
+        .bet-actions-cell { width:48px; min-width:48px; padding:4px !important; text-align:center; vertical-align:middle; }
+        .bet-actions-menu-wrap { position:relative; display:inline-flex; justify-content:center; }
+        .bet-actions-trigger { width:36px; height:36px; display:inline-flex; align-items:center; justify-content:center; border:1px solid rgba(148,163,184,.35); border-radius:10px; background:rgba(30,41,59,.82); color:#cbd5e1; font-size:17px; font-weight:900; touch-action:manipulation; -webkit-tap-highlight-color:transparent; }
+        .bet-actions-trigger:active { transform:scale(.96); }
+        .bet-actions-popup { position:absolute; right:0; top:calc(100% + 5px); z-index:80; width:158px; padding:5px; border:1px solid rgba(100,116,139,.55); border-radius:12px; background:#0b1422; box-shadow:0 12px 30px rgba(0,0,0,.55); display:none; }
+        .bet-actions-popup.is-open { display:block; }
+        .bet-actions-popup button { width:100%; min-height:40px; display:flex; align-items:center; gap:10px; padding:8px 10px; border:0; border-radius:8px; background:transparent; text-align:left; font-size:12px; font-weight:800; touch-action:manipulation; }
+        .bet-actions-popup button:active { background:rgba(148,163,184,.15); }
+        .bet-actions-popup .menu-share { color:#6ee7b7; }
+        .bet-actions-popup .menu-edit { color:#93c5fd; }
+        .bet-actions-popup .menu-delete { color:#fda4af; }
+        @media (max-width:768px) { .bet-actions-cell { width:44px !important; min-width:44px !important; padding:3px !important; } .bet-actions-trigger { width:34px; height:38px; } .bet-actions-popup { right:0; width:150px; } }
+
     </style>
 </head>
 <body class="min-h-screen antialiased selection:bg-emerald-500 selection:text-slate-950 flex flex-col justify-between">
@@ -345,6 +457,31 @@
                         <input type="range" id="dixonRhoRange" min="-0.15" max="0.00" step="0.01" value="-0.05" oninput="updateRhoDisplay()" class="w-full accent-indigo-500 cursor-pointer">
                     </div>
                     <p class="text-[8px] text-slate-400">Corrige la interdependencia en marcador bajo. Mueve el slider para override manual; se aplicará a todos los cálculos.</p>
+                    <div class="pt-1 space-y-1.5">
+                        <button type="button" id="poissonCalibrationModeButton" onclick="togglePoissonCalibrationMode()" class="w-full text-[10px] font-black bg-slate-700/40 hover:bg-slate-700/60 border border-slate-600 text-slate-200 px-3 py-2 rounded-lg flex items-center justify-center gap-2 transition-all active:scale-[0.98]">
+                            <i class="fa-solid fa-toggle-off text-sm"></i> <span id="poissonCalibrationModeLabel">POISSON NORMAL</span>
+                        </button>
+                        <p id="poissonCalibrationModeDetail" class="text-[8px] text-slate-400 text-center">Autocalibración desactivada: se usan las probabilidades Poisson originales.</p>
+                    </div>
+                    <div class="flex flex-wrap items-center justify-between gap-2 pt-1">
+                        <button type="button" onclick="autoCalibratePoissonFromSupabase(true)" class="text-[9px] font-black bg-indigo-500/15 hover:bg-indigo-500/25 border border-indigo-500/40 text-indigo-300 px-2.5 py-1.5 rounded-lg flex items-center gap-1.5">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i> AUTOCALIBRAR CON HISTORIAL SUPABASE
+                        </button>
+                        <span id="poissonCalibrationStatus" class="text-[8px] text-slate-400">Calibración histórica: pendiente de sesión</span>
+                    </div>
+                    <p class="text-[8px] text-slate-500">Ajusta por liga, mercado y selección exacta usando apuestas simples liquidadas de Supabase. Cada liga mantiene su propio modelo; no mezcla competiciones ni utiliza localStorage.</p>
+                    <div id="poissonReliabilityPanel" class="mt-2 p-2.5 rounded-xl border border-cyan-500/30 bg-cyan-950/15 space-y-2">
+                        <div class="flex items-center justify-between gap-2">
+                            <div class="min-w-0">
+                                <p class="text-[10px] font-black uppercase tracking-wide text-cyan-300 flex items-center gap-1.5"><i class="fa-solid fa-shield-halved"></i> Detector de fiabilidad</p>
+                                <p class="text-[8px] text-slate-400">Evalúa probabilidades registradas frente a resultados liquidados.</p>
+                            </div>
+                            <button type="button" id="poissonReliabilityRunButton" onclick="runPoissonReliabilityCheck()" class="shrink-0 text-[9px] font-black bg-cyan-500/15 hover:bg-cyan-500/25 border border-cyan-500/40 text-cyan-200 px-2.5 py-2 rounded-lg flex items-center gap-1.5"><i class="fa-solid fa-magnifying-glass-chart"></i> ANALIZAR</button>
+                        </div>
+                        <p id="poissonReliabilitySummary" class="text-[9px] text-slate-300">Pulsa ANALIZAR para evaluar tu historial de apuestas simples en Supabase.</p>
+                        <div id="poissonReliabilityResults" class="space-y-1.5"></div>
+                        <p class="text-[7px] leading-relaxed text-slate-500">Brier y Log Loss miden el error probabilístico; ECE mide la diferencia entre confianza estimada y frecuencia observada. Se requieren al menos 30 registros por selección. Es una señal basada en tus apuestas registradas, no una garantía ni una evaluación de todos los pronósticos generados.</p>
+                    </div>
                 </div>
 
                 <div class="grid grid-cols-3 gap-2 pt-1">
@@ -404,6 +541,7 @@
                             <div class="flex items-baseline justify-between mt-1">
                                 <div class="flex flex-col">
                                     <span class="text-xl font-black text-emerald-400" id="pctOver25">0.0%</span>
+                                    <span class="block text-[7px] font-mono text-slate-500 leading-tight mt-0.5" id="calDeltaOver25">Original: - · Sin ajuste</span>
                                     <span class="text-[8px] font-mono text-emerald-500/70 leading-tight" id="ciOver25">IC90: -</span>
                                 </div>
                                 <div class="text-right"><span class="block text-[8px] text-slate-400 uppercase font-bold">Cuota Justa</span><span class="text-xs font-black text-gold-400" id="oddsOver25">@0.00</span></div>
@@ -421,6 +559,7 @@
                             <div class="flex items-baseline justify-between mt-1">
                                 <div class="flex flex-col">
                                     <span class="text-xl font-black text-slate-300" id="pctUnder25">0.0%</span>
+                                    <span class="block text-[7px] font-mono text-slate-500 leading-tight mt-0.5" id="calDeltaUnder25">Original: - · Sin ajuste</span>
                                     <span class="text-[8px] font-mono text-slate-500/70 leading-tight" id="ciUnder25">IC90: -</span>
                                 </div>
                                 <div class="text-right"><span class="block text-[8px] text-slate-400 uppercase font-bold">Cuota Justa</span><span class="text-xs font-black text-slate-300" id="oddsUnder25">@0.00</span></div>
@@ -447,6 +586,7 @@
                             <div class="flex items-baseline justify-between mt-1">
                                 <div class="flex flex-col">
                                     <span class="text-xl font-black text-gold-400" id="pctBttsYes">0.0%</span>
+                                    <span class="block text-[7px] font-mono text-slate-500 leading-tight mt-0.5" id="calDeltaBttsYes">Original: - · Sin ajuste</span>
                                     <span class="text-[8px] font-mono text-gold-500/70 leading-tight" id="ciBttsYes">IC90: -</span>
                                 </div>
                                 <div class="text-right"><span class="block text-[8px] text-slate-400 uppercase font-bold">Cuota Justa</span><span class="text-xs font-black text-gold-400" id="oddsBttsYes">@0.00</span></div>
@@ -464,6 +604,7 @@
                             <div class="flex items-baseline justify-between mt-1">
                                 <div class="flex flex-col">
                                     <span class="text-xl font-black text-slate-300" id="pctBttsNo">0.0%</span>
+                                    <span class="block text-[7px] font-mono text-slate-500 leading-tight mt-0.5" id="calDeltaBttsNo">Original: - · Sin ajuste</span>
                                     <span class="text-[8px] font-mono text-slate-500/70 leading-tight" id="ciBttsNo">IC90: -</span>
                                 </div>
                                 <div class="text-right"><span class="block text-[8px] text-slate-400 uppercase font-bold">Cuota Justa</span><span class="text-xs font-black text-slate-300" id="oddsBttsNo">@0.00</span></div>
@@ -496,6 +637,7 @@
                         <div>
                             <p class="text-[9px] font-bold text-slate-400 uppercase truncate" id="name1x2Home">Local</p>
                             <p class="text-base font-black text-emerald-400 my-0.5" id="pct1x2Home">0.0%</p>
+                            <p class="text-[7px] font-mono text-slate-500 leading-tight" id="calDelta1x2Home">Original: - · Sin ajuste</p>
                             <p class="text-[7px] font-mono text-emerald-500/70" id="ciHomeWin">IC90: -</p>
                             <p class="text-[10px] font-black text-gold-400" id="odds1x2Home">@0.00</p>
                         </div>
@@ -508,6 +650,7 @@
                         <div>
                             <p class="text-[9px] font-bold text-slate-400 uppercase">Empate (X)</p>
                             <p class="text-base font-black text-slate-200 my-0.5" id="pct1x2Draw">0.0%</p>
+                            <p class="text-[7px] font-mono text-slate-500 leading-tight" id="calDelta1x2Draw">Original: - · Sin ajuste</p>
                             <p class="text-[7px] font-mono text-slate-400/70" id="ciDraw">IC90: -</p>
                             <p class="text-[10px] font-black text-slate-300" id="odds1x2Draw">@0.00</p>
                         </div>
@@ -520,6 +663,7 @@
                         <div>
                             <p class="text-[9px] font-bold text-slate-400 uppercase truncate" id="name1x2Away">Visitante</p>
                             <p class="text-base font-black text-rose-400 my-0.5" id="pct1x2Away">0.0%</p>
+                            <p class="text-[7px] font-mono text-slate-500 leading-tight" id="calDelta1x2Away">Original: - · Sin ajuste</p>
                             <p class="text-[7px] font-mono text-rose-500/70" id="ciAwayWin">IC90: -</p>
                             <p class="text-[10px] font-black text-gold-400" id="odds1x2Away">@0.00</p>
                         </div>
@@ -565,13 +709,13 @@
 
             <details class="glass-card rounded-2xl border border-slate-800 overflow-hidden group">
                 <summary class="p-3 cursor-pointer flex items-center justify-between font-black text-xs text-white select-none">
-                    <div class="flex items-center gap-2"><i class="fa-solid fa-table-cells text-emerald-400"></i><span>Matriz Exacta de Goles (0 – 6+)</span></div>
+                    <div class="flex items-center gap-2"><i class="fa-solid fa-table-cells text-emerald-400"></i><span>Matriz Exacta de Goles (0 – 10)</span></div>
                     <i class="fa-solid fa-chevron-down text-slate-400 text-xs transition-transform group-open:rotate-180"></i>
                 </summary>
                 <div class="p-3 pt-0 overflow-x-auto">
-                    <p class="text-[9px] text-slate-400 mb-2">Filas: Local | Columnas: Visitante</p>
+                    <p class="text-[9px] text-slate-400 mb-2">Filas: Local (0–10) | Columnas: Visitante (0–10)</p>
                     <table class="w-full text-[10px] text-center border-collapse">
-                        <thead><tr class="bg-slate-900 text-slate-400 font-bold border-b border-slate-800"><th class="p-1">L \ V</th><th class="p-1">0</th><th class="p-1">1</th><th class="p-1">2</th><th class="p-1">3</th><th class="p-1">4</th><th class="p-1">5+</th></tr></thead>
+                        <thead id="matrixHeader"><tr class="bg-slate-900 text-slate-400 font-bold border-b border-slate-800"><th class="p-1">L \ V</th><th class="p-1">0</th><th class="p-1">1</th><th class="p-1">2</th><th class="p-1">3</th><th class="p-1">4</th><th class="p-1">5+</th></tr></thead>
                         <tbody id="matrixBody" class="divide-y divide-slate-800/40"></tbody>
                     </table>
                 </div>
@@ -579,7 +723,7 @@
 
             <section class="glass-card rounded-2xl p-3.5 space-y-2.5">
                 <div class="flex items-center justify-between border-b border-slate-800 pb-1.5">
-                    <div class="flex items-center gap-2"><i class="fa-solid fa-chart-column text-emerald-400 text-xs"></i><h2 class="font-extrabold text-xs text-white">Distribución de Goles Exactos</h2></div>
+                    <div class="flex items-center gap-2"><i class="fa-solid fa-chart-column text-emerald-400 text-xs"></i><h2 class="font-extrabold text-xs text-white">Distribución de Goles Exactos (0–10)</h2></div>
                 </div>
                 <div class="h-44 w-full"><canvas id="goalsChart"></canvas></div>
             </section>
@@ -834,7 +978,35 @@
                     </div>
                 </div>
 
-                <details class="bg-slate-900/90 rounded-xl border border-emerald-500/40 bg-gradient-to-r from-slate-900 via-emerald-950/20 to-slate-900 overflow-hidden group" open>
+                <!-- AUDITORÍA ESTADÍSTICA BETAGS VIP PRO -->
+                <details id="betagsAuditPanel" class="bg-slate-950/70 rounded-xl border border-cyan-500/40 overflow-hidden group">
+                    <summary class="p-3 cursor-pointer flex items-center justify-between select-none">
+                        <div class="flex items-center gap-2"><i class="fa-solid fa-microscope text-cyan-300"></i><span class="text-xs font-black text-white uppercase">Auditoría estadística BETAGS</span><span id="auditStatusBadge" class="text-[8px] font-black px-2 py-1 rounded-full border border-amber-500/40 bg-amber-500/10 text-amber-300">PENDIENTE</span></div>
+                        <div class="flex items-center gap-2"><button type="button" onclick="event.preventDefault();event.stopPropagation();runBetagsAudit()" class="text-[9px] font-black bg-cyan-500/15 border border-cyan-500/40 text-cyan-200 px-2.5 py-1.5 rounded-lg"><i class="fa-solid fa-rotate mr-1"></i>ACTUALIZAR</button><i class="fa-solid fa-chevron-down text-cyan-300 text-xs transition-transform group-open:rotate-180"></i></div>
+                    </summary>
+                    <div class="p-3 pt-0 space-y-3">
+                        <p id="auditScopeNotice" class="text-[9px] leading-relaxed text-slate-400">Auditoría del bankroll activo. Se evalúan apuestas simples liquidadas; los parlays y pendientes quedan fuera de las métricas predictivas.</p>
+                        <div id="auditKpiGrid" class="grid grid-cols-2 sm:grid-cols-4 gap-2"></div>
+                        <div class="rounded-lg border border-slate-700 bg-slate-900/70 p-2 space-y-1">
+                            <div class="flex justify-between items-center gap-2"><span class="text-[9px] font-black text-white">CALIDAD PROBABILÍSTICA</span><span id="auditReliabilityLabel" class="text-[8px] font-black text-amber-300">SIN EVALUAR</span></div>
+                            <div id="auditReliabilityMetrics" class="grid grid-cols-3 gap-2 text-center"></div>
+                            <p class="text-[8px] text-slate-500">Brier y Log Loss: menor es mejor. ECE: menor indica mejor correspondencia entre probabilidades y frecuencias observadas. Se calculan con la probabilidad guardada al apostar.</p>
+                        </div>
+                        <div class="rounded-lg border border-slate-700 bg-slate-900/70 p-2 space-y-2">
+                            <div class="flex items-center justify-between"><span class="text-[9px] font-black text-white">PROGRESO DE MUESTRA</span><span id="auditSampleCount" class="text-[9px] text-cyan-300 font-black">0 / 500</span></div>
+                            <div class="h-2 rounded-full bg-slate-800 overflow-hidden"><div id="auditSampleProgress" class="h-full bg-gradient-to-r from-cyan-500 to-emerald-400 rounded-full" style="width:0%"></div></div>
+                            <div id="auditMilestones" class="grid grid-cols-4 gap-1 text-center"></div>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                            <div class="rounded-lg border border-slate-700 bg-slate-900/70 p-2"><div class="text-[9px] font-black text-white mb-1">POR LIGA</div><div class="overflow-x-auto"><table class="w-full text-[8px]"><thead class="text-slate-500"><tr><th class="text-left">Liga</th><th>n</th><th>WR</th><th>Yield</th><th>P&amp;L</th></tr></thead><tbody id="auditLeagueRows" class="text-slate-300"></tbody></table></div></div>
+                            <div class="rounded-lg border border-slate-700 bg-slate-900/70 p-2"><div class="text-[9px] font-black text-white mb-1">POR MERCADO</div><div class="overflow-x-auto"><table class="w-full text-[8px]"><thead class="text-slate-500"><tr><th class="text-left">Mercado</th><th>n</th><th>WR</th><th>Yield</th><th>P&amp;L</th></tr></thead><tbody id="auditMarketRows" class="text-slate-300"></tbody></table></div></div>
+                        </div>
+                        <div id="auditWarnings" class="rounded-lg border border-amber-500/30 bg-amber-950/20 p-2 text-[8px] text-amber-200 leading-relaxed"></div>
+                        <div class="flex flex-wrap gap-2"><button type="button" onclick="exportBetagsAuditCSV()" class="text-[9px] font-black bg-emerald-500/15 border border-emerald-500/40 text-emerald-300 px-3 py-2 rounded-lg"><i class="fa-solid fa-file-csv mr-1"></i>EXPORTAR AUDITORÍA CSV</button><button type="button" onclick="runBetagsAudit(true)" class="text-[9px] font-black bg-slate-700/50 border border-slate-600 text-slate-200 px-3 py-2 rounded-lg"><i class="fa-solid fa-arrows-rotate mr-1"></i>RECALCULAR TODO</button></div>
+                    </div>
+                </details>
+
+                <details class="bg-slate-900/90 rounded-xl border border-emerald-500/40 bg-gradient-to-r from-slate-900 via-emerald-950/20 to-slate-900 overflow-hidden group">
                     <summary class="p-3 cursor-pointer flex items-center justify-between select-none"><div class="flex items-center gap-1.5"><i class="fa-solid fa-trophy text-gold-400 text-xs"></i><span class="text-xs font-black text-white uppercase">Rendimiento por Liga</span></div><div class="flex items-center gap-2"><span id="leaguePerformanceBadge" class="text-[9px] font-black bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full border border-emerald-500/30">Desglose</span><i class="fa-solid fa-chevron-down text-emerald-400 text-xs transition-transform group-open:rotate-180"></i></div></summary>
                     <div class="p-3 pt-0"><div class="overflow-x-auto rounded-xl border border-slate-800 bg-slate-900/60"><table class="w-full text-[10px] text-left border-collapse excel-table"><thead class="bg-slate-900 text-slate-300 sticky top-0 font-extrabold shadow-md"><tr><th class="p-1.5">Liga</th><th class="p-1.5 text-center">Bets</th><th class="p-1.5 text-center">WR</th><th class="p-1.5 text-center">Yield</th><th class="p-1.5 text-center">P&L</th></tr></thead><tbody id="leaguePerformanceTableBody" class="divide-y divide-slate-800/60 font-medium text-slate-200"></tbody></table></div></div>
                 </details>
@@ -844,7 +1016,7 @@
                 </details>
 
                 <!-- === CURVA P&L (DESPLEGABLE) === -->
-                <details class="bg-slate-900/80 rounded-xl border border-slate-800 overflow-hidden group" open ontoggle="onChartDetailsToggle(this)">
+                <details class="bg-slate-900/80 rounded-xl border border-slate-800 overflow-hidden group" ontoggle="onChartDetailsToggle(this)">
                     <summary class="p-3 cursor-pointer flex items-center justify-between select-none">
                         <div class="flex items-center gap-2">
                             <i class="fa-solid fa-chart-line text-emerald-400 text-xs"></i>
@@ -866,7 +1038,7 @@
                 </details>
 
                 <!-- === MOVIMIENTO DE LÍNEA & CLV (DESPLEGABLE) === -->
-                <details class="bg-slate-900/80 rounded-xl border border-indigo-500/40 overflow-hidden group" open ontoggle="onChartDetailsToggle(this)">
+                <details class="bg-slate-900/80 rounded-xl border border-indigo-500/40 overflow-hidden group" ontoggle="onChartDetailsToggle(this)">
                     <summary class="p-3 cursor-pointer flex items-center justify-between select-none">
                         <div class="flex items-center gap-2">
                             <i class="fa-solid fa-chart-line text-indigo-400 text-xs"></i>
@@ -899,6 +1071,15 @@
                     </div>
                 </details>
                 <div class="space-y-2">
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 rounded-xl border border-emerald-500/30 bg-emerald-950/15 p-2">
+                        <div class="min-w-0">
+                            <div class="text-[11px] font-black text-emerald-300"><i class="fa-solid fa-share-nodes mr-1.5"></i>RESUMEN DIARIO</div>
+                            <div class="text-[9px] text-slate-400">Genera una tarjeta con las apuestas de hoy guardadas en esta bitácora.</div>
+                        </div>
+                        <button onclick="shareDailyBetSummary()" class="shrink-0 bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 text-slate-950 font-black text-[10px] px-3.5 py-2 rounded-xl shadow-lg shadow-emerald-500/10 flex items-center justify-center gap-2 active:scale-95">
+                            <i class="fa-solid fa-image"></i> COMPARTIR RESUMEN DE HOY
+                        </button>
+                    </div>
                     <div class="flex items-center justify-between border-b border-slate-800 pb-2">
                         <div class="flex items-center gap-1.5 bg-slate-900/80 p-1 rounded-xl border border-slate-800">
                             <button id="tabBtnPending" onclick="setActiveBetTab('pending')" class="px-3 py-1.5 rounded-lg text-xs font-black transition-all flex items-center gap-1.5 bg-amber-500 text-slate-950 shadow-md"><i class="fa-solid fa-clock"></i> Pendientes <span id="badgePendingCount" class="ml-1 px-1.5 bg-slate-950/40 text-amber-300 rounded-full text-[10px]">0</span></button>
@@ -1265,13 +1446,22 @@
                 </div>
                 <div><label class="block text-[10px] font-bold text-slate-400 mb-1" id="logMatchLabel">Partido</label><input type="text" id="logMatch" class="w-full bg-inputBg border border-slate-700 rounded-xl px-2.5 py-1.5 text-xs text-white font-bold"></div>
                 <div class="grid grid-cols-2 gap-2" id="logSingleFieldsContainer">
-                    <div><label class="block text-[10px] font-bold text-slate-400 mb-1">Mercado</label><input type="text" id="logMarket" oninput="checkSelectionHistoricalProfit()" class="w-full bg-inputBg border border-slate-700 rounded-xl px-2.5 py-1.5 text-xs text-white font-bold"></div>
-                    <div><label class="block text-[10px] font-bold text-slate-400 mb-1">Selección</label><input type="text" id="logSelection" oninput="checkSelectionHistoricalProfit()" class="w-full bg-inputBg border border-slate-700 rounded-xl px-2.5 py-1.5 text-xs text-white font-bold"></div>
+                    <div><label class="block text-[10px] font-bold text-slate-400 mb-1">Mercado</label><input type="text" id="logMarket" oninput="checkSelectionHistoricalProfit(); updateBetModalConfidence()" class="w-full bg-inputBg border border-slate-700 rounded-xl px-2.5 py-1.5 text-xs text-white font-bold"></div>
+                    <div><label class="block text-[10px] font-bold text-slate-400 mb-1">Selección</label><input type="text" id="logSelection" oninput="checkSelectionHistoricalProfit(); updateBetModalConfidence()" class="w-full bg-inputBg border border-slate-700 rounded-xl px-2.5 py-1.5 text-xs text-white font-bold"></div>
                 </div>
                 <div class="grid grid-cols-3 gap-2">
                     <div><label class="block text-[10px] font-bold text-slate-400 mb-1">Prob. (%)</label><input type="number" step="0.1" id="logProb" oninput="calculateLogEv(); scheduleBetModalInlineMc();" class="w-full bg-inputBg border border-slate-700 rounded-xl px-2 py-1.5 text-xs text-emerald-400 font-bold text-center"></div>
                     <div><label class="block text-[10px] font-bold text-slate-400 mb-1">Cuota Justa</label><input type="number" step="0.01" id="logFairOdds" readonly class="w-full bg-slate-900 border border-slate-800 rounded-xl px-2 py-1.5 text-xs text-gold-400 font-bold text-center"></div>
                     <div><label class="block text-[10px] font-bold text-slate-400 mb-1">Cuota Casa</label><input type="number" step="0.01" id="logBookieOdds" oninput="calculateLogEv(); scheduleBetModalInlineMc();" class="w-full bg-inputBg border border-slate-700 rounded-xl px-2 py-1.5 text-xs text-emerald-300 font-bold text-center"></div>
+                </div>
+                <div id="betModalConfidencePanel" class="bg-indigo-950/30 border border-indigo-500/35 rounded-xl p-2.5 space-y-1.5">
+                    <div class="flex items-center justify-between gap-2">
+                        <span class="text-[10px] font-black uppercase tracking-wide text-indigo-200"><i class="fa-solid fa-shield-halved mr-1 text-indigo-400"></i>Confianza de esta selección</span>
+                        <span id="betModalConfidenceBadge" class="text-[9px] font-black px-2 py-1 rounded-lg border border-slate-600 bg-slate-800 text-slate-300">PENDIENTE</span>
+                    </div>
+                    <p id="betModalConfidenceDetail" class="text-[9px] leading-relaxed text-slate-300">Calcula las probabilidades y selecciona un mercado compatible para consultar su IC90.</p>
+                    <p id="betModalConfidenceRange" class="text-[8px] font-mono text-indigo-200">IC90: -</p>
+                    <p class="text-[7px] leading-relaxed text-slate-500">Este nivel refleja la amplitud del intervalo estimado del modelo, no la probabilidad de ganar ni una garantía. Si no existe IC específico para la selección, se mostrará como no disponible.</p>
                 </div>
                 <!-- === CLV INPUT FIELD === -->
                 <div class="grid grid-cols-2 gap-2 bg-indigo-950/30 p-2 rounded-xl border border-indigo-500/30">
@@ -1348,6 +1538,9 @@
                 <div class="grid grid-cols-2 gap-2">
                     <div><label class="block text-[10px] font-bold text-slate-400 mb-1">Casa</label><select id="logBookmaker" class="w-full bg-inputBg border border-slate-700 rounded-xl px-2 py-1.5 text-xs text-slate-200 font-bold"><option value="Bet365">Bet365</option><option value="Caliente">Caliente</option><option value="1xBet">1xBet</option><option value="Codere">Codere</option><option value="Otra">Otra</option></select></div>
                     <div><label class="block text-[10px] font-bold text-slate-400 mb-1">Estado</label><select id="logStatus" class="w-full bg-inputBg border border-slate-700 rounded-xl px-2 py-1.5 text-xs text-slate-200 font-bold"><option value="PENDING">Pendiente</option><option value="WON">Ganada</option><option value="LOST">Perdida</option><option value="VOID">Nula</option><option value="HALF_WON">½ Ganada</option><option value="HALF_LOST">½ Perdida</option></select></div>
+                </div>
+                <div class="bg-amber-950/25 border border-amber-500/30 p-2 rounded-xl text-[9px] text-amber-200">
+                    <i class="fa-solid fa-shield-halved mr-1"></i><b>Protección antiduplicados:</b> BETAGS detectará registros coincidentes y pedirá confirmación antes de permitir guardar otro igual.
                 </div>
                 <div class="bg-teal-950/20 border border-teal-500/30 p-2.5 rounded-xl space-y-1">
                     <label class="block text-[10px] font-black text-teal-300 uppercase">Destino</label>
@@ -1920,6 +2113,7 @@ GP W D L GF GA GD Pts PPG
 
                 setSyncStatus('synced');
                 showToast('☁️ Sincronización inicial completada.');
+                if (poissonCalibrationEnabled) await autoCalibratePoissonFromSupabase(false);
                 startAutoSync();
             } catch(e) {
                 console.warn('Initial sync error:', e);
@@ -2020,6 +2214,12 @@ GP W D L GF GA GD Pts PPG
                 } else if (event === 'SIGNED_OUT') {
                     currentUser = null;
                     hasDoneInitialSync = false;
+                    poissonHistoricalCalibration.ready = false;
+                    poissonHistoricalCalibration.markets = {};
+                    poissonHistoricalCalibration.selections = {};
+                    poissonHistoricalCalibration.totalCount = 0;
+                    poissonHistoricalCalibration.selections = {};
+                                    updatePoissonCalibrationStatus('Inicia sesión para consultar el historial de Supabase.');
                     stopAutoSync();
                     updateAuthUI();
                 }
@@ -2097,6 +2297,7 @@ GP	W	D	L	GF	GA	GD	Pts	PPG
         let betLogData = [];
         let parallelBetLogData = [];
         let currentCalculatedProbs = {};
+        let betModalIsEditing = false;
         let matchMatrices = {};
         let activeBetTab = 'pending';
         let currentCalendarDate = new Date();
@@ -2387,8 +2588,8 @@ GP	W	D	L	GF	GA	GD	Pts	PPG
                 if (matrixInfo && allHaveTypes) {
                     const matrix = matrixInfo.matrix;
                     let matchProb = 0;
-                    for (let h = 0; h <= 6; h++) {
-                        for (let a = 0; a <= 6; a++) {
+                    for (let h = 0; h <= POISSON_MAX_GOALS; h++) {
+                        for (let a = 0; a <= POISSON_MAX_GOALS; a++) {
                             if (group.every(sel => satisfiedH(h, a, sel))) {
                                 matchProb += matrix[h][a];
                             }
@@ -3304,10 +3505,11 @@ GP	W	D	L	GF	GA	GD	Pts	PPG
             showToast("CSV exportado.");
         }
 
-        function onLeagueSelectChange() { 
-            updateTeamSelectors(); 
+        function onLeagueSelectChange() {
+            updateTeamSelectors();
             calculateLeagueAverages();
-            calculatePoisson(); 
+            updatePoissonCalibrationLeagueStatus();
+            calculatePoisson();
         }
 
         function updateTeamSelectors() {
@@ -3380,7 +3582,92 @@ GP	W	D	L	GF	GA	GD	Pts	PPG
             showToast(`Stake Kelly 1/4: $${recommendedStake}`);
         }
 
+        // Confianza por selección: utiliza el IC90 específico ya calculado por Poisson.
+        // No convierte la probabilidad de acierto en un supuesto nivel de confianza.
+        function getBetModalConfidenceKey(market, selection) {
+            const m = String(market || '').toLowerCase();
+            const s = String(selection || '').toLowerCase();
+            if (m.includes('over / under') || m.includes('over/under')) {
+                if (s.includes('over 2.5')) return 'over25';
+                if (s.includes('under 2.5')) return 'under25';
+            }
+            if (m.includes('ambos anotan') || m.includes('btts')) {
+                if (s.includes('si') || s.includes('sí') || s.includes('yes')) return 'bttsYes';
+                if (s.includes('no')) return 'bttsNo';
+            }
+            if (m.includes('resultado final') || m.includes('1x2')) {
+                if (s.includes('empate') || s === 'x') return 'draw';
+                const home = (document.getElementById('homeName')?.value || 'Local').trim().toLowerCase();
+                const away = (document.getElementById('awayName')?.value || 'Visitante').trim().toLowerCase();
+                if (s.includes('gana') && home && s.includes(home)) return 'homeWin';
+                if (s.includes('gana') && away && s.includes(away)) return 'awayWin';
+                if (s === 'local' || s === 'home') return 'homeWin';
+                if (s === 'visitante' || s === 'away') return 'awayWin';
+            }
+            return null;
+        }
+
+        function renderBetModalConfidence(label, detail, range, tone) {
+            const badge = document.getElementById('betModalConfidenceBadge');
+            const detailEl = document.getElementById('betModalConfidenceDetail');
+            const rangeEl = document.getElementById('betModalConfidenceRange');
+            if (!badge || !detailEl || !rangeEl) return;
+            badge.textContent = label;
+            detailEl.textContent = detail;
+            rangeEl.textContent = range;
+            const tones = {
+                high: 'bg-emerald-500/15 text-emerald-300 border-emerald-500/40',
+                medium: 'bg-amber-500/15 text-amber-300 border-amber-500/40',
+                low: 'bg-rose-500/15 text-rose-300 border-rose-500/40',
+                neutral: 'bg-slate-800 text-slate-300 border-slate-600'
+            };
+            badge.className = 'text-[9px] font-black px-2 py-1 rounded-lg border ' + (tones[tone] || tones.neutral);
+        }
+
+        function updateBetModalConfidence() {
+            const marketEl = document.getElementById('logMarket');
+            const selectionEl = document.getElementById('logSelection');
+            if (!marketEl || !selectionEl) return;
+            if (betModalIsEditing) {
+                renderBetModalConfidence('NO DISPONIBLE', 'Esta es una apuesta histórica. No se reutiliza el intervalo del partido que esté cargado actualmente.', 'IC90: no asociado a este registro', 'neutral');
+                return;
+            }
+            const key = getBetModalConfidenceKey(marketEl.value, selectionEl.value);
+            const ci = key && currentCalculatedProbs && currentCalculatedProbs.ci ? currentCalculatedProbs.ci[key] : null;
+            if (!ci || !Number.isFinite(Number(ci.p10)) || !Number.isFinite(Number(ci.p90))) {
+                renderBetModalConfidence('NO DISPONIBLE', 'No hay un IC90 específico para esta selección. Calcula el partido o elige una selección compatible (1X2, Over/Under 2.5 o BTTS).', 'IC90: -', 'neutral');
+                return;
+            }
+            const low = Math.max(0, Math.min(1, Number(ci.p10)));
+            const high = Math.max(low, Math.min(1, Number(ci.p90)));
+            const widthPoints = (high - low) * 100;
+            let label = 'BAJA', tone = 'low';
+            if (widthPoints <= 12) { label = 'ALTA'; tone = 'high'; }
+            else if (widthPoints <= 22) { label = 'MODERADA'; tone = 'medium'; }
+            let sampleText = 'Muestra base asumida: 10 partidos por equipo';
+            try {
+                const mp = getCurrentMatchMp();
+                const hasHome = Number(mp.mpHome) > 0;
+                const hasAway = Number(mp.mpAway) > 0;
+                if (hasHome && hasAway) {
+                    sampleText = `Muestra usada: ${mp.mpHome} partidos local · ${mp.mpAway} partidos visitante`;
+                } else if (hasHome || hasAway) {
+                    sampleText = `Muestra parcial: ${hasHome ? mp.mpHome : 10} local · ${hasAway ? mp.mpAway : 10} visitante (10 asumidos donde faltan datos)`;
+                    if (tone === 'high') { label = 'MODERADA'; tone = 'medium'; }
+                }
+            } catch (e) {
+                console.warn('No se pudo leer el tamaño de muestra para el indicador de confianza:', e);
+            }
+            renderBetModalConfidence(
+                label,
+                `Amplitud del IC90: ${widthPoints.toFixed(1)} puntos porcentuales. ${sampleText}.`,
+                `IC90: ${(low * 100).toFixed(1)}% – ${(high * 100).toFixed(1)}%`,
+                tone
+            );
+        }
+
         function openLogBetModal(market = '', selection = '', prob = 0) {
+            betModalIsEditing = false;
             const homeName = document.getElementById('homeName').value.trim() || 'Local';
             const awayName = document.getElementById('awayName').value.trim() || 'Visitante';
             const activeLeague = document.getElementById('activeLeagueSelect').value || DEFAULT_LEAGUE_NAME;
@@ -3393,6 +3680,7 @@ GP	W	D	L	GF	GA	GD	Pts	PPG
             document.getElementById('logMarket').value = market || 'Ganador Partido';
             document.getElementById('logSelection').value = selection || homeName;
             document.getElementById('logProb').value = prob ? (prob * 100).toFixed(1) : '50.0';
+            updateBetModalConfidence();
             const fairOdds = prob ? (1 / prob).toFixed(2) : '2.00';
             document.getElementById('logFairOdds').value = fairOdds;
             document.getElementById('logBookieOdds').value = fairOdds;
@@ -3416,6 +3704,7 @@ GP	W	D	L	GF	GA	GD	Pts	PPG
         }
 
         function editBetInLog(index) {
+            betModalIsEditing = true;
             const item = betLogData[index];
             if (!item) return;
             document.getElementById('editBetIndex').value = index;
@@ -3427,6 +3716,7 @@ GP	W	D	L	GF	GA	GD	Pts	PPG
             document.getElementById('logMarket').value = item.market;
             document.getElementById('logSelection').value = item.selection;
             document.getElementById('logProb').value = item.prob;
+            updateBetModalConfidence();
             document.getElementById('logFairOdds').value = item.fairOdds;
             document.getElementById('logBookieOdds').value = item.bookieOdds;
             document.getElementById('logClosingOdds').value = item.closingOdds || '';
@@ -3792,7 +4082,33 @@ GP	W	D	L	GF	GA	GD	Pts	PPG
             };
         }
 
+        // === PROTECCIÓN ANTIDUPLICADOS BETAGS ===
+        // Evita dobles clics y registros repetidos de la misma apuesta.
+        let betSaveInProgress = false;
+        function normalizeBetDuplicateField(value) {
+            return String(value ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+                .toLowerCase().replace(/\s+/g, ' ').trim();
+        }
+        function buildBetDuplicateKey(bet) {
+            return [
+                bet.bankrollId || '', bet.date || '', bet.isParlay ? 'parlay' : 'single',
+                bet.league || '', bet.match || '', bet.market || '', bet.selection || '',
+                bet.bookmaker || '', Number(bet.stake || 0).toFixed(2)
+            ].map(normalizeBetDuplicateField).join('|');
+        }
+        function findDuplicateBet(candidate, editingIndex = -1) {
+            const key = buildBetDuplicateKey(candidate);
+            return betLogData.findIndex((existing, i) => i !== editingIndex && buildBetDuplicateKey(existing) === key);
+        }
         function saveBetToLog() {
+            if (betSaveInProgress) {
+                showToast('Guardado en proceso. Espera un momento para evitar duplicados.');
+                return;
+            }
+            betSaveInProgress = true;
+            const saveButton = document.querySelector('#logBetModal button[onclick="saveBetToLog()"]');
+            if (saveButton) { saveButton.disabled = true; saveButton.dataset.originalText = saveButton.innerHTML; saveButton.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Guardando'; }
+            try {
             const index = parseInt(document.getElementById('editBetIndex').value);
             const isParlay = document.getElementById('logIsParlay').value === "true";
             const prob = parseFloat(document.getElementById('logProb').value) || 0;
@@ -3803,7 +4119,7 @@ GP	W	D	L	GF	GA	GD	Pts	PPG
             const parallelOption = document.getElementById('logParallelOption').value;
             const sendToParallel = (parallelOption === 'both');
             const betRecord = {
-                id: index >= 0 ? betLogData[index].id : Date.now(),
+                id: index >= 0 ? betLogData[index].id : `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
                 bankrollId: index >= 0 ? (betLogData[index].bankrollId || bankrollsData[0].id) : activeBankrollId,
                 isParlay,
                 date: document.getElementById('logDate').value || new Date().toISOString().slice(0, 10),
@@ -3822,6 +4138,23 @@ GP	W	D	L	GF	GA	GD	Pts	PPG
                 closingOdds: closingOdds > 1 ? closingOdds.toFixed(2) : '',
                 clv: clv !== null ? clv.toFixed(2) : ''
             };
+            // Un registro con misma fecha, partido, mercado, selección, casa y stake
+            // se considera duplicado. Para editar se excluye el propio registro.
+            const duplicateIndex = findDuplicateBet(betRecord, index);
+            if (duplicateIndex >= 0) {
+                const duplicate = betLogData[duplicateIndex];
+                const duplicateDate = duplicate.date || 'fecha no disponible';
+                const proceed = confirm(
+                    `POSIBLE APUESTA DUPLICADA\n\n` +
+                    `${duplicate.match || 'Partido'} · ${duplicate.market || 'Mercado'} · ${duplicate.selection || 'Selección'}\n` +
+                    `Fecha: ${duplicateDate} · Casa: ${duplicate.bookmaker || 'Sin casa'} · Stake: $${Number(duplicate.stake || 0).toFixed(2)}\n\n` +
+                    `Ya existe un registro con estos datos. ¿Deseas guardarla de todos modos?`
+                );
+                if (!proceed) {
+                    showToast('Apuesta duplicada bloqueada. No se guardó ningún registro.');
+                    return;
+                }
+            }
             if (index >= 0) {
                 betLogData[index] = betRecord;
                 const pIndex = parallelBetLogData.findIndex(b => b.id === betRecord.id);
@@ -3854,11 +4187,33 @@ GP	W	D	L	GF	GA	GD	Pts	PPG
             } else {
                 showToast(sendToParallel ? "¡Guardada en ambas bitácoras!" : "¡Guardada!");
             }
+            } finally {
+                betSaveInProgress = false;
+                if (saveButton) { saveButton.disabled = false; saveButton.innerHTML = saveButton.dataset.originalText || 'Guardar'; }
+            }
         }
+
+        function closeBetActionsMenus() {
+            document.querySelectorAll('.bet-actions-popup.is-open').forEach(menu => menu.classList.remove('is-open'));
+        }
+        function toggleBetActionsMenu(event, trigger) {
+            if (event) { event.preventDefault(); event.stopPropagation(); }
+            const menu = trigger && trigger.parentElement ? trigger.parentElement.querySelector('.bet-actions-popup') : null;
+            if (!menu) return;
+            const wasOpen = menu.classList.contains('is-open');
+            closeBetActionsMenus();
+            if (!wasOpen) menu.classList.add('is-open');
+        }
+        document.addEventListener('click', function(event) {
+            if (!event.target.closest('.bet-actions-menu-wrap')) closeBetActionsMenus();
+        });
 
         async function deleteBetFromLog(index) {
             const betToRemove = betLogData[index];
             if (!betToRemove) return;
+
+            const confirmed = window.confirm(`¿Seguro que deseas borrar esta apuesta?\n\n${betToRemove.match || 'Apuesta'}\n${betToRemove.market || ''} - ${betToRemove.selection || ''}\nCuota: @${betToRemove.bookieOdds || '-'} | Stake: $${betToRemove.stake || '0'}\n\nEsta acción no se puede deshacer.`);
+            if (!confirmed) return;
 
             autoSyncPaused = true;
             try {
@@ -4063,6 +4418,186 @@ GP	W	D	L	GF	GA	GD	Pts	PPG
             currentBankBets.forEach(b => { if (selectedMarket === 'ALL' || b.market === selectedMarket) { if (b.selection) selectionsSet.add(b.selection); } });
             selectionSelect.innerHTML = '<option value="ALL">⭐ Todas las Selecciones</option>';
             selectionsSet.forEach(s => { const opt = new Option(s, s); if (s === currentSelectionVal) opt.selected = true; selectionSelect.add(opt); });
+        }
+
+        // ============================================================
+        // AUDITORÍA ESTADÍSTICA BETAGS VIP PRO
+        // Evalúa el historial real del bankroll activo. No modifica apuestas,
+        // probabilidades, calibración ni parámetros del modelo.
+        // ============================================================
+        let betagsAuditLastRows = [];
+        let betagsAuditLastSummary = null;
+
+        function auditBetProfit(bet) {
+            const stake = Math.max(0, Number(bet.stake) || 0);
+            const odds = Math.max(1, Number(bet.bookieOdds) || 1);
+            if (bet.status === 'WON') return stake * (odds - 1);
+            if (bet.status === 'LOST') return -stake;
+            if (bet.status === 'HALF_WON') return (stake / 2) * (odds - 1);
+            if (bet.status === 'HALF_LOST') return -(stake / 2);
+            return 0;
+        }
+
+        function auditWilsonInterval(wins, n, z = 1.96) {
+            if (!n) return null;
+            const p = wins / n;
+            const den = 1 + (z * z / n);
+            const center = (p + z * z / (2 * n)) / den;
+            const margin = z * Math.sqrt((p * (1 - p) / n) + (z * z / (4 * n * n))) / den;
+            return { low: Math.max(0, center - margin), high: Math.min(1, center + margin) };
+        }
+
+        function auditProbabilityMetrics(rows) {
+            const samples = rows.filter(b => ['WON', 'LOST'].includes(b.status))
+                .map(b => ({ p: Number(b.prob) / 100, y: b.status === 'WON' ? 1 : 0 }))
+                .filter(x => Number.isFinite(x.p) && x.p > 0 && x.p < 1);
+            if (!samples.length) return { n: 0, brier: null, logLoss: null, ece: null };
+            let brier = 0, logLoss = 0;
+            const bins = Array.from({ length: 10 }, () => ({ n: 0, p: 0, y: 0 }));
+            samples.forEach(x => {
+                brier += (x.p - x.y) ** 2;
+                const p = Math.max(1e-6, Math.min(1 - 1e-6, x.p));
+                logLoss += -(x.y * Math.log(p) + (1 - x.y) * Math.log(1 - p));
+                const bin = bins[Math.min(9, Math.floor(x.p * 10))];
+                bin.n++; bin.p += x.p; bin.y += x.y;
+            });
+            const n = samples.length;
+            const ece = bins.reduce((sum, bin) => bin.n ? sum + (bin.n / n) * Math.abs(bin.p / bin.n - bin.y / bin.n) : sum, 0);
+            return { n, brier: brier / n, logLoss: logLoss / n, ece };
+        }
+
+        function auditAggregate(rows) {
+            const settled = rows.filter(b => ['WON', 'LOST', 'HALF_WON', 'HALF_LOST'].includes(b.status));
+            const binary = settled.filter(b => ['WON', 'LOST'].includes(b.status));
+            const wins = binary.filter(b => b.status === 'WON').length;
+            const stake = settled.reduce((s, b) => s + (Number(b.stake) || 0), 0);
+            const pnl = settled.reduce((s, b) => s + auditBetProfit(b), 0);
+            const grossWins = settled.reduce((s, b) => s + Math.max(0, auditBetProfit(b)), 0);
+            const grossLosses = Math.abs(settled.reduce((s, b) => s + Math.min(0, auditBetProfit(b)), 0));
+            const oddsRows = binary.filter(b => Number(b.bookieOdds) > 1);
+            const avgOdds = oddsRows.length ? oddsRows.reduce((s, b) => s + Number(b.bookieOdds), 0) / oddsRows.length : null;
+            const evRows = settled.filter(b => Number.isFinite(Number(b.ev)));
+            const avgEv = evRows.length ? evRows.reduce((s, b) => s + Number(b.ev), 0) / evRows.length : null;
+            const clvRows = settled.filter(b => Number(b.closingOdds) > 1 && Number(b.bookieOdds) > 1);
+            const clvs = clvRows.map(b => Number.isFinite(Number(b.clv)) ? Number(b.clv) : ((Number(b.bookieOdds) / Number(b.closingOdds) - 1) * 100));
+            const ordered = settled.slice().sort((a, b) => String(a.date || '').localeCompare(String(b.date || '')) || (Number(a.id) || 0) - (Number(b.id) || 0));
+            let cumulative = 0, peak = 0, maxDrawdown = 0, losingStreak = 0, maxLosingStreak = 0;
+            ordered.forEach(b => {
+                const result = auditBetProfit(b);
+                cumulative += result;
+                peak = Math.max(peak, cumulative);
+                maxDrawdown = Math.max(maxDrawdown, peak - cumulative);
+                if (result < 0) { losingStreak++; maxLosingStreak = Math.max(maxLosingStreak, losingStreak); }
+                else if (result > 0) losingStreak = 0;
+            });
+            const interval = auditWilsonInterval(wins, binary.length);
+            const prob = auditProbabilityMetrics(binary);
+            return { n: settled.length, binaryN: binary.length, wins, losses: binary.length - wins,
+                winRate: binary.length ? wins / binary.length * 100 : null, interval,
+                stake, pnl, yield: stake ? pnl / stake * 100 : null,
+                profitFactor: grossLosses ? grossWins / grossLosses : (grossWins ? Infinity : null),
+                avgOdds, breakEven: avgOdds ? 100 / avgOdds : null, avgEv,
+                clvCount: clvs.length, avgClv: clvs.length ? clvs.reduce((a,b)=>a+b,0)/clvs.length : null,
+                beatClv: clvs.length ? clvs.filter(x=>x>0).length/clvs.length*100 : null,
+                maxDrawdown, maxLosingStreak, prob };
+        }
+
+        function auditGroupRows(rows, keyFn) {
+            const groups = {};
+            rows.forEach(b => { const key = keyFn(b) || 'Sin clasificar'; (groups[key] ||= []).push(b); });
+            return Object.entries(groups).map(([name, group]) => ({ name, ...auditAggregate(group) })).sort((a,b)=>b.n-a.n);
+        }
+
+        function auditKpiCard(label, value, note = '', tone = 'text-white') {
+            return `<div class="rounded-lg border border-slate-700 bg-slate-900/80 p-2 text-center"><div class="text-[8px] uppercase font-bold text-slate-500">${label}</div><div class="text-sm font-black ${tone} mt-1">${value}</div>${note ? `<div class="text-[7px] text-slate-500 mt-0.5">${note}</div>` : ''}</div>`;
+        }
+
+        function renderAuditGroupTable(targetId, groups) {
+            const target = document.getElementById(targetId);
+            if (!target) return;
+            target.replaceChildren();
+            if (!groups.length) { target.innerHTML = '<tr><td colspan="5" class="py-2 text-center text-slate-500">Sin datos liquidados</td></tr>'; return; }
+            groups.slice(0, 12).forEach(g => {
+                const tr = document.createElement('tr');
+                const cells = [g.name, String(g.binaryN), g.winRate == null ? '—' : g.winRate.toFixed(1)+'%', g.yield == null ? '—' : g.yield.toFixed(1)+'%', g.pnl.toFixed(2)];
+                cells.forEach((v, i) => { const td = document.createElement('td'); td.className = 'py-1 border-b border-slate-800/70 ' + (i ? 'text-center' : 'text-left max-w-[90px] truncate'); td.textContent = v; tr.appendChild(td); });
+                target.appendChild(tr);
+            });
+        }
+
+        function runBetagsAudit() {
+            const bankId = activeBankrollId || bankrollsData[0]?.id;
+            const allBankBets = betLogData.filter(b => (b.bankrollId || bankrollsData[0]?.id) === bankId);
+            const singles = allBankBets.filter(b => !b.isParlay && b.isParlay !== 'true');
+            const settled = singles.filter(b => ['WON','LOST','HALF_WON','HALF_LOST'].includes(b.status));
+            const binary = settled.filter(b => ['WON','LOST'].includes(b.status));
+            const stats = auditAggregate(singles);
+            betagsAuditLastRows = settled;
+            betagsAuditLastSummary = stats;
+            const kpis = document.getElementById('auditKpiGrid');
+            if (!kpis) return;
+            const fmt = v => v == null || !Number.isFinite(v) ? '—' : v.toFixed(2);
+            const wrRange = stats.interval ? `${(stats.interval.low*100).toFixed(1)}–${(stats.interval.high*100).toFixed(1)}% IC95` : 'Sin muestra';
+            kpis.innerHTML = [
+                auditKpiCard('APUESTAS LIQUIDADAS', stats.n, `${stats.binaryN} binarias evaluables`),
+                auditKpiCard('WIN RATE', stats.winRate == null ? '—' : stats.winRate.toFixed(1)+'%', wrRange, 'text-emerald-300'),
+                auditKpiCard('YIELD REAL', stats.yield == null ? '—' : (stats.yield>0?'+':'')+stats.yield.toFixed(2)+'%', 'P&L / stake liquidado', stats.yield>=0?'text-emerald-300':'text-rose-300'),
+                auditKpiCard('P&L NETO', (stats.pnl>=0?'+':'')+'$'+stats.pnl.toFixed(2), 'Apuestas simples', stats.pnl>=0?'text-emerald-300':'text-rose-300'),
+                auditKpiCard('PROFIT FACTOR', stats.profitFactor == null ? '—' : (Number.isFinite(stats.profitFactor)?stats.profitFactor.toFixed(2):'∞'), 'Ganancia bruta / pérdida bruta'),
+                auditKpiCard('DRAWDOWN MÁX.', '$'+stats.maxDrawdown.toFixed(2), 'Desde máximo acumulado', 'text-amber-300'),
+                auditKpiCard('RACHA PERDEDORA', stats.maxLosingStreak, 'Consecutivas liquidadas', 'text-rose-300'),
+                auditKpiCard('CLV PROMEDIO', stats.avgClv==null?'—':(stats.avgClv>0?'+':'')+stats.avgClv.toFixed(2)+'%', `${stats.clvCount} con cuota de cierre`, stats.avgClv>=0?'text-cyan-300':'text-rose-300'),
+                auditKpiCard('BEAT CLOSE LINE', stats.beatClv==null?'—':stats.beatClv.toFixed(1)+'%', 'Solo registros con CLV'),
+                auditKpiCard('EV PROMEDIO', stats.avgEv==null?'—':(stats.avgEv>0?'+':'')+stats.avgEv.toFixed(2)+'%', 'EV guardado al registrar', 'text-emerald-300'),
+                auditKpiCard('CUOTA PROMEDIO', stats.avgOdds==null?'—':'@'+stats.avgOdds.toFixed(2), 'Mercado binario'),
+                auditKpiCard('PUNTO DE EQUILIBRIO', stats.breakEven==null?'—':stats.breakEven.toFixed(1)+'%', 'Según cuota media')
+            ].join('');
+            const reliability = document.getElementById('auditReliabilityMetrics');
+            if (reliability) reliability.innerHTML = [
+                auditKpiCard('BRIER',fmt(stats.prob.brier),'Menor es mejor'),
+                auditKpiCard('LOG LOSS',fmt(stats.prob.logLoss),'Menor es mejor'),
+                auditKpiCard('ECE',stats.prob.ece==null?'—':(stats.prob.ece*100).toFixed(2)+'%','Menor es mejor')
+            ].join('');
+            const label = document.getElementById('auditReliabilityLabel');
+            if (label) { label.textContent = stats.prob.n < 30 ? `MUESTRA CORTA · n=${stats.prob.n}` : `EVALUACIÓN · n=${stats.prob.n}`; label.className = `text-[8px] font-black ${stats.prob.n < 30 ? 'text-amber-300' : 'text-cyan-300'}`; }
+            const count = document.getElementById('auditSampleCount');
+            if (count) count.textContent = `${stats.n} / 500`;
+            const progress = document.getElementById('auditSampleProgress');
+            if (progress) progress.style.width = `${Math.min(100, stats.n/500*100)}%`;
+            const milestones = document.getElementById('auditMilestones');
+            if (milestones) milestones.innerHTML = [100,500,1000,2000].map(n=>`<div class="rounded bg-slate-800/80 p-1 ${stats.n>=n?'text-emerald-300':'text-slate-500'}"><div class="text-[8px] font-black">${n.toLocaleString('es-MX')}</div><div class="text-[7px]">${stats.n>=n?'ALCANZADO':'PENDIENTE'}</div></div>`).join('');
+            renderAuditGroupTable('auditLeagueRows', auditGroupRows(settled, b=>b.league));
+            renderAuditGroupTable('auditMarketRows', auditGroupRows(settled, b=>b.market));
+            const notice = document.getElementById('auditScopeNotice');
+            if (notice) notice.textContent = `Bankroll activo · ${singles.length} apuestas simples registradas · ${settled.length} liquidadas · ${allBankBets.length-settled.length} pendientes/otros estados · ${allBankBets.filter(b=>b.isParlay).length} parlays excluidos. Las métricas predictivas usan solo WON/LOST con probabilidad válida.`;
+            const warnings = document.getElementById('auditWarnings');
+            if (warnings) {
+                const notes = [];
+                if (stats.n < 100) notes.push(`Muestra inicial: faltan ${100-stats.n} apuestas liquidadas para el primer punto de control de 100.`);
+                else notes.push('Primer punto de control de 100 alcanzado; no equivale a evidencia definitiva de ventaja.');
+                if (stats.prob.n < 30) notes.push('Calibración no concluyente: menos de 30 observaciones binarias con probabilidad válida.');
+                if (stats.clvCount < 30) notes.push(`CLV todavía exploratorio: solo ${stats.clvCount} apuestas tienen cuota de cierre; busca una muestra mayor.`);
+                notes.push('IMPORTANTE: esta auditoría evalúa apuestas seleccionadas, no todos los pronósticos generados. La selección puede sesgar Win Rate, Brier, Log Loss y ECE.');
+                notes.push('No hay registro histórico completo de predicciones no apostadas en esta versión; por eso no se declara validación independiente del modelo.');
+                warnings.textContent = notes.join(' ');
+            }
+            const badge = document.getElementById('auditStatusBadge');
+            if (badge) { badge.textContent = stats.n >= 500 ? 'MUESTRA AMPLIA' : stats.n >= 100 ? 'SEGUIMIENTO' : 'MUESTRA INICIAL'; badge.className = `text-[8px] font-black px-2 py-1 rounded-full border ${stats.n>=500?'border-emerald-500/40 bg-emerald-500/10 text-emerald-300':'border-amber-500/40 bg-amber-500/10 text-amber-300'}`; }
+            return stats;
+        }
+
+        function exportBetagsAuditCSV() {
+            if (!betagsAuditLastRows.length) runBetagsAudit();
+            const rows = betagsAuditLastRows;
+            if (!rows.length) { showToast('No hay apuestas liquidadas para exportar.'); return; }
+            const cols = ['date','league','match','market','selection','prob','bookieOdds','stake','status','ev','closingOdds','clv'];
+            const esc = v => '"' + String(v == null ? '' : v).replace(/"/g,'""') + '"';
+            const csv = [cols.join(','), ...rows.map(r=>cols.map(k=>esc(r[k])).join(','))].join('\r\n');
+            const blob = new Blob(['\ufeff'+csv], {type:'text/csv;charset=utf-8;'});
+            const url = URL.createObjectURL(blob); const a = document.createElement('a');
+            a.href=url; a.download=`BETAGS_Auditoria_${new Date().toISOString().slice(0,10)}.csv`;
+            document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+            showToast('Auditoría exportada a CSV.');
         }
 
         function updateTrackerMetrics() {
@@ -4351,6 +4886,7 @@ GP	W	D	L	GF	GA	GD	Pts	PPG
             renderClvChart(filteredBets);
             saveBankrollsToStorage();
             saveBetLogToStorage();
+            if (typeof runBetagsAudit === 'function') runBetagsAudit();
         }
 
         // ============================================================
@@ -5230,6 +5766,20 @@ GP	W	D	L	GF	GA	GD	Pts	PPG
                 if (bet.status === 'PENDING') pendingBets.push(betWithIndex);
                 else closedBets.push(betWithIndex);
             });
+            // Orden descendente independiente para cada tabla: fecha más reciente primero.
+            // Si coinciden en fecha, usa timestamp y, como respaldo para registros antiguos,
+            // la posición de guardado en la bitácora (índice mayor = registro más reciente).
+            const newestFirst = (a, b) => {
+                const dateA = String(a.date || '');
+                const dateB = String(b.date || '');
+                if (dateA !== dateB) return dateB.localeCompare(dateA);
+                const timeA = Number(a.timestamp) || 0;
+                const timeB = Number(b.timestamp) || 0;
+                if (timeA !== timeB) return timeB - timeA;
+                return (Number(b.originalIdx) || 0) - (Number(a.originalIdx) || 0);
+            };
+            pendingBets.sort(newestFirst);
+            closedBets.sort(newestFirst);
             if (pendingBets.length === 0) pendingTbody.innerHTML = `<tr><td colspan="11" class="p-3 text-center text-slate-500 italic">No hay apuestas pendientes.</td></tr>`;
             else {
                 let htmlP = '';
@@ -5240,7 +5790,7 @@ GP	W	D	L	GF	GA	GD	Pts	PPG
                     const evVal = parseFloat(bet.ev) || 0;
                     const typeTag = bet.isParlay ? '<span class="bg-gold-500/20 text-gold-300 text-[8px] px-1 py-0.2 rounded font-black mr-1">PARLAY</span>' : '';
                     const clvBadge = getClvBadge(bet.clv);
-                    htmlP += `<tr class="bg-amber-950/10 hover:bg-amber-900/20"><td class="p-1.5 text-center text-slate-400 font-mono">${bet.date}</td><td class="p-1.5 font-bold text-white"><span class="text-[9px] text-slate-400 block">${bet.league}</span>${typeTag}${bet.market}</td><td class="p-1.5 font-bold text-amber-300"><span class="text-[9px] text-slate-400 block truncate max-w-[150px]">${bet.match}</span>${bet.selection}</td><td class="p-1.5 text-center font-bold">${bet.prob}%</td><td class="p-1.5 text-center text-emerald-400 font-bold">@${bet.bookieOdds}</td><td class="p-1.5 text-center font-bold ${evVal >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${evVal >= 0 ? '+' : ''}${bet.ev}%</td><td class="p-1.5 text-center font-bold ${clvBadge.cls}">${clvBadge.text}</td><td class="p-1.5 text-center font-bold text-white">$${bet.stake}</td><td class="p-1.5 text-center font-bold text-emerald-300">$${potReturn.toFixed(2)}</td><td class="p-1.5 text-center"><select onchange="updateBetStatusDirect(${bet.originalIdx}, this.value)" class="bg-amber-950/80 border border-amber-500/40 rounded text-[9px] font-black p-0.5 text-amber-300 focus:outline-none"><option value="PENDING" selected>⌛ Pendiente</option><option value="WON">✅ Ganada</option><option value="LOST">❌ Perdida</option><option value="VOID">↩️ Nula</option><option value="HALF_WON">½ Ganada</option><option value="HALF_LOST">½ Perdida</option></select></td><td class="p-1.5 text-center"><button onclick="editBetInLog(${bet.originalIdx})" class="text-blue-400 hover:text-blue-300 mr-1.5"><i class="fa-solid fa-pen-to-square"></i></button><button onclick="deleteBetFromLog(${bet.originalIdx})" class="text-rose-400 hover:text-rose-300"><i class="fa-solid fa-trash"></i></button></td></tr>`;
+                    htmlP += `<tr class="bg-amber-950/10 hover:bg-amber-900/20"><td class="p-1.5 text-center text-slate-400 font-mono">${bet.date}</td><td class="p-1.5 font-bold text-white"><span class="text-[9px] text-slate-400 block">${bet.league}</span>${typeTag}${bet.market}</td><td class="p-1.5 font-bold text-amber-300"><span class="text-[9px] text-slate-400 block truncate max-w-[150px]">${bet.match}</span>${bet.selection}</td><td class="p-1.5 text-center font-bold">${bet.prob}%</td><td class="p-1.5 text-center text-emerald-400 font-bold">@${bet.bookieOdds}</td><td class="p-1.5 text-center font-bold ${evVal >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${evVal >= 0 ? '+' : ''}${bet.ev}%</td><td class="p-1.5 text-center font-bold ${clvBadge.cls}">${clvBadge.text}</td><td class="p-1.5 text-center font-bold text-white">$${bet.stake}</td><td class="p-1.5 text-center font-bold text-emerald-300">$${potReturn.toFixed(2)}</td><td class="p-1.5 text-center"><select onchange="updateBetStatusDirect(${bet.originalIdx}, this.value)" class="bg-amber-950/80 border border-amber-500/40 rounded text-[9px] font-black p-0.5 text-amber-300 focus:outline-none"><option value="PENDING" selected>⌛ Pendiente</option><option value="WON">✅ Ganada</option><option value="LOST">❌ Perdida</option><option value="VOID">↩️ Nula</option><option value="HALF_WON">½ Ganada</option><option value="HALF_LOST">½ Perdida</option></select></td><td class="p-2 text-center bet-actions-cell"><div class="bet-actions-menu-wrap"><button type="button" class="bet-actions-trigger" aria-label="Abrir acciones" title="Acciones" onclick="toggleBetActionsMenu(event, this)"><i class="fa-solid fa-ellipsis-vertical" aria-hidden="true"></i></button><div class="bet-actions-popup"><button type="button" class="menu-share" onclick="closeBetActionsMenus(); shareBetCard(${bet.originalIdx})"><i class="fa-solid fa-share-nodes"></i> Compartir</button><button type="button" class="menu-edit" onclick="closeBetActionsMenus(); editBetInLog(${bet.originalIdx})"><i class="fa-solid fa-pen-to-square"></i> Editar</button><button type="button" class="menu-delete" onclick="closeBetActionsMenus(); deleteBetFromLog(${bet.originalIdx})"><i class="fa-solid fa-trash"></i> Borrar</button></div></div></td></tr>`;
                 });
                 pendingTbody.innerHTML = htmlP;
             }
@@ -5258,7 +5808,7 @@ GP	W	D	L	GF	GA	GD	Pts	PPG
                     const evVal = parseFloat(bet.ev) || 0;
                     const typeTag = bet.isParlay ? '<span class="bg-gold-500/20 text-gold-300 text-[8px] px-1 py-0.2 rounded font-black mr-1">PARLAY</span>' : '';
                     const clvBadge = getClvBadge(bet.clv);
-                    htmlC += `<tr><td class="p-1.5 text-center text-slate-400 font-mono">${bet.date}</td><td class="p-1.5 font-bold text-white"><span class="text-[9px] text-slate-400 block">${bet.league}</span>${typeTag}${bet.market}</td><td class="p-1.5 font-bold text-emerald-300"><span class="text-[9px] text-slate-400 block truncate max-w-[150px]">${bet.match}</span>${bet.selection}</td><td class="p-1.5 text-center">${bet.prob}%</td><td class="p-1.5 text-center text-emerald-400 font-bold">@${bet.bookieOdds}</td><td class="p-1.5 text-center font-bold ${evVal >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${evVal >= 0 ? '+' : ''}${bet.ev}%</td><td class="p-1.5 text-center font-bold ${clvBadge.cls}">${clvBadge.text}</td><td class="p-1.5 text-center font-bold text-white">$${bet.stake}</td><td class="p-1.5 text-center"><select onchange="updateBetStatusDirect(${bet.originalIdx}, this.value)" class="bg-inputBg border border-slate-700 rounded text-[9px] font-bold p-0.5 text-white focus:outline-none"><option value="PENDING">⌛ Pendiente</option><option value="WON" ${bet.status === 'WON' ? 'selected' : ''}>✅ Ganada</option><option value="LOST" ${bet.status === 'LOST' ? 'selected' : ''}>❌ Perdida</option><option value="VOID" ${bet.status === 'VOID' ? 'selected' : ''}>↩️ Nula</option><option value="HALF_WON" ${bet.status === 'HALF_WON' ? 'selected' : ''}>½ Ganada</option><option value="HALF_LOST" ${bet.status === 'HALF_LOST' ? 'selected' : ''}>½ Perdida</option></select></td><td class="p-1.5 text-center font-black ${pnl > 0 ? 'text-emerald-400' : (pnl < 0 ? 'text-rose-400' : 'text-slate-400')}">${pnl > 0 ? '+$' + pnl.toFixed(2) : (pnl < 0 ? '-$' + Math.abs(pnl).toFixed(2) : '$0.00')}</td><td class="p-1.5 text-center"><button onclick="editBetInLog(${bet.originalIdx})" class="text-blue-400 hover:text-blue-300 mr-1.5"><i class="fa-solid fa-pen-to-square"></i></button><button onclick="deleteBetFromLog(${bet.originalIdx})" class="text-rose-400 hover:text-rose-300"><i class="fa-solid fa-trash"></i></button></td></tr>`;
+                    htmlC += `<tr><td class="p-1.5 text-center text-slate-400 font-mono">${bet.date}</td><td class="p-1.5 font-bold text-white"><span class="text-[9px] text-slate-400 block">${bet.league}</span>${typeTag}${bet.market}</td><td class="p-1.5 font-bold text-emerald-300"><span class="text-[9px] text-slate-400 block truncate max-w-[150px]">${bet.match}</span>${bet.selection}</td><td class="p-1.5 text-center">${bet.prob}%</td><td class="p-1.5 text-center text-emerald-400 font-bold">@${bet.bookieOdds}</td><td class="p-1.5 text-center font-bold ${evVal >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${evVal >= 0 ? '+' : ''}${bet.ev}%</td><td class="p-1.5 text-center font-bold ${clvBadge.cls}">${clvBadge.text}</td><td class="p-1.5 text-center font-bold text-white">$${bet.stake}</td><td class="p-1.5 text-center"><select onchange="updateBetStatusDirect(${bet.originalIdx}, this.value)" class="bg-inputBg border border-slate-700 rounded text-[9px] font-bold p-0.5 text-white focus:outline-none"><option value="PENDING">⌛ Pendiente</option><option value="WON" ${bet.status === 'WON' ? 'selected' : ''}>✅ Ganada</option><option value="LOST" ${bet.status === 'LOST' ? 'selected' : ''}>❌ Perdida</option><option value="VOID" ${bet.status === 'VOID' ? 'selected' : ''}>↩️ Nula</option><option value="HALF_WON" ${bet.status === 'HALF_WON' ? 'selected' : ''}>½ Ganada</option><option value="HALF_LOST" ${bet.status === 'HALF_LOST' ? 'selected' : ''}>½ Perdida</option></select></td><td class="p-1.5 text-center font-black ${pnl > 0 ? 'text-emerald-400' : (pnl < 0 ? 'text-rose-400' : 'text-slate-400')}">${pnl > 0 ? '+$' + pnl.toFixed(2) : (pnl < 0 ? '-$' + Math.abs(pnl).toFixed(2) : '$0.00')}</td><td class="p-2 text-center bet-actions-cell"><div class="bet-actions-menu-wrap"><button type="button" class="bet-actions-trigger" aria-label="Abrir acciones" title="Acciones" onclick="toggleBetActionsMenu(event, this)"><i class="fa-solid fa-ellipsis-vertical" aria-hidden="true"></i></button><div class="bet-actions-popup"><button type="button" class="menu-share" onclick="closeBetActionsMenus(); shareBetCard(${bet.originalIdx})"><i class="fa-solid fa-share-nodes"></i> Compartir</button><button type="button" class="menu-edit" onclick="closeBetActionsMenus(); editBetInLog(${bet.originalIdx})"><i class="fa-solid fa-pen-to-square"></i> Editar</button><button type="button" class="menu-delete" onclick="closeBetActionsMenus(); deleteBetFromLog(${bet.originalIdx})"><i class="fa-solid fa-trash"></i> Borrar</button></div></div></td></tr>`;
                 });
                 closedTbody.innerHTML = htmlC;
             }
@@ -5374,6 +5924,7 @@ GP	W	D	L	GF	GA	GD	Pts	PPG
             const m = document.getElementById('trackerModal');
             if (show) {
                 m.classList.remove('hidden');
+                if (typeof runBetagsAudit === 'function') runBetagsAudit();
                 // Resize charts después de mostrar el modal
                 setTimeout(() => {
                     try {
@@ -5464,6 +6015,9 @@ GP	W	D	L	GF	GA	GD	Pts	PPG
             tbody.innerHTML = html;
         }
 
+        // Rango uniforme del modelo: goles exactos de 0 a 10 por equipo.
+        const POISSON_MAX_GOALS = 10;
+
         function factorial(n) { if (n === 0 || n === 1) return 1; let r = 1; for (let i = 2; i <= n; i++) r *= i; return r; }
         function poissonProb(k, lambda) { return (Math.pow(lambda, k) * Math.exp(-lambda)) / factorial(k); }
         function modifiedBesselI(k, z) { let s = 0; const kAbs = Math.abs(k); for (let m = 0; m < 40; m++) s += Math.pow(z / 2, kAbs + 2 * m) / (factorial(m) * factorial(kAbs + m)); return s; }
@@ -5489,14 +6043,14 @@ GP	W	D	L	GF	GA	GD	Pts	PPG
 
         function computeProbsFromLambdas(lh, la, rho) {
             const homeProbs = [], awayProbs = [];
-            for (let i = 0; i <= 6; i++) {
+            for (let i = 0; i <= POISSON_MAX_GOALS; i++) {
                 homeProbs[i] = poissonProb(i, lh);
                 awayProbs[i] = poissonProb(i, la);
             }
             let homeWin = 0, draw = 0, awayWin = 0;
             let over25 = 0, under25 = 0, bttsYes = 0, bttsNo = 0;
-            for (let i = 0; i <= 6; i++) {
-                for (let j = 0; j <= 6; j++) {
+            for (let i = 0; i <= POISSON_MAX_GOALS; i++) {
+                for (let j = 0; j <= POISSON_MAX_GOALS; j++) {
                     let p = homeProbs[i] * awayProbs[j];
                     if (rho !== 0) {
                         if (i === 0 && j === 0) p *= (1 - lh * la * rho);
@@ -5717,6 +6271,463 @@ GP	W	D	L	GF	GA	GD	Pts	PPG
             if (detailsContainer) detailsContainer.innerHTML = detailsHtml;
         }
 
+
+        // ============================================================
+        // AUTOCALIBRACIÓN POISSON: FUENTE EXCLUSIVA SUPABASE
+        // ============================================================
+        // El esquema de bets conserva probabilidad, resultado, mercado y selección.
+        // Platt scaling aprende parámetros independientes para cada combinación
+        // mercado + selección. No mezcla selecciones distintas ni inventa datos.
+        // Si una selección no alcanza muestra suficiente, conserva Poisson original.
+        const poissonHistoricalCalibration = {
+            ready: false, loading: false, markets: {}, selections: {}, totalCount: 0, trainedAt: null
+        };
+
+        // Modo de calibración controlado por el usuario.
+        // Por defecto permanece en Poisson normal hasta que el usuario lo active.
+        let poissonCalibrationEnabled = false;
+
+        function updatePoissonCalibrationModeUI() {
+            const button = document.getElementById('poissonCalibrationModeButton');
+            const label = document.getElementById('poissonCalibrationModeLabel');
+            const detail = document.getElementById('poissonCalibrationModeDetail');
+            if (!button || !label) return;
+
+            if (poissonCalibrationEnabled) {
+                label.innerText = 'AUTOCALIBRACIÓN ACTIVADA';
+                button.className = 'w-full text-[10px] font-black bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/50 text-emerald-300 px-3 py-2 rounded-lg flex items-center justify-center gap-2 transition-all active:scale-[0.98]';
+                button.innerHTML = '<i class="fa-solid fa-toggle-on text-sm"></i> <span id="poissonCalibrationModeLabel">AUTOCALIBRACIÓN ACTIVADA</span>';
+                if (detail) detail.innerText = 'Se aplicarán ajustes independientes por liga, mercado y selección. Solo se usa el historial de la liga activa.';
+            } else {
+                label.innerText = 'POISSON NORMAL';
+                button.className = 'w-full text-[10px] font-black bg-slate-700/40 hover:bg-slate-700/60 border border-slate-600 text-slate-200 px-3 py-2 rounded-lg flex items-center justify-center gap-2 transition-all active:scale-[0.98]';
+                button.innerHTML = '<i class="fa-solid fa-toggle-off text-sm"></i> <span id="poissonCalibrationModeLabel">POISSON NORMAL</span>';
+                if (detail) detail.innerText = 'Autocalibración desactivada: se usan las probabilidades Poisson originales.';
+            }
+        }
+
+        async function togglePoissonCalibrationMode() {
+            if (poissonCalibrationEnabled) {
+                poissonCalibrationEnabled = false;
+                updatePoissonCalibrationModeUI();
+                if (Number(document.getElementById('homeGf')?.value || 0) +
+                    Number(document.getElementById('awayGf')?.value || 0) > 0) {
+                    calculatePoisson();
+                }
+                updatePoissonCalibrationStatus('Modo Poisson normal: ajustes históricos desactivados.');
+                showToast('Poisson normal activado. No se aplicará autocalibración.');
+                return;
+            }
+
+            poissonCalibrationEnabled = true;
+            updatePoissonCalibrationModeUI();
+            updatePoissonCalibrationStatus('Autocalibración activada. Consultando historial de Supabase…');
+            const trained = await autoCalibratePoissonFromSupabase(false);
+            if (Number(document.getElementById('homeGf')?.value || 0) +
+                Number(document.getElementById('awayGf')?.value || 0) > 0) {
+                calculatePoisson();
+            }
+            if (trained) {
+                showToast('Autocalibración activada y aplicada a las selecciones con historial suficiente.');
+            } else {
+                showToast('Modo activado, pero no hay historial suficiente. Se mantiene Poisson normal en las selecciones sin modelo.');
+            }
+        }
+
+        function poissonCalibrationLogit(p) {
+            const safe = Math.max(0.0001, Math.min(0.9999, Number(p) || 0));
+            return Math.log(safe / (1 - safe));
+        }
+
+        function poissonCalibrationSigmoid(z) {
+            if (z > 35) return 0.999999;
+            if (z < -35) return 0.000001;
+            return 1 / (1 + Math.exp(-z));
+        }
+
+        function normalizePoissonMarket(market) {
+            const value = String(market || '').trim().toLowerCase();
+            if (!value) return '';
+            if (value.includes('over') || value.includes('under') || value.includes('goles')) return 'Over / Under Goles';
+            if (value.includes('ambos') || value.includes('btts')) return 'Ambos Anotan';
+            if (value.includes('1x2') || value.includes('resultado final')) return 'Resultado Final (1X2)';
+            return String(market).trim();
+        }
+
+        function updatePoissonCalibrationStatus(message) {
+            const el = document.getElementById('poissonCalibrationStatus');
+            if (el) el.innerText = message;
+        }
+
+        function fitPoissonMarketModel(rows) {
+            const samples = (rows || [])
+                .filter(row => row.is_parlay !== true && row.is_parlay !== 'true' &&
+                    (row.status === 'WON' || row.status === 'LOST'))
+                .map(row => ({
+                    x: poissonCalibrationLogit(Number(row.prob) / 100),
+                    y: row.status === 'WON' ? 1 : 0
+                }))
+                .filter(sample => Number.isFinite(sample.x));
+            const wins = samples.reduce((n, sample) => n + sample.y, 0);
+            const losses = samples.length - wins;
+
+            if (samples.length < 15 || wins < 5 || losses < 5) {
+                return { ready: false, count: samples.length, wins, losses, a: 0, b: 1 };
+            }
+
+            let a = 0, b = 1;
+            const ridge = 0.05;
+            for (let iteration = 0; iteration < 80; iteration++) {
+                let g0 = 0, g1 = 0;
+                let h00 = ridge, h01 = 0, h11 = ridge;
+                for (const sample of samples) {
+                    const pred = poissonCalibrationSigmoid(a + b * sample.x);
+                    const error = pred - sample.y;
+                    const weight = Math.max(1e-6, pred * (1 - pred));
+                    g0 += error;
+                    g1 += error * sample.x;
+                    h00 += weight;
+                    h01 += weight * sample.x;
+                    h11 += weight * sample.x * sample.x;
+                }
+                g0 += ridge * a;
+                g1 += ridge * (b - 1);
+                const determinant = h00 * h11 - h01 * h01;
+                if (!Number.isFinite(determinant) || Math.abs(determinant) < 1e-12) break;
+                const deltaA = (h11 * g0 - h01 * g1) / determinant;
+                const deltaB = (h00 * g1 - h01 * g0) / determinant;
+                a -= deltaA;
+                b -= deltaB;
+                if (!Number.isFinite(a) || !Number.isFinite(b)) {
+                    a = 0; b = 1; break;
+                }
+                a = Math.max(-2.5, Math.min(2.5, a));
+                b = Math.max(0.25, Math.min(2.5, b));
+                if (Math.abs(deltaA) + Math.abs(deltaB) < 1e-7) break;
+            }
+            return { ready: true, count: samples.length, wins, losses, a, b };
+        }
+
+        function normalizePoissonSelection(selection) {
+            return String(selection || '')
+                .trim()
+                .toLowerCase()
+                .normalize('NFD')
+                .replace(/[\\u0300-\\u036f]/g, '')
+                .replace(/\\s+/g, ' ');
+        }
+
+        function normalizePoissonLeague(league) {
+            return String(league || '').trim().toLowerCase()
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .replace(/\s+/g, ' ');
+        }
+
+        function getActivePoissonLeague() {
+            return String(document.getElementById('activeLeagueSelect')?.value || '').trim();
+        }
+
+        function poissonSelectionModelKey(league, market, selection) {
+            const normalizedLeague = normalizePoissonLeague(league);
+            const normalizedMarket = normalizePoissonMarket(market);
+            const normalizedSelection = normalizePoissonSelection(selection);
+            return normalizedLeague && normalizedMarket && normalizedSelection
+                ? `${normalizedLeague}::${normalizedMarket}::${normalizedSelection}` : '';
+        }
+
+        function updatePoissonCalibrationLeagueStatus() {
+            const league = getActivePoissonLeague();
+            const normalizedLeague = normalizePoissonLeague(league);
+            const models = Object.values(poissonHistoricalCalibration.selections || {})
+                .filter(model => normalizePoissonLeague(model.league) === normalizedLeague);
+            const active = models.filter(model => model.ready);
+            const count = models.reduce((sum, model) => sum + (model.count || 0), 0);
+            if (!league) {
+                updatePoissonCalibrationStatus('Selecciona una liga para consultar su calibración histórica.');
+                return;
+            }
+            if (!models.length) {
+                updatePoissonCalibrationStatus(`Liga ${league}: sin historial válido por selección.`);
+                return;
+            }
+            updatePoissonCalibrationStatus(
+                `Liga ${league}: ${active.length} selecciones activas · ${count} apuestas de esta liga (mín. 15 por selección).`
+            );
+        }
+
+        function fitPoissonHistoricalCalibration(remoteRows) {
+            const grouped = {};
+            (remoteRows || []).forEach(row => {
+                if (row.is_parlay === true || row.is_parlay === 'true') return;
+                if (row.status !== 'WON' && row.status !== 'LOST') return;
+                const league = String(row.league || '').trim();
+                const market = normalizePoissonMarket(row.market);
+                const selection = normalizePoissonSelection(row.selection);
+                // No se mezclan registros sin liga: no pueden atribuirse con rigor a una competición.
+                if (!league || !market || !selection) return;
+                const key = poissonSelectionModelKey(league, market, selection);
+                if (!grouped[key]) grouped[key] = {
+                    league, market, selection: String(row.selection).trim(), rows: []
+                };
+                grouped[key].rows.push(row);
+            });
+
+            const models = {};
+            Object.entries(grouped).forEach(([key, group]) => {
+                models[key] = {
+                    ...fitPoissonMarketModel(group.rows),
+                    league: group.league,
+                    market: group.market,
+                    selection: group.selection
+                };
+            });
+            poissonHistoricalCalibration.selections = models;
+            poissonHistoricalCalibration.markets = {};
+            poissonHistoricalCalibration.totalCount = Object.values(models).reduce((sum, model) => sum + model.count, 0);
+            poissonHistoricalCalibration.ready = Object.values(models).some(model => model.ready);
+            poissonHistoricalCalibration.trainedAt = new Date().toISOString();
+
+            updatePoissonCalibrationLeagueStatus();
+            return poissonHistoricalCalibration.ready;
+        }
+
+        // Indicador visual: compara Poisson original contra el resultado calibrado.
+        // La diferencia se expresa en puntos porcentuales (pp), no como variación relativa.
+        function updatePoissonCalibrationDelta(elementId, originalProbability, calibratedProbability, isActive) {
+            const el = document.getElementById(elementId);
+            if (!el) return;
+            const original = Math.max(0, Math.min(1, Number(originalProbability) || 0));
+            const calibrated = Math.max(0, Math.min(1, Number(calibratedProbability) || 0));
+            if (!isActive) {
+                el.innerText = `Original: ${(original * 100).toFixed(1)}% · Sin ajuste (0.0 pp)`;
+                el.className = 'block text-[7px] font-mono text-slate-500 leading-tight mt-0.5';
+                return;
+            }
+            const delta = (calibrated - original) * 100;
+            const sign = delta > 0.0005 ? '+' : '';
+            el.innerText = `Original: ${(original * 100).toFixed(1)}% → Calibrada: ${(calibrated * 100).toFixed(1)}% · ${sign}${delta.toFixed(1)} pp`;
+            el.className = `block text-[7px] font-mono leading-tight mt-0.5 ${delta > 0.0005 ? 'text-emerald-400' : delta < -0.0005 ? 'text-rose-400' : 'text-slate-400'}`;
+        }
+
+        function applyPoissonHistoricalCalibration(probability, league, market, selection) {
+            const p = Math.max(0.000001, Math.min(0.999999, Number(probability) || 0));
+            const model = poissonHistoricalCalibration.selections?.[poissonSelectionModelKey(league, market, selection)];
+            if (!model || !model.ready) return p;
+            return Math.max(0.000001, Math.min(0.999999,
+                poissonCalibrationSigmoid(model.a + model.b * poissonCalibrationLogit(p))
+            ));
+        }
+
+        // ============================================================
+        // DETECTOR DE FIABILIDAD DE PRONÓSTICOS
+        // Usa únicamente apuestas simples WON/LOST registradas en Supabase.
+        // No altera probabilidades ni interviene en calculatePoisson().
+        // ============================================================
+        let poissonReliabilityLoading = false;
+
+        function calculatePoissonReliabilityStats(rows) {
+            const samples = (rows || []).map(row => {
+                const rawProb = Number(row.prob);
+                const p = rawProb / 100;
+                if (!Number.isFinite(p) || p <= 0 || p >= 1) return null;
+                if (row.status !== 'WON' && row.status !== 'LOST') return null;
+                return { p, y: row.status === 'WON' ? 1 : 0 };
+            }).filter(Boolean);
+
+            const n = samples.length;
+            if (!n) return { count: 0, wins: 0, losses: 0, brier: null, logLoss: null, ece: null, level: 'SIN DATOS', tone: 'slate' };
+
+            let brierSum = 0;
+            let logLossSum = 0;
+            const bins = Array.from({ length: 5 }, () => ({ count: 0, probSum: 0, outcomeSum: 0 }));
+            let wins = 0;
+            for (const sample of samples) {
+                const error = sample.p - sample.y;
+                brierSum += error * error;
+                const safeP = Math.max(1e-6, Math.min(1 - 1e-6, sample.p));
+                logLossSum += -(sample.y * Math.log(safeP) + (1 - sample.y) * Math.log(1 - safeP));
+                if (sample.y) wins++;
+                const binIndex = Math.min(4, Math.floor(sample.p * 5));
+                bins[binIndex].count++;
+                bins[binIndex].probSum += sample.p;
+                bins[binIndex].outcomeSum += sample.y;
+            }
+            const brier = brierSum / n;
+            const logLoss = logLossSum / n;
+            const ece = bins.reduce((sum, bin) => {
+                if (!bin.count) return sum;
+                const meanPredicted = bin.probSum / bin.count;
+                const observedRate = bin.outcomeSum / bin.count;
+                return sum + (bin.count / n) * Math.abs(meanPredicted - observedRate);
+            }, 0);
+
+            // Semáforo orientativo, con umbral de muestra explícito; no es una garantía predictiva.
+            let level = 'FIABILIDAD BAJA';
+            let tone = 'rose';
+            if (n < 30) { level = 'MUESTRA INSUFICIENTE'; tone = 'amber'; }
+            else if (brier <= 0.18 && ece <= 0.05) { level = 'FIABILIDAD ALTA'; tone = 'emerald'; }
+            else if (brier <= 0.21 && ece <= 0.08) { level = 'FIABILIDAD BUENA'; tone = 'cyan'; }
+            else if (brier <= 0.25 && ece <= 0.12) { level = 'FIABILIDAD MEDIA'; tone = 'amber'; }
+
+            return { count: n, wins, losses: n - wins, brier, logLoss, ece, level, tone };
+        }
+
+        function renderPoissonReliabilityResults(groupedStats, totalStats) {
+            const container = document.getElementById('poissonReliabilityResults');
+            const summary = document.getElementById('poissonReliabilitySummary');
+            if (!container || !summary) return;
+            container.replaceChildren();
+
+            const colorClasses = {
+                emerald: 'text-emerald-300 border-emerald-500/30 bg-emerald-500/10',
+                cyan: 'text-cyan-300 border-cyan-500/30 bg-cyan-500/10',
+                amber: 'text-amber-300 border-amber-500/30 bg-amber-500/10',
+                rose: 'text-rose-300 border-rose-500/30 bg-rose-500/10',
+                slate: 'text-slate-300 border-slate-600/30 bg-slate-700/20'
+            };
+            const makeRow = (name, stats) => {
+                const card = document.createElement('div');
+                card.className = 'rounded-lg border border-slate-700/70 bg-slate-950/40 p-2 space-y-1';
+                const top = document.createElement('div');
+                top.className = 'flex items-center justify-between gap-2';
+                const title = document.createElement('span');
+                title.className = 'text-[9px] font-black text-slate-100 truncate';
+                title.textContent = name;
+                const badge = document.createElement('span');
+                badge.className = `shrink-0 text-[7px] font-black px-1.5 py-1 rounded border ${colorClasses[stats.tone] || colorClasses.slate}`;
+                badge.textContent = stats.level;
+                top.append(title, badge);
+                const metrics = document.createElement('p');
+                metrics.className = 'text-[8px] text-slate-400 font-mono leading-relaxed';
+                metrics.textContent = `n=${stats.count} · Aciertos ${stats.wins}/${stats.count} · Brier ${stats.brier == null ? '—' : stats.brier.toFixed(3)} · Log Loss ${stats.logLoss == null ? '—' : stats.logLoss.toFixed(3)} · ECE ${stats.ece == null ? '—' : (stats.ece * 100).toFixed(1) + '%'}`;
+                card.append(top, metrics);
+                return card;
+            };
+
+            summary.textContent = `Análisis completado: ${totalStats.count} apuestas simples liquidadas · ${totalStats.wins} ganadas · ${totalStats.losses} perdidas.`;
+            container.appendChild(makeRow('TOTAL DEL HISTORIAL', totalStats));
+            Object.entries(groupedStats).sort((a, b) => b[1].count - a[1].count).forEach(([market, stats]) => {
+                container.appendChild(makeRow(market, stats));
+            });
+        }
+
+        async function runPoissonReliabilityCheck() {
+            const button = document.getElementById('poissonReliabilityRunButton');
+            const summary = document.getElementById('poissonReliabilitySummary');
+            const results = document.getElementById('poissonReliabilityResults');
+            if (poissonReliabilityLoading) return;
+            if (!currentUser || !supabaseClient) {
+                if (summary) summary.textContent = 'Inicia sesión para analizar las apuestas guardadas en Supabase.';
+                if (results) results.replaceChildren();
+                showToast('El detector de fiabilidad requiere una sesión de Supabase.');
+                return;
+            }
+
+            poissonReliabilityLoading = true;
+            if (button) { button.disabled = true; button.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> ANALIZANDO'; }
+            if (summary) summary.textContent = 'Consultando y evaluando resultados históricos…';
+            if (results) results.replaceChildren();
+            try {
+                const { data, error } = await supabaseClient
+                    .from('bets')
+                    .select('prob,status,is_parlay,market,selection')
+                    .eq('user_id', currentUser.id)
+                    .eq('is_parlay', false)
+                    .in('status', ['WON', 'LOST'])
+                    .limit(5000);
+                if (error) throw error;
+
+                const validRows = (data || []).filter(row => row.is_parlay !== true && row.is_parlay !== 'true' &&
+                    (row.status === 'WON' || row.status === 'LOST') && Number.isFinite(Number(row.prob)) &&
+                    Number(row.prob) > 0 && Number(row.prob) < 100);
+                if (!validRows.length) {
+                    if (summary) summary.textContent = 'No hay apuestas simples liquidadas con probabilidades válidas. Registra probabilidades antes de liquidar tus apuestas.';
+                    showToast('No hay datos suficientes para ejecutar el detector.');
+                    return;
+                }
+
+                const grouped = {};
+                validRows.forEach(row => {
+                    const market = normalizePoissonMarket(row.market) || 'Mercado sin identificar';
+                    if (!grouped[market]) grouped[market] = [];
+                    grouped[market].push(row);
+                });
+                const groupedStats = {};
+                Object.entries(grouped).forEach(([market, rows]) => {
+                    groupedStats[market] = calculatePoissonReliabilityStats(rows);
+                });
+                const totalStats = calculatePoissonReliabilityStats(validRows);
+                renderPoissonReliabilityResults(groupedStats, totalStats);
+                showToast('Detector de fiabilidad actualizado con el historial disponible.');
+            } catch (error) {
+                console.error('[Poisson reliability] Error:', error);
+                if (summary) summary.textContent = 'No se pudo consultar el historial. Comprueba la conexión con Supabase e inténtalo de nuevo.';
+                if (results) results.replaceChildren();
+                showToast('Error al ejecutar el detector de fiabilidad.');
+            } finally {
+                poissonReliabilityLoading = false;
+                if (button) { button.disabled = false; button.innerHTML = '<i class="fa-solid fa-magnifying-glass-chart"></i> ANALIZAR'; }
+            }
+        }
+
+        // Consulta directamente Supabase; nunca lee localStorage ni betLogData.
+        async function autoCalibratePoissonFromSupabase(showFeedback = false) {
+            if (poissonHistoricalCalibration.loading) return false;
+            if (!currentUser || !supabaseClient) {
+                poissonHistoricalCalibration.ready = false;
+                poissonHistoricalCalibration.markets = {};
+                poissonHistoricalCalibration.selections = {};
+                updatePoissonCalibrationStatus('Inicia sesión para consultar el historial de Supabase.');
+                if (showFeedback) showToast('La autocalibración requiere una sesión de Supabase.');
+                return false;
+            }
+
+            poissonHistoricalCalibration.loading = true;
+            updatePoissonCalibrationStatus('Consultando historial remoto por selección…');
+            try {
+                const { data, error } = await supabaseClient
+                    .from('bets')
+                    .select('prob,status,is_parlay,league,market,selection')
+                    .eq('user_id', currentUser.id)
+                    .eq('is_parlay', false)
+                    .in('status', ['WON', 'LOST']);
+
+                if (error) throw error;
+                fitPoissonHistoricalCalibration(data || []);
+                const activeLeague = getActivePoissonLeague();
+                const activeModels = Object.entries(poissonHistoricalCalibration.selections || {})
+                    .filter(([, model]) => model.ready &&
+                        normalizePoissonLeague(model.league) === normalizePoissonLeague(activeLeague));
+                const activeCount = activeModels.reduce((sum, [, model]) => sum + model.count, 0);
+                const trained = activeModels.length > 0;
+
+                if (trained) {
+                    if (showFeedback) showToast(
+                        `Liga ${activeLeague}: ${activeModels.length} selecciones calibradas · ${activeCount} apuestas.`
+                    );
+                    if (document.getElementById('homeGf') &&
+                        Number(document.getElementById('homeGf').value) +
+                        Number(document.getElementById('awayGf').value) > 0) {
+                        calculatePoisson();
+                    }
+                } else if (showFeedback) {
+                    showToast('La liga activa no tiene selecciones con 30 apuestas (mínimo 5 ganadas y 5 perdidas por selección).');
+                }
+                return trained;
+            } catch (error) {
+                console.error('[Poisson calibration] Error leyendo Supabase:', error);
+                poissonHistoricalCalibration.ready = false;
+                poissonHistoricalCalibration.markets = {};
+                poissonHistoricalCalibration.selections = {};
+                updatePoissonCalibrationStatus('No se pudo leer Supabase. Se usan probabilidades sin calibrar.');
+                if (showFeedback) showToast('Error al consultar el historial de Supabase.');
+                return false;
+            } finally {
+                poissonHistoricalCalibration.loading = false;
+            }
+        }
+
         function calculatePoisson() {
             const hgf = parseFloat(document.getElementById('homeGf').value) || 0;
             const hgc = parseFloat(document.getElementById('homeGc').value) || 0;
@@ -5743,16 +6754,16 @@ GP	W	D	L	GF	GA	GD	Pts	PPG
                 document.getElementById('rhoValueDisplay').innerText = rho.toFixed(2);
             }
 
-            const matrix = Array(7).fill(0).map(() => Array(7).fill(0));
+            const matrix = Array.from({ length: POISSON_MAX_GOALS + 1 }, () => Array(POISSON_MAX_GOALS + 1).fill(0));
             let probHomeWin = 0, probDraw = 0, probAwayWin = 0;
             let probOver25 = 0, probUnder25 = 0;
             let probBttsYes = 0, probBttsNo = 0;
             const exactScores = [];
-            const homeProbs = Array(7).fill(0);
-            const awayProbs = Array(7).fill(0);
-            for (let i = 0; i <= 6; i++) { homeProbs[i] = poissonProb(i, lambdaHome); awayProbs[i] = poissonProb(i, lambdaAway); }
-            for (let i = 0; i <= 6; i++) {
-                for (let j = 0; j <= 6; j++) {
+            const homeProbs = Array(POISSON_MAX_GOALS + 1).fill(0);
+            const awayProbs = Array(POISSON_MAX_GOALS + 1).fill(0);
+            for (let i = 0; i <= POISSON_MAX_GOALS; i++) { homeProbs[i] = poissonProb(i, lambdaHome); awayProbs[i] = poissonProb(i, lambdaAway); }
+            for (let i = 0; i <= POISSON_MAX_GOALS; i++) {
+                for (let j = 0; j <= POISSON_MAX_GOALS; j++) {
                     let p = homeProbs[i] * awayProbs[j];
                     if (rho !== 0) {
                         if (i === 0 && j === 0) p *= (1 - lambdaHome * lambdaAway * rho);
@@ -5769,7 +6780,96 @@ GP	W	D	L	GF	GA	GD	Pts	PPG
                     exactScores.push({ score: `${i} - ${j}`, prob: p, h: i, a: j });
                 }
             }
-            currentCalculatedProbs = { probHomeWin, probDraw, probAwayWin, probOver25, probUnder25, probBttsYes, probBttsNo };
+            // El rango 0-10 deja fuera únicamente la cola de 11+ goles.
+            // Normalizamos la matriz enumerada para que 1X2, OU, BTTS y Parlay
+            // compartan una misma base probabilística del 100% dentro del rango modelado.
+            const matrixProbabilitySum = matrix.reduce((sum, row) => sum + row.reduce((rowSum, value) => rowSum + value, 0), 0);
+            if (matrixProbabilitySum > 0) {
+                const matrixScale = 1 / matrixProbabilitySum;
+                probHomeWin *= matrixScale;
+                probDraw *= matrixScale;
+                probAwayWin *= matrixScale;
+                probOver25 *= matrixScale;
+                probUnder25 *= matrixScale;
+                probBttsYes *= matrixScale;
+                probBttsNo *= matrixScale;
+                for (let i = 0; i <= POISSON_MAX_GOALS; i++) {
+                    for (let j = 0; j <= POISSON_MAX_GOALS; j++) matrix[i][j] *= matrixScale;
+                }
+                exactScores.forEach(item => { item.prob *= matrixScale; });
+            }
+
+            // Guardamos las probabilidades Poisson originales antes de cualquier ajuste.
+            // Para 1X2 se normaliza la base para compararla en la misma escala de 100%.
+            const original1x2Sum = (probHomeWin + probDraw + probAwayWin) || 1;
+            const originalProbabilities = {
+                probHomeWin: probHomeWin / original1x2Sum,
+                probDraw: probDraw / original1x2Sum,
+                probAwayWin: probAwayWin / original1x2Sum,
+                probOver25,
+                probUnder25: 1 - probOver25,
+                probBttsYes,
+                probBttsNo: 1 - probBttsYes
+            };
+
+            // Calibración histórica INDEPENDIENTE por liga y selección.
+            // Cada resultado se ajusta con el historial de esa selección dentro de la liga activa.
+            // Después se normalizan las opciones del mismo mercado para conservar 100%.
+            const homeSelection = `Gana ${document.getElementById('homeName').value || 'Local'}`;
+            const drawSelection = 'Empate (X)';
+            const awaySelection = `Gana ${document.getElementById('awayName').value || 'Visitante'}`;
+            const overSelection = 'Over 2.5';
+            const underSelection = 'Under 2.5';
+            const bttsYesSelection = 'Ambos Anotan Si';
+            const bttsNoSelection = 'Ambos Anotan No';
+            const activeCalibrationLeague = getActivePoissonLeague();
+            const selectionModels = poissonHistoricalCalibration.selections || {};
+
+            const has1x2Calibration = poissonCalibrationEnabled && [
+                homeSelection, drawSelection, awaySelection
+            ].some(selection => !!selectionModels[poissonSelectionModelKey(activeCalibrationLeague, 'Resultado Final (1X2)', selection)]?.ready);
+            const hasOuCalibration = poissonCalibrationEnabled && [
+                overSelection, underSelection
+            ].some(selection => !!selectionModels[poissonSelectionModelKey(activeCalibrationLeague, 'Over / Under Goles', selection)]?.ready);
+            const hasBttsCalibration = poissonCalibrationEnabled && [
+                bttsYesSelection, bttsNoSelection
+            ].some(selection => !!selectionModels[poissonSelectionModelKey(activeCalibrationLeague, 'Ambos Anotan', selection)]?.ready);
+
+            if (has1x2Calibration) {
+                const c1x2 = [
+                    applyPoissonHistoricalCalibration(probHomeWin, activeCalibrationLeague, 'Resultado Final (1X2)', homeSelection),
+                    applyPoissonHistoricalCalibration(probDraw, activeCalibrationLeague, 'Resultado Final (1X2)', drawSelection),
+                    applyPoissonHistoricalCalibration(probAwayWin, activeCalibrationLeague, 'Resultado Final (1X2)', awaySelection)
+                ];
+                const sum1x2 = c1x2.reduce((sum, value) => sum + value, 0) || 1;
+                probHomeWin = c1x2[0] / sum1x2;
+                probDraw = c1x2[1] / sum1x2;
+                probAwayWin = c1x2[2] / sum1x2;
+            }
+            if (hasOuCalibration) {
+                const calibratedOu = [
+                    applyPoissonHistoricalCalibration(probOver25, activeCalibrationLeague, 'Over / Under Goles', overSelection),
+                    applyPoissonHistoricalCalibration(probUnder25, activeCalibrationLeague, 'Over / Under Goles', underSelection)
+                ];
+                const sumOu = calibratedOu[0] + calibratedOu[1] || 1;
+                probOver25 = calibratedOu[0] / sumOu;
+                probUnder25 = calibratedOu[1] / sumOu;
+            }
+            if (hasBttsCalibration) {
+                const calibratedBtts = [
+                    applyPoissonHistoricalCalibration(probBttsYes, activeCalibrationLeague, 'Ambos Anotan', bttsYesSelection),
+                    applyPoissonHistoricalCalibration(probBttsNo, activeCalibrationLeague, 'Ambos Anotan', bttsNoSelection)
+                ];
+                const sumBtts = calibratedBtts[0] + calibratedBtts[1] || 1;
+                probBttsYes = calibratedBtts[0] / sumBtts;
+                probBttsNo = calibratedBtts[1] / sumBtts;
+            }
+
+            currentCalculatedProbs = {
+                probHomeWin, probDraw, probAwayWin, probOver25, probUnder25, probBttsYes, probBttsNo,
+                original: originalProbabilities,
+                calibrationActive: { oneXTwo: !!has1x2Calibration, overUnder: !!hasOuCalibration, btts: !!hasBttsCalibration }
+            };
 
             const noMatchData = (lambdaHome + lambdaAway) === 0;
             let ciData = null;
@@ -5782,19 +6882,23 @@ GP	W	D	L	GF	GA	GD	Pts	PPG
             }
 
             document.getElementById('pctOver25').innerText = (probOver25 * 100).toFixed(1) + '%';
+            updatePoissonCalibrationDelta('calDeltaOver25', originalProbabilities.probOver25, probOver25, poissonCalibrationEnabled && !!selectionModels[poissonSelectionModelKey(activeCalibrationLeague, 'Over / Under Goles', overSelection)]?.ready);
             document.getElementById('oddsOver25').innerText = '@' + (1 / Math.max(0.001, probOver25)).toFixed(2);
             document.getElementById('barOver25').style.width = (probOver25 * 100).toFixed(1) + '%';
             document.getElementById('ciOver25').innerText = formatCI(ciData ? ciData.over25 : null, noMatchData);
             document.getElementById('pctUnder25').innerText = (probUnder25 * 100).toFixed(1) + '%';
+            updatePoissonCalibrationDelta('calDeltaUnder25', originalProbabilities.probUnder25, probUnder25, poissonCalibrationEnabled && !!selectionModels[poissonSelectionModelKey(activeCalibrationLeague, 'Over / Under Goles', underSelection)]?.ready);
             document.getElementById('oddsUnder25').innerText = '@' + (1 / Math.max(0.001, probUnder25)).toFixed(2);
             document.getElementById('barUnder25').style.width = (probUnder25 * 100).toFixed(1) + '%';
             document.getElementById('ciUnder25').innerText = formatCI(ciData ? ciData.under25 : null, noMatchData);
             renderDynamicOverUnder(matrix);
             document.getElementById('pctBttsYes').innerText = (probBttsYes * 100).toFixed(1) + '%';
+            updatePoissonCalibrationDelta('calDeltaBttsYes', originalProbabilities.probBttsYes, probBttsYes, poissonCalibrationEnabled && !!selectionModels[poissonSelectionModelKey(activeCalibrationLeague, 'Ambos Anotan', bttsYesSelection)]?.ready);
             document.getElementById('oddsBttsYes').innerText = '@' + (1 / Math.max(0.001, probBttsYes)).toFixed(2);
             document.getElementById('barBttsYes').style.width = (probBttsYes * 100).toFixed(1) + '%';
             document.getElementById('ciBttsYes').innerText = formatCI(ciData ? ciData.bttsYes : null, noMatchData);
             document.getElementById('pctBttsNo').innerText = (probBttsNo * 100).toFixed(1) + '%';
+            updatePoissonCalibrationDelta('calDeltaBttsNo', originalProbabilities.probBttsNo, probBttsNo, poissonCalibrationEnabled && !!selectionModels[poissonSelectionModelKey(activeCalibrationLeague, 'Ambos Anotan', bttsNoSelection)]?.ready);
             document.getElementById('oddsBttsNo').innerText = '@' + (1 / Math.max(0.001, probBttsNo)).toFixed(2);
             document.getElementById('barBttsNo').style.width = (probBttsNo * 100).toFixed(1) + '%';
             document.getElementById('ciBttsNo').innerText = formatCI(ciData ? ciData.bttsNo : null, noMatchData);
@@ -5804,12 +6908,15 @@ GP	W	D	L	GF	GA	GD	Pts	PPG
             document.getElementById('name1x2Home').innerText = homeName;
             document.getElementById('name1x2Away').innerText = awayName;
             document.getElementById('pct1x2Home').innerText = (probHomeWin * 100).toFixed(1) + '%';
+            updatePoissonCalibrationDelta('calDelta1x2Home', originalProbabilities.probHomeWin, probHomeWin, poissonCalibrationEnabled && !!selectionModels[poissonSelectionModelKey(activeCalibrationLeague, 'Resultado Final (1X2)', homeSelection)]?.ready);
             document.getElementById('odds1x2Home').innerText = '@' + (1 / Math.max(0.001, probHomeWin)).toFixed(2);
             document.getElementById('ciHomeWin').innerText = formatCI(ciData ? ciData.homeWin : null, noMatchData);
             document.getElementById('pct1x2Draw').innerText = (probDraw * 100).toFixed(1) + '%';
+            updatePoissonCalibrationDelta('calDelta1x2Draw', originalProbabilities.probDraw, probDraw, poissonCalibrationEnabled && !!selectionModels[poissonSelectionModelKey(activeCalibrationLeague, 'Resultado Final (1X2)', drawSelection)]?.ready);
             document.getElementById('odds1x2Draw').innerText = '@' + (1 / Math.max(0.001, probDraw)).toFixed(2);
             document.getElementById('ciDraw').innerText = formatCI(ciData ? ciData.draw : null, noMatchData);
             document.getElementById('pct1x2Away').innerText = (probAwayWin * 100).toFixed(1) + '%';
+            updatePoissonCalibrationDelta('calDelta1x2Away', originalProbabilities.probAwayWin, probAwayWin, poissonCalibrationEnabled && !!selectionModels[poissonSelectionModelKey(activeCalibrationLeague, 'Resultado Final (1X2)', awaySelection)]?.ready);
             document.getElementById('odds1x2Away').innerText = '@' + (1 / Math.max(0.001, probAwayWin)).toFixed(2);
             document.getElementById('ciAwayWin').innerText = formatCI(ciData ? ciData.awayWin : null, noMatchData);
 
@@ -5841,8 +6948,8 @@ GP	W	D	L	GF	GA	GD	Pts	PPG
             container.innerHTML = '';
 
             const totalProbs = {};
-            for (let i = 0; i <= 6; i++) {
-                for (let j = 0; j <= 6; j++) {
+            for (let i = 0; i <= POISSON_MAX_GOALS; i++) {
+                for (let j = 0; j <= POISSON_MAX_GOALS; j++) {
                     const t = i + j;
                     totalProbs[t] = (totalProbs[t] || 0) + matrix[i][j];
                 }
@@ -5961,11 +7068,18 @@ GP	W	D	L	GF	GA	GD	Pts	PPG
         }
 
         function renderMatrix(matrix) {
+            const header = document.getElementById('matrixHeader');
+            if (header) {
+                let headerHtml = '<tr class="bg-slate-900 text-slate-400 font-bold border-b border-slate-800"><th class="p-1">L \ V</th>';
+                for (let goal = 0; goal <= POISSON_MAX_GOALS; goal++) headerHtml += `<th class="p-1">${goal}</th>`;
+                headerHtml += '</tr>';
+                header.innerHTML = headerHtml;
+            }
             const body = document.getElementById('matrixBody');
             body.innerHTML = '';
-            for (let i = 0; i <= 6; i++) {
+            for (let i = 0; i <= POISSON_MAX_GOALS; i++) {
                 let rowHtml = `<tr class="border-b border-slate-800/40"><td class="p-1 font-bold text-slate-400 bg-slate-900/80">${i}</td>`;
-                for (let j = 0; j <= 6; j++) {
+                for (let j = 0; j <= POISSON_MAX_GOALS; j++) {
                     const prob = matrix[i][j];
                     const pct = (prob * 100).toFixed(1);
                     let bgStyle = 'bg-slate-900/40 text-slate-300';
@@ -5981,7 +7095,7 @@ GP	W	D	L	GF	GA	GD	Pts	PPG
         function renderGoalsChart(homeProbs, awayProbs) {
             const ctx = document.getElementById('goalsChart').getContext('2d');
             if (chartInstance) chartInstance.destroy();
-            const labels = ['0 Goles', '1 Gol', '2 Goles', '3 Goles', '4 Goles', '5 Goles', '6+ Goles'];
+            const labels = Array.from({ length: POISSON_MAX_GOALS + 1 }, (_, goals) => goals === 1 ? '1 Gol' : `${goals} Goles`);
             const homeName = document.getElementById('homeName').value || 'Local';
             const awayName = document.getElementById('awayName').value || 'Visitante';
             chartInstance = new Chart(ctx, {
@@ -6413,6 +7527,280 @@ GP	W	D	L	GF	GA	GD	Pts	PPG
             const link = document.createElement("a"); link.href = url; link.download = `backtest_${new Date().toISOString().slice(0,10)}.csv`; document.body.appendChild(link); link.click(); document.body.removeChild(link);
             showToast("Backtest CSV exportado.");
         }
+            // Estado inicial visible: Poisson normal, sin autocalibración aplicada.
+        document.addEventListener('DOMContentLoaded', updatePoissonCalibrationModeUI);
+
+</script>
+
+
+    <script>
+        // Detecta el ancho disponible, no el tipo de aparato: también responde
+        // al girar el móvil, cambiar el tamaño de la ventana o conectar un monitor.
+        (function initResponsiveDeviceLayout() {
+            const desktopQuery = window.matchMedia('(min-width: 1024px)');
+            const tabletQuery = window.matchMedia('(min-width: 768px) and (max-width: 1023px)');
+            function applyLayout() {
+                const mode = desktopQuery.matches ? 'desktop' : (tabletQuery.matches ? 'tablet' : 'mobile');
+                document.documentElement.dataset.deviceLayout = mode;
+                document.body.dataset.deviceLayout = mode;
+                // Chart.js debe recalcular el tamaño de los lienzos al cambiar de formato.
+                requestAnimationFrame(() => {
+                    try {
+                        if (typeof chartInstance !== 'undefined' && chartInstance) chartInstance.resize();
+                        if (typeof pnlChartInstance !== 'undefined' && pnlChartInstance) pnlChartInstance.resize();
+                        if (typeof clvChartInstance !== 'undefined' && clvChartInstance) clvChartInstance.resize();
+                        if (typeof calibrationChartInstance !== 'undefined' && calibrationChartInstance) calibrationChartInstance.resize();
+                        if (typeof flatStakeChartInstance !== 'undefined' && flatStakeChartInstance) flatStakeChartInstance.resize();
+                        if (typeof kmcCurveChartInstance !== 'undefined' && kmcCurveChartInstance) kmcCurveChartInstance.resize();
+                        if (typeof kmcFanChartInstance !== 'undefined' && kmcFanChartInstance) kmcFanChartInstance.resize();
+                        if (typeof kmcScatterChartInstance !== 'undefined' && kmcScatterChartInstance) kmcScatterChartInstance.resize();
+                        if (typeof backtestChartInstance !== 'undefined' && backtestChartInstance) backtestChartInstance.resize();
+                        if (typeof backtestDdChartInstance !== 'undefined' && backtestDdChartInstance) backtestDdChartInstance.resize();
+                    } catch (error) {
+                        console.warn('[Responsive layout chart resize]', error);
+                    }
+                });
+            }
+            applyLayout();
+            if (desktopQuery.addEventListener) {
+                desktopQuery.addEventListener('change', applyLayout);
+                tabletQuery.addEventListener('change', applyLayout);
+            } else {
+                desktopQuery.addListener(applyLayout);
+                tabletQuery.addListener(applyLayout);
+            }
+            window.addEventListener('resize', applyLayout, { passive: true });
+            window.addEventListener('orientationchange', applyLayout, { passive: true });
+        })();
     </script>
+
+
+<script>
+// Tarjeta de apuesta premium con identidad visual BETAGS VIP PRO.
+// Se genera desde los datos reales de la apuesta registrada, sin alterar la bitácora.
+function shareBetCard(index) {
+    const bet = (typeof betLogData !== 'undefined' ? betLogData[index] : null);
+    if (!bet) { if (typeof showToast === 'function') showToast('No se encontró la apuesta.'); return; }
+
+    const W = 1080, H = 1350;
+    const canvas = document.createElement('canvas'); canvas.width = W; canvas.height = H;
+    const ctx = canvas.getContext('2d');
+    const C = { bg:'#080d16', panel:'#111a29', panel2:'#172337', line:'#26364b', white:'#f8fafc', muted:'#91a2b8', green:'#10b981', green2:'#34d399', gold:'#fbbf24', red:'#fb7185', blue:'#60a5fa' };
+    const safe = v => String(v == null || v === '' ? '—' : v);
+    const money = v => '$' + (Number(v || 0)).toFixed(2);
+    const round = (x,y,w,h,r,fill,stroke) => { ctx.beginPath(); ctx.roundRect(x,y,w,h,r); if(fill){ctx.fillStyle=fill;ctx.fill();} if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=2;ctx.stroke();} };
+    const text = (value,x,y,size,color,weight='700',align='left') => { ctx.font=`${weight} ${size}px Inter, Arial, sans-serif`; ctx.fillStyle=color; ctx.textAlign=align; ctx.fillText(safe(value),x,y); ctx.textAlign='left'; };
+    const fit = (value,maxWidth,size,weight='700') => { let s=safe(value); ctx.font=`${weight} ${size}px Inter, Arial, sans-serif`; while(s.length>3 && ctx.measureText(s).width>maxWidth) s=s.slice(0,-2)+'…'; return s; };
+    const wrap = (value,x,y,maxWidth,lineHeight,size,color,weight='700',maxLines=2) => {
+        const words=safe(value).split(/\s+/); let line='', lines=[]; ctx.font=`${weight} ${size}px Inter, Arial, sans-serif`;
+        for(const word of words){const test=line?line+' '+word:word;if(ctx.measureText(test).width>maxWidth && line){lines.push(line);line=word;}else line=test;}
+        if(line) lines.push(line); if(lines.length>maxLines){lines=lines.slice(0,maxLines);lines[maxLines-1]=fit(lines[maxLines-1]+'…',maxWidth,size,weight);}
+        lines.forEach((l,i)=>text(l,x,y+i*lineHeight,size,color,weight)); return lines.length;
+    };
+
+    // Fondo oscuro con brillo esmeralda y patrón técnico discreto.
+    const bg=ctx.createLinearGradient(0,0,W,H); bg.addColorStop(0,'#07111d'); bg.addColorStop(.52,'#0b1725'); bg.addColorStop(1,'#060b13'); ctx.fillStyle=bg; ctx.fillRect(0,0,W,H);
+    const glow=ctx.createRadialGradient(900,120,10,900,120,620); glow.addColorStop(0,'rgba(16,185,129,.22)'); glow.addColorStop(1,'rgba(16,185,129,0)'); ctx.fillStyle=glow; ctx.fillRect(0,0,W,H);
+    ctx.save(); ctx.globalAlpha=.10; ctx.strokeStyle='#34d399'; ctx.lineWidth=2;
+    for(let i=0;i<9;i++){ctx.beginPath();ctx.arc(930,230,110+i*54,0,Math.PI*2);ctx.stroke();}
+    ctx.restore();
+
+    // Cabecera de marca.
+    round(58,54,964,124,28,'#101d2c','#26394d');
+    round(82,78,76,76,22,'#064e3b');
+    text('B',120,133,52,C.green2,'900','center');
+    text('BETAGS VIP PRO',184,111,36,C.white,'900');
+    text('PREDICTOR  ·  ANÁLISIS  ·  BET TRACKER',186,145,17,C.green2,'800');
+    round(814,91,176,48,24,'rgba(16,185,129,.13)','#167c60');
+    text(bet.isParlay?'PARLAY':'APUESTA',902,122,18,C.green2,'900','center');
+
+    // Panel principal.
+    round(58,210,964,1080,34,'#0f1927','#243449');
+    text(safe(bet.league).toUpperCase(),100,278,20,C.muted,'800');
+    round(100,302,880,2,1,'#25364b');
+    // Enfrentamiento / evento.
+    wrap(bet.match,104,374,820,56,42,C.white,'900',2);
+    text('MERCADO',104,485,17,C.muted,'800');
+    text(fit(bet.market,820,27,'800'),104,524,27,C.blue,'800');
+    round(100,558,880,142,24,'#142337','#2b4057');
+    text('SELECCIÓN REGISTRADA',132,600,17,C.muted,'800');
+    wrap(bet.selection,132,651,805,48,40,C.white,'900',2);
+
+    // Cuota principal, con acento dorado característico.
+    round(100,730,880,204,28,'#092d29','#0d8061');
+    text('CUOTA TOMADA',140,780,19,'#9ddbc7','900');
+    text('@'+safe(bet.bookieOdds),140,884,92,C.gold,'900');
+    round(754,770,184,112,22,'rgba(251,191,36,.10)','#9a741e');
+    text('PROB.',846,811,16,C.muted,'800','center');
+    text(safe(bet.prob)+'%',846,858,38,C.green2,'900','center');
+
+    // Métricas de la apuesta.
+    const metrics=[
+        {x:100,label:'STAKE',value:money(bet.stake),color:C.white},
+        {x:398,label:'RETORNO POTENCIAL',value:money(Number(bet.stake||0)*Number(bet.bookieOdds||0)),color:C.green2},
+        {x:696,label:'VALOR ESPERADO',value:(Number(bet.ev)>=0?'+':'')+safe(bet.ev)+'%',color:Number(bet.ev)>=0?C.green2:C.red}
+    ];
+    metrics.forEach(m=>{round(m.x,962,284,132,20,'#142033','#26384d');text(m.label,m.x+20,1002,15,C.muted,'800');text(fit(m.value,244,31,'900'),m.x+20,1056,31,m.color,'900');});
+
+    // Pie informativo con casa, fecha y estado.
+    round(100,1120,880,104,20,'#0a1320','#26384d');
+    text('CASA',128,1157,15,C.muted,'800');
+    text(fit(bet.bookmaker||'No especificada',300,22,'800'),128,1196,22,C.white,'800');
+    text('FECHA',520,1157,15,C.muted,'800');
+    text(fit(bet.date,180,22,'800'),520,1196,22,C.white,'800');
+    const statusMap={PENDING:'PENDIENTE',WON:'GANADA',LOST:'PERDIDA',VOID:'NULA',HALF_WON:'MEDIA GANADA',HALF_LOST:'MEDIA PERDIDA'};
+    const status=safe(statusMap[bet.status]||bet.status);
+    const statusColor=bet.status==='WON'?C.green2:(bet.status==='LOST'?C.red:C.gold);
+    round(752,1140,204,58,18,'rgba(255,255,255,.04)','#34465c');
+    text(status,854,1177,17,statusColor,'900','center');
+
+    text('BETAGS VIP PRO',100,1258,17,C.green2,'900');
+    text('Análisis estadístico · Juega con responsabilidad',980,1258,15,C.muted,'600','right');
+
+    const fileName='BETAGS_VIP_PRO_Apuesta_'+String(bet.id||Date.now()).replace(/[^a-zA-Z0-9_-]/g,'')+'.png';
+    canvas.toBlob(async blob=>{
+        if(!blob){if(typeof showToast==='function')showToast('No se pudo generar la tarjeta.');return;}
+        const file=new File([blob],fileName,{type:'image/png'});
+        // Compartir únicamente la imagen: todos los datos ya están dentro de la tarjeta.
+        if(navigator.share && (!navigator.canShare || navigator.canShare({files:[file]}))){
+            try{await navigator.share({files:[file]});return;}catch(err){if(err&&err.name==='AbortError')return;}
+        }
+        const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=fileName;document.body.appendChild(a);a.click();a.remove();
+        const choice=window.confirm('La tarjeta se descargó. ¿Quieres abrir WhatsApp para compartirla? Adjunta la imagen descargada en el chat. Pulsa Cancelar para abrir Telegram.');
+        window.open(choice?'https://wa.me/':'https://t.me/','_blank','noopener');
+        setTimeout(()=>URL.revokeObjectURL(url),60000);
+        if(typeof showToast==='function')showToast('Tarjeta BETAGS VIP PRO descargada. Adjunta el PNG en WhatsApp o Telegram.');
+    },'image/png');
+}
+</script>
+
+
+<script>
+// Resumen diario compartible: utiliza exclusivamente apuestas guardadas hoy
+// en la bitácora principal y el bankroll actualmente seleccionado.
+function shareDailyBetSummary() {
+    const allBets = Array.isArray(betLogData) ? betLogData : [];
+    const activeBank = (Array.isArray(bankrollsData) ? bankrollsData : []).find(b => String(b.id) === String(activeBankrollId)) || (Array.isArray(bankrollsData) ? bankrollsData[0] : null);
+    const bankId = activeBank ? String(activeBank.id) : String(activeBankrollId || 'default_bankroll');
+    const now = new Date();
+    const today = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+    const bets = allBets.filter(b => String(b.date || '') === today && String(b.bankrollId || bankId) === bankId);
+    if (!bets.length) {
+        if (typeof showToast === 'function') showToast('No hay apuestas guardadas hoy en la bitácora activa.');
+        return;
+    }
+
+    const statusInfo = {
+        PENDING: { label: 'PENDIENTE', color: '#fbbf24' },
+        WON: { label: 'GANADA', color: '#34d399' },
+        LOST: { label: 'PERDIDA', color: '#fb7185' },
+        VOID: { label: 'NULA', color: '#94a3b8' },
+        HALF_WON: { label: 'MEDIA GANADA', color: '#6ee7b7' },
+        HALF_LOST: { label: 'MEDIA PERDIDA', color: '#fda4af' }
+    };
+    const money = n => '$' + (Number(n || 0)).toLocaleString('es-MX', {minimumFractionDigits:2, maximumFractionDigits:2});
+    const getPnl = bet => {
+        const stake = Number(bet.stake) || 0;
+        const odds = Number(bet.bookieOdds) || 1;
+        if (bet.status === 'WON') return stake * (odds - 1);
+        if (bet.status === 'LOST') return -stake;
+        if (bet.status === 'HALF_WON') return (stake / 2) * (odds - 1);
+        if (bet.status === 'HALF_LOST') return -(stake / 2);
+        return 0;
+    };
+    const totals = {won:0,lost:0,halfWon:0,halfLost:0,pending:0,void:0,stake:0,settledStake:0,pnl:0};
+    bets.forEach(b => {
+        const stake = Number(b.stake) || 0;
+        totals.stake += stake;
+        if (b.status === 'WON') { totals.won++; totals.settledStake += stake; }
+        else if (b.status === 'LOST') { totals.lost++; totals.settledStake += stake; }
+        else if (b.status === 'HALF_WON') { totals.halfWon++; totals.settledStake += stake; }
+        else if (b.status === 'HALF_LOST') { totals.halfLost++; totals.settledStake += stake; }
+        else if (b.status === 'PENDING') totals.pending++;
+        else if (b.status === 'VOID') totals.void++;
+        totals.pnl += getPnl(b);
+    });
+    const settled = totals.won + totals.lost + totals.halfWon + totals.halfLost;
+    const yieldPct = totals.settledStake > 0 ? (totals.pnl / totals.settledStake) * 100 : 0;
+    const W = 1080, rowH = 82, headerH = 390, footerH = 100;
+    const H = Math.max(920, 760 + bets.length * rowH);
+    const canvas = document.createElement('canvas'); canvas.width = W; canvas.height = H;
+    const ctx = canvas.getContext('2d');
+    const C = {white:'#f8fafc',muted:'#91a2b8',green:'#34d399',gold:'#fbbf24',line:'#26364b',panel:'#111d2d',red:'#fb7185'};
+    const round = (x,y,w,h,r,fill,stroke) => { ctx.beginPath(); ctx.roundRect(x,y,w,h,r); ctx.fillStyle=fill; ctx.fill(); if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=2;ctx.stroke();} };
+    const txt = (v,x,y,size,color,weight='700',align='left') => { ctx.font=`${weight} ${size}px Inter, Arial, sans-serif`;ctx.fillStyle=color;ctx.textAlign=align;ctx.fillText(String(v ?? '—'),x,y);ctx.textAlign='left'; };
+    const fit = (v,max,size,weight='700') => { let t=String(v ?? '—');ctx.font=`${weight} ${size}px Inter, Arial, sans-serif`;while(t.length>2 && ctx.measureText(t).width>max)t=t.slice(0,-2)+'…';return t; };
+    const wrap = (v,x,y,max,size,color,weight='700') => {
+        const words=String(v || '—').split(/\s+/);let line='',lines=[];ctx.font=`${weight} ${size}px Inter, Arial, sans-serif`;
+        words.forEach(word=>{const test=line?line+' '+word:word;if(ctx.measureText(test).width>max&&line){lines.push(line);line=word;}else line=test;});if(line)lines.push(line);
+        lines.slice(0,2).forEach((l,i)=>txt(fit(l+(lines.length>2&&i===1?'…':''),max,size,weight),x,y+i*(size+5),size,color,weight));
+    };
+
+    const bg=ctx.createLinearGradient(0,0,W,H);bg.addColorStop(0,'#07111d');bg.addColorStop(.55,'#0b1725');bg.addColorStop(1,'#060b13');ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
+    const glow=ctx.createRadialGradient(900,100,10,900,100,650);glow.addColorStop(0,'rgba(16,185,129,.22)');glow.addColorStop(1,'rgba(16,185,129,0)');ctx.fillStyle=glow;ctx.fillRect(0,0,W,H);
+    round(48,42,984,148,28,'#101d2c','#26394d');
+    round(72,76,76,76,22,'#064e3b','#167c60');txt('B',110,132,52,C.green,'900','center');
+    txt('BETAGS VIP PRO',174,105,37,C.white,'900');txt('RESUMEN DIARIO DE BITÁCORA',176,143,19,C.green,'800');
+    round(790,88,210,48,24,'rgba(16,185,129,.13)','#167c60');txt('APUESTAS DEL DÍA',895,119,17,C.green,'900','center');
+    const dateLabel = now.toLocaleDateString('es-MX',{weekday:'long',day:'2-digit',month:'long',year:'numeric'});
+    txt(dateLabel.toUpperCase(),72,230,20,C.muted,'800');
+
+    // Métricas agregadas: el P&L sólo contempla apuestas liquidadas.
+    const cards=[
+        {label:'APUESTAS',value:String(bets.length),color:C.white},
+        {label:'LIQUIDADAS',value:String(settled),color:C.white},
+        {label:'PENDIENTES',value:String(totals.pending),color:C.gold},
+        {label:'GANADAS',value:String(totals.won+totals.halfWon),color:C.green}
+    ];
+    cards.forEach((m,i)=>{const x=48+i*250;round(x,258,232,112,20,'#111d2d','#26384d');txt(m.label,x+18,292,15,C.muted,'800');txt(m.value,x+18,330,34,m.color,'900');});
+    round(48,370,984,126,22,'#0c2928','#0d8061');
+    txt('RESULTADO NETO (APUESTAS LIQUIDADAS)',76,410,16,'#9ddbc7','800');
+    txt((totals.pnl>0?'+':totals.pnl<0?'-':'')+money(Math.abs(totals.pnl)),76,464,43,totals.pnl>=0?C.green:C.red,'900');
+    txt('YIELD',760,410,16,C.muted,'800');txt((yieldPct>0?'+':'')+yieldPct.toFixed(2)+'%',760,460,34,yieldPct>=0?C.green:C.red,'900');
+    txt('Apostado: '+money(totals.stake)+'  ·  Media ganada: '+totals.halfWon+'  ·  Media perdida: '+totals.halfLost+'  ·  Nulas: '+totals.void,76,532,17,C.muted,'700');
+
+    // Detalle de todas las apuestas registradas hoy, sin alterar ni excluir estados.
+    const listTop=570;
+    txt('DETALLE DE APUESTAS',60,listTop,19,C.white,'900');
+    txt('PARTIDO / SELECCIÓN',78,listTop+44,13,C.muted,'800');
+    txt('CUOTA',770,listTop+44,13,C.muted,'800','center');
+    txt('PROB.',870,listTop+44,13,C.muted,'800','center');
+    txt('ESTADO',974,listTop+44,13,C.muted,'800','center');
+    bets.forEach((bet,i)=>{
+        const y=listTop+62+i*rowH;
+        round(48,y,984,70,16,i%2===0?'#111d2d':'#0d1826','#26364b');
+        const league=String(bet.league||'SIN LIGA');
+        txt(fit(league.toUpperCase(),640,12,'800'),72,y+22,12,C.muted,'800');
+        wrap(bet.match||'Partido sin nombre',72,y+48,620,18,C.white,'900');
+        txt(fit(String(bet.market||'')+' · '+String(bet.selection||''),620,13,'700'),72,y+66,13,C.green,'700');
+        txt('@'+(Number(bet.bookieOdds)||0).toFixed(2),770,y+43,20,C.gold,'900','center');
+        txt((Number(bet.prob)||0).toFixed(1)+'%',870,y+43,18,C.white,'800','center');
+        const st=statusInfo[bet.status]||{label:String(bet.status||'—'),color:C.muted};
+        round(900,y+20,110,32,16,'#172337','#34465c');
+        txt(st.label,955,y+42,11,st.color,'900','center');
+    });
+    const footerY=listTop+62+bets.length*rowH+22;
+    round(48,footerY,984,66,18,'#0a1320','#26384d');
+    txt('BETAGS VIP PRO',72,footerY+28,17,C.green,'900');
+    txt('Registro de apuestas · Datos de la bitácora · Juega con responsabilidad',72,footerY+50,13,C.muted,'600');
+    txt((activeBank && activeBank.name) ? activeBank.name : 'Bankroll activo',1008,footerY+39,13,C.muted,'700','right');
+
+    const fileName='BETAGS_VIP_PRO_Resumen_'+today+'.png';
+    canvas.toBlob(async blob=>{
+        if(!blob){if(typeof showToast==='function')showToast('No se pudo generar el resumen diario.');return;}
+        const file=new File([blob],fileName,{type:'image/png'});
+        if(navigator.share && (!navigator.canShare || navigator.canShare({files:[file]}))){
+            try{await navigator.share({files:[file],title:'BETAGS VIP PRO · Resumen diario'});return;}
+            catch(err){if(err&&err.name==='AbortError')return;}
+        }
+        const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=fileName;document.body.appendChild(a);a.click();a.remove();
+        const openWhatsApp=window.confirm('El resumen se descargó. ¿Quieres abrir WhatsApp para adjuntar la imagen? Pulsa Cancelar para abrir Telegram.');
+        window.open(openWhatsApp?'https://wa.me/':'https://t.me/','_blank','noopener');
+        setTimeout(()=>URL.revokeObjectURL(url),60000);
+        if(typeof showToast==='function')showToast('Resumen diario descargado. Adjunta el PNG en WhatsApp o Telegram.');
+    },'image/png');
+}
+</script>
+
 </body>
 </html>
