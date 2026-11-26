@@ -1,0 +1,18 @@
+BETAGS VIP PRO · MÓDULOS DE ÁREA 1
+
+Archivos de navegación solicitados:
+- index.html: inicio y motor de cálculo Poisson.
+- data.html: carga de partidos al registro de pronósticos y captura/importación de resultados.
+- historial.html: historial de pronósticos pendientes y resueltos.
+- bitacora.html: registro de apuestas reales.
+- calibración.html: estadísticas y calibración del modelo.
+- kelly.html: simulación Kelly Monte Carlo.
+
+motor-area1.html es el motor compartido que conserva el código original, sus fórmulas y las funciones de persistencia. Los seis HTML de navegación abren vistas diferentes del mismo motor y del mismo almacenamiento; no crean bases de datos separadas ni duplican registros.
+
+IMPORTANTE SOBRE ESTA ENTREGA:
+Esta es una primera separación de navegación (vistas) para conservar la funcionalidad original. El motor sigue compartido en motor-area1.html; todavía no es una extracción física de cada función en módulos JS independientes. Se conserva el código fuente original dentro del motor para evitar perder dependencias entre Poisson, resultados, pronósticos, calibración y bitácora.
+
+SACALIN: no se encontró una definición implementada identificable en el archivo fuente revisado. No se inventó una fórmula ni se sustituyó por Brier. La vista de calibración conserva las métricas que sí están presentes en el código.
+
+Para usar: mantener todos estos archivos en la misma carpeta y abrir index.html. No separar motor-area1.html de las otras páginas.
